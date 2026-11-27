@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AV.03 Avionics Basic Tools and Technique – Trainee Tracker</title>
+<style>
+:root{
+  --navy:#0b2545; --navy2:#13315c; --red:#d6001c; --sky:#e8f0fa; --bg:#f3f6fa;
+  --ink:#1b2430; --mute:#5b6778; --line:#d9e1ec; --ok:#1b8a4b; --okbg:#e5f6ec; --bad:#c0262d; --badbg:#fdecec; --warn:#b36b00; --warnbg:#fff4de;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-bottom:5px solid var(--red)}
+.hwrap{max-width:1050px;margin:0 auto;padding:18px 20px 0}
+.brand{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.8}
+.title{display:flex;align-items:center;gap:14px;margin:6px 0 14px;flex-wrap:wrap}
+.badge{background:var(--red);color:#fff;font-weight:700;padding:6px 12px;border-radius:8px;font-size:18px;letter-spacing:.04em}
+h1{margin:0;font-size:24px;line-height:1.2}
+.sub{font-size:13px;opacity:.85}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:transparent;color:#cfe0f5;border:0;padding:11px 18px;font-size:15px;font-weight:600;cursor:pointer;border-radius:10px 10px 0 0;font-family:inherit}
+nav button:hover{background:rgba(255,255,255,.1)}
+nav button.on{background:var(--bg);color:var(--navy)}
+main{max-width:1050px;margin:0 auto;padding:22px 20px 60px}
+h2{color:var(--navy);margin:0 0 6px;font-size:22px}
+h3{color:var(--navy);margin:0 0 6px;font-size:17px}
+p.lead{color:var(--mute);margin:0 0 18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(11,37,69,.05)}
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--navy2)}
+.btn.red{background:var(--red)} .btn.red:hover{background:#b30017}
+.btn.ghost{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+.btn.ghost:hover{background:var(--sky)}
+.btn.sm{padding:6px 12px;font-size:13px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.pill.ok{background:var(--okbg);color:var(--ok)} .pill.todo{background:#eef1f6;color:var(--mute)} .pill.warn{background:var(--warnbg);color:var(--warn)}
+.bar{height:10px;background:#e6ecf4;border-radius:99px;overflow:hidden}
+.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--navy2),var(--red));width:0;transition:width .4s}
+.hero{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.ring{position:relative;width:150px;height:150px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font-size:32px;color:var(--navy)} .ring .num span{font-size:12px;color:var(--mute)}
+.small{font-size:13px;color:var(--mute)}
+label.nm{display:block;font-size:13px;font-weight:600;color:var(--mute);margin-bottom:4px}
+input[type=text],input[type=number],select{font:inherit;padding:9px 12px;border:1px solid #b9c5d6;border-radius:9px;width:100%;max-width:340px;background:#fff}
+input:focus,select:focus,button:focus-visible{outline:3px solid #8db4ea;outline-offset:1px}
+details.sec{background:#fff;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}
+details.sec>summary{cursor:pointer;list-style:none;padding:16px 20px;display:flex;align-items:center;gap:12px;font-weight:700;color:var(--navy);font-size:17px;flex-wrap:wrap}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary .code{background:var(--navy);color:#fff;padding:3px 10px;border-radius:7px;font-size:14px}
+details.sec>summary .right{margin-left:auto;font-size:13px;color:var(--mute);font-weight:600}
+.lo{background:var(--sky);margin:0 20px 12px;padding:10px 14px;border-radius:10px;font-size:14px;color:var(--navy2)}
+.topic{border-top:1px solid var(--line);padding:16px 20px;display:flex;gap:16px;align-items:flex-start}
+.topic.done{background:#f6fcf8}
+.topic .chk{flex:none;width:30px;height:30px;border-radius:8px;border:2px solid #9aa9bf;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;margin-top:2px;font-family:inherit;padding:0}
+.topic.done .chk{background:var(--ok);border-color:var(--ok)}
+.topic h4{margin:0 0 4px;color:var(--navy);font-size:16px}
+.topic h4 small{color:var(--red);font-weight:700;margin-right:6px}
+.topic h5{margin:12px 0 2px;color:var(--navy2);font-size:14px}
+.topic ul{margin:6px 0;padding-left:20px}
+.topic li{margin:3px 0}
+.tip{background:var(--warnbg);border-left:4px solid #e0a100;padding:8px 12px;border-radius:6px;font-size:14px;margin-top:8px}
+.warnbox{background:var(--badbg);border-left:4px solid var(--bad);padding:8px 12px;border-radius:6px;font-size:14px;margin-top:8px}
+.tblwrap{overflow-x:auto}
+table.t{border-collapse:collapse;width:100%;font-size:14px;margin-top:8px}
+table.t th,table.t td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+table.t th{background:var(--navy);color:#fff}
+table.t tr:nth-child(even) td{background:#f7f9fc}
+.cap{text-align:center;font-weight:700;font-size:14px;margin-top:6px;color:var(--navy)}
+.qhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.qtext{font-size:19px;font-weight:600;color:var(--navy);margin:10px 0 14px}
+.opt{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-radius:12px;padding:13px 16px;margin-bottom:10px;font-size:16px;cursor:pointer;font-family:inherit;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--navy2);background:var(--sky)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--bad);background:var(--badbg)}
+.opt:disabled{cursor:default}
+.fb{padding:12px 16px;border-radius:10px;margin:6px 0 14px;font-size:15px}
+.fb.ok{background:var(--okbg);color:#14633a} .fb.no{background:var(--badbg);color:#8f1d22}
+.score{font-size:52px;font-weight:800;color:var(--navy);line-height:1}
+.review{border-top:1px solid var(--line);padding:10px 0;font-size:15px}
+.review .y{color:var(--ok);font-weight:700}.review .n{color:var(--bad);font-weight:700}
+.tool label{display:block;font-size:13px;font-weight:600;color:var(--mute);margin:10px 0 4px}
+.result{background:var(--sky);border-radius:10px;padding:10px 14px;margin-top:12px;font-weight:700;color:var(--navy);font-size:17px;min-height:44px}
+.formula{font-family:Consolas,monospace;background:#f1f4f9;padding:6px 10px;border-radius:7px;display:inline-block}
+.cert{border:3px double var(--navy);border-radius:var(--radius);padding:28px;text-align:center;background:#fff}
+.cert .big{font-size:26px;font-weight:800;color:var(--navy)}
+.repwrap{overflow-x:auto}
+table.rep{width:100%;border-collapse:collapse;font-size:15px;min-width:520px}
+table.rep th,table.rep td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left}
+table.rep th{color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+footer{max-width:1050px;margin:0 auto;padding:0 20px 30px;font-size:12px;color:var(--mute)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 20px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:9;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+@media print{
+  header nav,.noprint,footer,.toast{display:none!important}
+  body{background:#fff} main{padding:0}
+  .card{box-shadow:none;break-inside:avoid}
+}
+@media (max-width:600px){h1{font-size:20px} .topic{padding:14px} .qtext{font-size:17px} nav button{padding:9px 12px;font-size:14px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hwrap">
+    <div class="brand">ST Engineering · Maintenance Training Centre (MTC) · Military Aviation Maintenance Training (MAMT)</div>
+    <div class="title">
+      <span class="badge">AV.03</span>
+      <div><h1>Avionics Basic Tools and Technique</h1><div class="sub">Avionics Module · 8 hours · Trainee Progress Tracker &amp; Quiz</div></div>
+    </div>
+    <nav id="nav"></nav>
+  </div>
+</header>
+<main id="app"></main>
+<footer>Training aid based on course notes AV.03 (Issue 1, 14 May 2026, Rev 0). Always follow the approved maintenance manual and your instructor's directions. Your progress is saved on this device and browser only – use <b>Export</b> on the Progress Report page to keep a backup.</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= DATA (AV.03) ================= */
+const PASS_MARK = 80;
+const MODULE_ID = 'AV.03';
+const MODULE_NAME = 'AV.03 Avionics Basic Tools and Technique';
+const OUTCOMES = [
+  `Understand the purpose and correct use of basic avionics tools used in aircraft maintenance.`,
+  `Apply correct handling techniques when working with electrical wiring, connectors, and avionics components.`,
+  `Perform avionics-related tasks using approved methods and sequences to avoid damage to components.`,
+  `Support safe, reliable, and damage-free avionics maintenance practices.`
+];
+
+const SECTIONS = [
+  {id:'AV.03.01', title:`Aircraft Cable`,
+   lo:`Understand the types, construction and applications of aircraft electrical cables used in avionics systems.`,
+   topics:[
+    {id:'3.1.01', title:`Aircraft Cable and Equipment Cable`, pts:[
+      `In a modern transport aircraft, electrical cables are "the arteries taking life to the aircraft". Power is distributed to the many consumers by cables designed to be efficient, safe and cost-effective, and still certifiable.`,
+      `<b>Reliability is possibly the prime consideration.</b> The performance and safety of the aircraft, crew and passengers may depend on a circuit working correctly under all flight conditions. Cables are made with great care and tested stringently.`,
+      `<b>Equipment cable</b> is a wide range of miniature cables for low-current use in avionic wiring assemblies. It is designed mainly for miniature plugs and sockets, and is widely used for internal and inter-unit connection of instruments and electronic devices.`,
+      `It comes in single-core and multi-core forms, in standard self-colours and bicolours for easy circuit identification.`],
+     groups:[
+      {h:`Single core (single strand)`, pts:[`Single-strand annealed copper or tinned copper conductor.`,`PVC or PTFE insulation.`]},
+      {h:`Single core (multi-strand)`, pts:[`Multi-strand annealed copper or tinned copper conductor.`,`PVC or PTFE insulation.`]},
+      {h:`Multi-core`, pts:[`Several single-core equipment cables covered overall by an additional insulation sleeve.`,`If magnetic screening is needed, a sheath of <b>tinned copper braid</b> encloses the cores (on single or multi-core cable).`]}],
+     warn:`Fumes from heated PTFE are dangerous.`},
+    {id:'3.1.02', title:`Cable Construction and Types`, pts:[
+      `An aircraft cable usually has a <b>plated conductor</b> protected by an outer insulating covering.`,
+      `For equipment interconnection and airframe cables the conductors are normally <b>stranded</b> and usually made of plated copper. Size 24 and smaller conductors are made of <b>copper alloy</b>, which has a higher tensile strength. Fire-resistant cables may also be copper alloy or copper in all sizes.`,
+      `Most aircraft wiring uses <b>MIL-W-5086</b> or <b>MIL-W-22759</b> stranded tinned copper cable, with PVC, nylon or Teflon insulation.`,
+      `The conductor is plated to resist <b>oxidation</b>, which occurs with increased temperatures and moist atmospheres.`,
+      `The course notes show examples of common aircraft cabling: TERSIL, FEPSIL, NYVIN and EFGLAS.`]},
+    {id:'3.1.03', title:`Shielded Cable and Data Bus Cable`, groups:[
+      {h:`Shielded and twisted cable`, pts:[
+        `Any cable carrying current has a magnetic field around it, which may interfere with some aircraft instruments.`,
+        `Example: the light for a magnetic compass card is powered by low-voltage DC, and its field can deflect the compass. A <b>two-conductor twisted cable</b> carries the current to and from the light, so the fields <b>cancel each other out</b>.`]},
+      {h:`Coaxial cable`, pts:[
+        `Antennas are connected to most radio receivers and transmitters with a shielded cable called coaxial cable.`,
+        `It has a central conductor surrounded by an insulator and a second conductor (normally the cable braid), covered by an outer insulator.`,
+        `The spacing and concentricity of the two conductors are critical for efficient energy transfer.`]},
+      {h:`Data bus cable`, pts:[
+        `Used exclusively for digital electronic systems. Typically a twisted pair surrounded by electrical shielding and insulators.`,
+        `Digital systems work at different frequencies, voltages and currents, so it is extremely important to use the <b>correct cable for the system</b>.`,
+        `Do not pinch or bend the cable during installation. Cable lengths may also be critical. Refer to the current manufacturer's manuals for specifications.`]}]}
+   ]},
+  {id:'AV.03.02', title:`Cable Stripping Process`,
+   lo:`Understand the correct cable stripping process, and why damage to conductors and insulation must be prevented.`,
+   topics:[
+    {id:'3.2.01', title:`Cable Stripping and the Approved Tool`, pts:[
+      `Most cables in use today are insulated with materials that have great mechanical strength.`,
+      `Several stripping tools exist to remove the insulation before terminal crimping, but <b>only the correct tool</b> may be used. The Aircraft Maintenance Manual (AMM) lists the approved tools, and these must be followed for any crimping task.`,
+      `Using a tool that is not the correct approved tool will inevitably result in:`,
+      `– a reduction in the current-carrying capacity (rating) of the cable, if strands are lost`,
+      `– a reduction in the insulation protection of the cable`,
+      `– unacceptable mechanical or electrical characteristics of the finished cable terminal`],
+     groups:[
+      {h:`Checking the tool`, pts:[
+        `Visually inspect an approved stripping tool before use, and carry out a test crimp on each size of cable to be stripped.`,
+        `Treat the tool as <b>suspect</b> if you see: bruised, nicked or severed conductor strands; kinks in the conductor or cable next to the terminal; or ragged cuts to the insulation or protective sleeving.`]}]},
+    {id:'3.2.02', title:`Stripping Procedure`, pts:[
+      `The cut-and-pull action of double-blade cable strippers has <b>five stages</b>. Each stage is independent, but they are co-ordinated by mechanical handle interlocks.`,
+      `Because the interlocks are high-tolerance, the strippers must be kept <b>clean and free from debris</b>.`],
+     tables:[{cap:`The five stripping stages`, head:[`Stage`,`What happens`], rows:[
+       [`Relaxed`,`Cable grip and cutters are open.`],
+       [`Half pressure`,`The cable grip secures the cable and the blades cut the insulation.`],
+       [`Full pressure`,`Cutters and grips separate; the severed insulation is drawn off the conductor.`],
+       [`Half released`,`Grips and cutters open, releasing the cable.`],
+       [`Fully released`,`Grips and cutters snap back together.`]]}],
+     groups:[
+      {h:`After stripping`, pts:[
+        `Remove any glass-fibre strands or discarded cable.`,
+        `Re-impose the lay of the strands with a gentle twist, then inspect for: severed or nicked strands; kinks; correct insulation strip length; and damage to the insulation.`]}]}
+   ]},
+  {id:'AV.03.03', title:`Electrical Basic Tools and Handling`,
+   lo:`Identify basic electrical tools used in avionics work – crimping tools, terminals and splices – and apply correct handling practices to prevent component damage and safety hazards.`,
+   topics:[
+    {id:'3.3.01', title:`Crimping and Terminal Lugs`, pts:[
+      `The method used to terminate cables must give a joint of controlled quality: strong mechanically, with good conductivity (resistance equal to or less than an equal length of cable).`,
+      `The most common method is the <b>solderless (crimped) termination</b>. Soldered terminations are becoming rare on aircraft and are generally confined to internal wiring of equipment.`,
+      `A "terminal" is attached to the end of a prepared cable by <b>crimping</b>, so the cable can be connected to a terminal block or attachment point.`,
+      `Advantages of crimps: good conductivity; uniformity of operation; strength of connection; corrosion proof.`,
+      `A typical terminal has two principal sections: the <b>crimping barrel</b> and the <b>tongue</b>. The copper or aluminium barrel fits closely over the conductor, so after pressure many point contacts are made. Pressure comes from a hand-operated or hydraulic tool with a die shaped hexagonal, diamond or "W".`,
+      `Plastic sleeves insulate the barrel and extend a short way over the cable insulation. They support the conductor, so it can bend without fraying the insulation or breaking strands.`,
+      `Terminal parts: tongue, insulation sleeve, barrel and (on large-diameter terminals) a stainless steel support.`,
+      `Some barrels are <b>serrated</b> inside: the strands "flow" into the serrations for high tensile strength, and the serrations help break down the oxide layer.`,
+      `The barrel is often left open at the tongue end, or has an <b>inspection hole</b>, so you can check the conductor is inserted far enough. The most common tongue forms are <b>ring</b> and <b>fork</b>.`],
+     tables:[{cap:`Insulation colour code for pre-insulated terminals`, head:[`Colour`,`AWG`,`mm²`], rows:[
+       [`Red`,`22–16`,`0.5–1.5`],
+       [`Blue`,`16–14`,`1.5–2.5`],
+       [`Yellow`,`12–10`,`4–6`]]}]},
+    {id:'3.3.02', title:`Aluminium Cable Connections`, pts:[
+      `Aluminium is used in some systems mainly for its <b>weight advantage</b> over copper. Special techniques are needed because aluminium <b>oxidises rapidly</b> and is <b>soft</b>.`,
+      `The oxide film forms as soon as aluminium is exposed to air. It acts as an insulator and gets thicker as current heats the joint – raising resistance further and causing corrosion at joints.`,
+      `The usual way to remove the oxide film is a special <b>zinc granular compound</b> applied to the exposed cable ends and terminal. Aluminium terminals are normally crimped, with the barrel filled with compound (sometimes a pre-filled cartridge).`,
+      `When crimping, the compound is forced around and between the strands and through the oxide film, giving clean metal-to-metal contact. It also seals the joint so oxide cannot form again.`,
+      `For a terminal bolted directly to structure, a busbar or a component: clean the surfaces first and apply a coat of compound.`,
+      `Because aluminium is soft, use <b>flat washers larger than the terminal tongue</b> to spread the clamping pressure. Tightening torques are kept within specific limits.`]},
+    {id:'3.3.03', title:`Crimping Tools and the AMP Tool`, pts:[
+      `<b>Crimping</b> firmly attaches a terminal to a conductor by pressure-forming (reshaping) the metal barrel together with the conductor. A good crimp needs the correct combination of conductor, crimp barrel and tool.`,
+      `The best crimping tools have a <b>ratchet</b> that will not open until the terminal has been crimped to the proper size. They are called <b>Precision Termination Tools (PTT)</b> and need periodic calibration checks.`,
+      `With a properly crimped terminal, the wire will break before the terminal slips off.`,
+      `A heavy-duty crimping tool installs pre-insulated wire terminals.`,
+      `The <b>AMP hand crimping tool</b> is one of the most common. It has a self-locking ratchet. Its handles are colour-coded <b>red, blue or yellow</b> for cross-reference to American Wire Gauge (AWG), and the AWG is stamped on the jaws.`,
+      `The letters <b>PIDG</b> on the jaws mean <b>Pre-Insulated Diamond Grip</b> – the type of crimp produced.`,
+      `AMP terminals have plastic or nylon insulating sleeves, colour-coded to match the tool: the tool's coloured handle sleeve must match the terminal's colour.`,
+      `A precision tool must be checked regularly and carry a <b>validity label</b> showing the dates of the last and next check. If the test date has expired, the tool is <b>unserviceable</b> and must be returned for check.`],
+     warn:`An expired validity label means the tool is unserviceable. Do not use it.`},
+    {id:'3.3.04', title:`Crimping a PIDG Terminal and Installing Lugs`, groups:[
+      {h:`Preparation and crimping`, pts:[
+        `Using the approved stripping tool, remove the specified length of insulation. Inspect the stripped end for severed or damaged strands.`,
+        `Select the terminal for the cable size and to suit the stud size of the terminal fitting.`,
+        `Select the tool by the colour of the terminal. Check the cable size range stamped on the tool face.`,
+        `Inspect the tool for serviceability and adjust the insulation crimping adjustment pins.`,
+        `Insert the terminal into the jaws so the barrel rests against the locator. Squeeze the handles until the terminal is lightly gripped.`,
+        `Insert the prepared cable end so <b>all conductor strands</b> enter the barrel. If the lay is disturbed, re-impose it with a light twist (avoid excessive twisting – it increases the conductor diameter).`,
+        `Make sure no insulating material enters the wrong area of the crimp.`,
+        `When fully inserted, the conductor should extend beyond the barrel by approximately <b>1/32 inch</b>.`,
+        `Hold the cable in position and squeeze the handles until the ratchet releases. Remove the joint and inspect for correct conductor protrusion and a correctly formed dot code.`]},
+      {h:`Reject criteria`, pts:[
+        `Crimp indent not centred on the terminal lug.`,
+        `Wire insulation protrudes into the conductor barrel, or is not inside the insulation barrel.`,
+        `Barrel is cracked, and the wire can be pulled from the lug with average hand force.`,
+        `Wire strands outside the barrel, and bare wire extends past the terminal barrel.`,
+        `Bare wire is not flush with the lug edge, or protrudes more than 1/32 inch.`]},
+      {h:`Installation of terminal lugs`, pts:[
+        `No more than <b>four</b> terminal lugs, or <b>three</b> lugs and a bus bar, on any one stud. Four lugs plus a bus bar are not permitted.`,
+        `On new work, the tongue of a straight lug may be bent up to 90° maximum, once. Bending must not be needed to remove the fastening screw or nut. (The figure in the notes shows 45° maximum for copper terminal sizes 12–10 and 90° for sizes 24–14, straight terminals only.)`,
+        `If lugs on a stud differ in diameter, put the <b>greatest diameter at the bottom</b> and the smallest on top.`,
+        `Tightening must not deform the lugs or the stud.`]}]},
+    {id:'3.3.05', title:`In-Line Connectors (Splices)`, pts:[
+      `In-line connectors, also called splices, join two cables. The <b>butt type</b> is two crimping barrels in series, with one conductor entering each end. The <b>parallel type</b> is one long barrel that accepts and crimps two conductors (entering from opposite ends or the same end). Three- or four-way connectors can also be made.`,
+      `A crimped splice is the normal way to repair a <b>single-core</b> cable when the repair cannot be done by re-terminating and the whole cable need not be replaced. When authorised in a modification leaflet or other approved instruction, it may also join an extension to an existing single-core cable.`,
+      `<b>A crimped splice is NEVER used in a multicore cable.</b>`],
+     groups:[
+      {h:`Use forbidden – do not use a crimped splice in a cable which is:`, pts:[
+        `Larger than size 6, or carries more than 240 V ac RMS.`,
+        `In a designated fire zone.`,
+        `In an area subject to flexing.`,
+        `A thermocouple or coaxial cable.`,
+        `The connection between a bonded earth stud and an earth terminal block.`,
+        `A cable or circuit the CAA specifies must not have in-line crimped splices, e.g. autopilot and fire protection circuits.`]},
+      {h:`Techniques and conditions`, pts:[
+        `Use approved tools and correctly sized materials.`,
+        `Each barrel of a splice contains <b>one cable only</b>.`,
+        `After crimping, inspect for faults and correct size identification.`,
+        `Fit the circuit coding next to the splice, using printed marker sleeves or another suitable marker.`]},
+      {h:`Location of splices`, pts:[
+        `Distance between crimped splices in the same cable run: not less than <b>500 mm</b>.`,
+        `Maximum number of crimped splices in any 3-metre cable run: <b>2</b>.`,
+        `Not under clips and ties.`,
+        `Splices in adjacent cables must be positioned so they cannot touch each other.`,
+        `Not in a curved cable with a radius of less than <b>3 times the overall length</b> of the heat-shrinkable tubing used for the splice.`]},
+      {h:`Support of in-line splices`, pts:[
+        `A splice in an unloomed cable is supported on each side by clips or ties to a suitable structure.`,
+        `A splice in a loomed cable is supported similarly by clips or ties to the loom.`]},
+      {h:`Crimping an in-line splice`, pts:[
+        `AWG is not the only factor – the environment matters too (e.g. an undercarriage bay exposed to the elements, or an engine bay with high temperatures). Environmental crimps are available.`,
+        `A splice is a dual crimp, so the cable and splice must enter the tool the correct way. Turning the cable through 180° is impossible on an aircraft – so reverse the tool instead.`,
+        `Select the splice and a tool of the <b>same colour coding</b>. Adjust the insulation crimping adjustment pins.`,
+        `Insert the splice into the jaws until located, then squeeze until it is lightly gripped.`,
+        `Insert the prepared cable. The conductors should be visible in the <b>inspection window</b>, touching the bridge but not crossing it.`,
+        `Crimp, inspect the crimp, then insert the other end into the jaws and repeat.`]}]},
+    {id:'3.3.06', title:`Raychem Tool, Environmental Splice and Shield Termination`, pts:[
+      `The <b>Raychem crimping tool</b> is relatively new, introduced with thin-walled cable. It is smaller than the AMP tool and has <b>no insulation grip adjustment</b>. Its crimps are much smaller but still pre-insulated and colour-coded. It has three separate jaws colour-coded to match the crimp.`,
+      `The <b>M22520/38</b> crimping tool installs environmental splices, sizes 12 through 26. The cavity colour on the tool matches the colour of the stripe on the crimp barrel. Once the ratchet engages, it will not release until the handles are fully closed and the crimp is complete.`,
+      `To crimp: insert the stripped wire into the metal barrel until it reaches the stop in the middle and is visible in the inspection hole. No insulation may enter the barrel. The exposed wire gap must be no more than 1/32 inch. Squeeze the handle gently until the handles release.`],
+     groups:[
+      {h:`Environmental splice – reject criteria`, pts:[
+        `Indent not centred on the splice/crimp barrel, or not in line with the barrel/inspection hole.`,
+        `Barrel cracked.`,
+        `Wire can be pulled out of the splice with average hand force.`,
+        `Insulation is inserted in the barrel, or a gap of more than 1/32 inch is showing.`,
+        `Wire ends not visible in the inspection windows at the centre of the barrel.`]},
+      {h:`Shield termination – soldered sleeve`, pts:[
+        `Proper heating is essential for a good solder connection and seal.`,
+        `The sleeve contains a <b>fluxed solder preform</b>, giving exactly the amount of solder and flux needed.`,
+        `Two <b>thermoplastic sealing rings</b> (one each side) melt when heated, giving strain relief and an environmental seal.`,
+        `<b>Acceptable (minimum flow):</b> a slight trace of thermal indicator may remain; the solder has lost its ring shape; the inserts have melted and flowed along the wires; a definite fillet is visible along the lead and shield.`,
+        `<b>Acceptable (maximum flow):</b> no trace of thermal indicator; fillet clearly visible; joint area visible despite browning of the sleeve.`,
+        `<b>Reject (under-heated):</b> thermal indicator readily visible; solder preform contour visible; inserts not flowed.`,
+        `<b>Reject (overheated):</b> joint area not visible because of severe darkening; no fillet visible; wire insulation damaged outside the sleeve.`]}]},
+    {id:'3.3.07', title:`M22520 Crimp Tools and Calibration`, pts:[
+      `The <b>M22520 series</b> crimp tools work with a very wide range of contacts. The tool is also known as the Daniels <b>AF8</b> and <b>AFM8</b>.`,
+      `<b>M22520/1-01:</b> a high-precision hand tool with interchangeable <b>turret heads</b> (over 1,000). A ratchet stops the handles opening before the crimp cycle is complete. It makes an <b>8-impression crimp</b> for maximum tensile strength. Impression depth is set by an <b>8-position selector knob</b> – the outer scale is calibrated in cable size, the inner scale is the selector number.`,
+      `<b>Turret head:</b> positions the contact centrally between the indenters, with the crimp area in line with the indenters. It is held on by two Allen bolts, and usually has a rotating contact positioner for the three contact sizes: red, blue and yellow. A <b>data plate</b> lists the contact part numbers, positioner colour and the suggested selector setting for the cable size.`,
+      `<b>M22520/2-01:</b> originally military, now widely used for miniature and sub-miniature connectors. It crimps cables from <b>20 to 32 AWG</b>. It has a ratchet and selector knob, but is much smaller. The turret is replaced by a <b>positioner</b> (a single-hole, single-size adapter) that fits with a <b>bayonet quick-release lock</b> instead of Allen bolts.`],
+     groups:[
+      {h:`Calibration`, pts:[
+        `The tool is precision equipment, tested and certified periodically by an <b>approved external organisation</b>.`,
+        `Test crimps are tested for resistance, millivolt drop and tensile strength against a laid-down standard. If all pass, a <b>calibration tag</b> is attached. A tool that fails is withdrawn from service.`,
+        `Before using any crimp tool, check the calibration tag is in date. If it is out of date, the tool <b>MUST NOT</b> be used.`]},
+      {h:`Crimping a contact`, pts:[
+        `Select the correct contacts for the connector and cable, and the correct tool and turret.`,
+        `Check the calibration tag is in date. Set the selector knob and the colour-coded positioner.`,
+        `Strip the cable to the correct dimensions. Insert the contact fully into the turret/positioner and the conductor fully into the contact.`,
+        `Close the handles until the ratchet releases, keeping the contact and cable in position. Open the handles and remove the crimped contact.`,
+        `Inspect the position and form of the crimp, and check the cable is visible through the <b>inspection hole</b>.`]},
+      {h:`Reject criteria`, pts:[
+        `Conductor too long (minimum gap clearance), or too short (no gap).`,
+        `Conductor not visible in the inspection hole – too short.`,
+        `For a contact with an insulation support well, wire visible between the contact and the well – too long.`,
+        `Crimp indent too deep or too shallow – wrong position selector.`,
+        `Cracking or peeling plating on the contact.`]}]},
+    {id:'3.3.08', title:`Pneumatic and Hydraulic Crimping Tools`, groups:[
+      {h:`PICO 500D1 pneumatic tool`, pts:[
+        `Crimps flight connector contacts, gauge <b>8 to 4/0</b>.`,
+        `A full-cycling tool: it cannot be opened until the full crimp is complete.`,
+        `Runs on clean, dry air or inert gas at <b>6 to 9 bar</b>, depending on contact size.`,
+        `Insert the contact and cable, then press the trigger.`]},
+      {h:`Hand-operated hydraulic crimping machine`, pts:[
+        `Supplied as a kit of <b>eight sets of dies</b> for cable sizes AWG 6 to AWG 0000, with an Allen key for fitting the dies.`,
+        `The crimp is a regular <b>hexagon</b> with two code letters impressed by the dies: HG, HH to HN (AWG 6, 4 to 0000) – the same as marked on the cable lugs by the manufacturer.`]},
+      {h:`Procedure`, pts:[
+        `Open the pressure relief valve for a few seconds so the indenter is in neutral, then close it.`,
+        `Locate the splice between the indenter and the nest, with the <b>brazed seam facing the indenter</b>.`,
+        `Use short pumping strokes to hold the splice in position without deforming the barrel. Insert the stripped cable end into the barrel.`,
+        `Keep pumping until the handles need less effort – the relief valve has operated and the crimp cycle is complete.`,
+        `Open the relief valve lever until the indenter returns to neutral. Open the crimping head and remove the crimped assembly.`]}]}
+   ]},
+  {id:'AV.03.04', title:`Heat Shrink Heat Sources`,
+   lo:`Understand the types of heat source used for heat-shrink work, and how to use them correctly and safely in aviation maintenance.`,
+   topics:[
+    {id:'3.4.01', title:`Hot Air Guns, Deflectors and Heat Shrink Tubing`, pts:[
+      `Hot air guns come in two main types: a heat source that heats a compressed air supply, and an electrically heated, fan-driven air supply.`,
+      `<b>Air deflectors</b> direct the air flow around the heat-shrink component or tubing. They come in different sizes to keep the hot air flow uniform, so the sleeving shrinks <b>evenly</b>.`,
+      `Uneven shrinking can distort the component, and the distortion may be impossible to remove once shrinking has begun, because the component or sealant sticks to the cables or connectors.`,
+      `Deflectors also keep hot air away from aircraft components, cables and structure.`,
+      `Always select the <b>cold setting</b> and run cold air through the nozzle and deflector to cool them before putting the gun down or changing deflectors.`,
+      `Heat-shrink tubing comes in many sizes and temperature ranges. The notes show general-purpose, flexible, heat-shrinkable sleeving from a wiring manual.`]},
+    {id:'3.4.02', title:`Heat Gun and Safety`, pts:[
+      `The heat gun is a mains-operated device that produces hot air, designed for shrinking thermofit products. A range of deflector shields is available.`,
+      `Because of its exposed heating elements and motor, the heat gun is <b>not suitable for use on aircraft</b> – there is a fire risk. For aircraft work, thermofit products are shrunk with the <b>thermo pistol</b>.`,
+      `A heat gun or hot air gun must not be used near the cable assembly. Too much heat can damage the cable.`],
+     groups:[
+      {h:`Heat guns, hot air guns, soldering guns and soldering irons must not be used within 100 feet of:`, pts:[
+        `An aircraft during refuelling and defuelling.`,
+        `An aircraft with open fuel tanks.`,
+        `Fuel vents.`,
+        `Fuel spills.`,
+        `Other flammable liquids.`]}],
+     warn:`Keep heat guns and soldering irons at least 100 feet from refuelling, open fuel tanks, fuel vents, fuel spills and flammable liquids.`}
+   ]},
+  {id:'AV.03.05', title:`Soldering and Desoldering`,
+   lo:`Understand basic soldering and desoldering techniques used in avionics, to make reliable electrical connections without damaging components.`,
+   topics:[
+    {id:'3.5.01', title:`Soft Soldering, Tinning, Solder and Flux`, pts:[
+      `Three metal-joining processes are widely used: <b>soft soldering</b>, brazing (hard soldering) and welding. They fill similar functions but use different methods and give joints of different strength.`,
+      `<b>Soft soldering</b> is used mainly where joint strength is not of fundamental importance. A well-made joint has excellent electrical conductivity. It is done at a comparatively low temperature, so there is no adverse effect on the physical properties of the metals or on nearby paint and insulation.`,
+      `Soft soldering flows a low-melting-point alloy (solder) between the surfaces. It only works if clean metal and clean molten solder come into effective contact. A <b>flux</b>, which removes oxide and helps the solder flow and stick, is therefore essential.`],
+     groups:[
+      {h:`Tinning`, pts:[
+        `Before an iron can be used, its contact surface must be coated with tin or solder – this is <b>tinning</b> the iron.`,
+        `Clean the faces of the copper bit with a file to remove dirt, oxide and roughness. Heat the bit to a temperature where it just melts solder.`,
+        `Apply flux to the hot bit and rub solder against it. The solder leaves a smooth coating over the faces at the bit's point.`]},
+      {h:`Solder`, pts:[
+        `Soft solder is an alloy of <b>tin and lead</b>, melted and allowed to flow between the surfaces. The joint is not very strong mechanically, but is a good electrical conductor.`,
+        `Soldered joints can only be used at temperatures <b>below 150°C</b>.`,
+        `The most suitable solder for electrical work is <b>60% tin and 40% lead</b>, melting at 190°C. Some solders contain small amounts of antimony or copper and melt between 190°C and 240°C.`,
+        `Normally supplied as <b>22 SWG flux-cored wire</b>.`]},
+      {h:`Flux`, pts:[
+        `Solder cannot alloy with a metal if oil, grease or oxide is present. Surfaces must be thoroughly cleaned, and a flux used to prevent oxide forming.`,
+        `Flux for electronic work is a high-grade chemically developed <b>resin</b>. Its residue is non-corrosive, moisture-proof and hard, so it does not pick up dust.`,
+        `Remove residue from joints used at <b>high frequencies</b>, so its dielectric properties do not affect the circuit.`]}]},
+    {id:'3.5.02', title:`Care of Irons and Soldering Procedure`, groups:[
+      {h:`Care and maintenance of irons`, pts:[
+        `Properly used, a soldering iron lasts a very long time.`,
+        `Keep the bit <b>clean and tinned</b> at all times. Remove any oxide with a wire brush and re-tin the bit immediately.`,
+        `Overheating pits and oxidises the bit. Switch the iron off when not needed, and rest it on a heat sink between short jobs.`,
+        `Frayed or damaged leads are dangerous. Make sure the hot bit does not touch the mains lead – melted insulation can cause a short circuit and start a fire.`]},
+      {h:`Soldering procedure`, pts:[
+        `Clean and tin the working face of the bit. Allow time to reach working temperature. Use a low-voltage iron for transistorised circuits.`,
+        `Surfaces to be soldered must be clean, bright and free from oxide. Some cables have a wax coating, which must be removed with a suitable solvent.`,
+        `Make a <b>firm mechanical connection</b>, and use heat sinks to protect sensitive components.`,
+        `Apply the tinned iron to the surfaces to be joined. Apply the flux-cored solder <b>to the work, not to the iron</b>. If the work is hot enough, the solder melts and runs into the joint.`,
+        `When enough solder has been applied, remove the iron and let the joint <b>cool naturally</b>. The solder must set before the surfaces move. A good joint has a bright, smooth surface.`]}]},
+    {id:'3.5.03', title:`Precautions and Desoldering`, groups:[
+      {h:`General precautions and practices`, pts:[
+        `Do not do hot work without specific authorisation.`,
+        `Solder in a reasonably clean area, free from excessive dust.`,
+        `Tin the wire before soldering it to the work piece.`,
+        `Melt the solder on the joint, not on the iron.`,
+        `Do not heat the work longer than needed to melt the solder on all parts of the joint.`,
+        `Do not use more solder than necessary.`,
+        `Protect the operator against burns and the iron against damage.`]},
+      {h:`Desoldering`, pts:[
+        `When a soldered component is replaced, all solder is removed from the connection. A <b>solder removal gun</b> can be used.`,
+        `The gun has a pump-type plunger in a sealed tube. The plunger is pushed down against a spring and held down by a spring-loaded release knob. Pressing the release knob frees the plunger to move up, creating <b>suction</b> at the tip, which sucks the heated solder into the gun.`,
+        `Steps: (a) push the plunger down; (b) heat the connection until the solder is liquid – do not overheat; (c) hold the tip of the gun very close to the molten solder and press the release knob.`]}],
+     warn:`Wear safety glasses. Soldering can give off hazardous fumes and vapour from the flux; prolonged exposure may cause injury.`}
+   ]},
+  {id:'AV.03.06', title:`Aircraft Connector`,
+   lo:`Understand the purpose, types and correct handling of aircraft electrical connectors used in avionics systems.`,
+   topics:[
+    {id:'3.6.01', title:`Connector Construction and Coupling`, pts:[
+      `A <b>connector</b> gives a semi-permanent connection to avionic components or equipment. It must locate positively and allow quick connection and disconnection for easy maintenance.`,
+      `With digital systems, every connection must have little or no resistance. Any resistance causes signal loss and heat build-up, leading to damaged components and poor reliability.`,
+      `A basic crimped-contact connector has two parts: the <b>receptacle</b> (normally part of the equipment or structure, stationary) and the <b>plug</b> (the removable half that mates with the receptacle, usually at the end of a cable).`,
+      `The part number of a connector describes its type, size, finish and so on. See chapter 20 of the manual for the numbering systems.`],
+     groups:[
+      {h:`The six component parts`, pts:[
+        `<b>Shell</b> – the outside case into which the insert and contacts are assembled.`,
+        `<b>Contacts</b> – the conductive elements that carry electricity, in socket or pin form.`,
+        `<b>Insert</b> – a dielectric insulator that positions and supports the contacts.`,
+        `<b>Interfacial seal</b> – keeps moisture away from the area around each contact.`,
+        `<b>Sealing grommet</b> – on the cable side, seals against moisture, air and dirt.`,
+        `<b>Coupling mechanism</b> – the ring that helps mate the plug and receptacle and locks them together.`]},
+      {h:`Coupling methods`, pts:[
+        `<b>Screw thread</b> – the coupling ring has a Vee or Acme thread. On some connectors the cable clamp must be loosened before removal or installation.`,
+        `<b>Bayonet</b> – slots in the coupling ring slide over spigots on the receptacle. When fully engaged, the spigots sit in holes in the ring, and the <b>master lines</b> on plug and receptacle align to show correct coupling.`,
+        `<b>Push-pull</b> – rack-mounted connectors. Most "float" to help coupling. Circular connectors need only a straight push; spring-loaded balls under the coupling ring slip into recesses on the receptacle. Correct engagement is sometimes shown by a painted ring on the plug or a sighting hole in the outer ring.`]}]},
+    {id:'3.6.02', title:`Installing (Mating) a Connector`, groups:[
+      {h:`Inspection before mating`, pts:[
+        `Examine the connector for bent, dented or splayed contacts.`,
+        `Make sure the accessory is tight on the back of the connector, and the saddle clamp is tight on the bundle.`]},
+      {h:`Mating the connector`, pts:[
+        `<b>Do not use excessive force to mate the connector.</b>`,
+        `Find the correct position of the plug by aligning the <b>master key</b> of one part with the groove or keyway on the other.`,
+        `Do not twist the bundle excessively to get a good mating.`,
+        `Do not force a pin into the resilient insert (misconnecting plug and receptacle).`,
+        `Start the plug into the receptacle with light forward pressure and engage the thread.`]},
+      {h:`Final inspection after mating`, pts:[
+        `Without an indicator line – make sure it is tight enough by hand force.`,
+        `With an indicator line – make sure the indicator line is <b>not visible</b>.`,
+        `With a locking pin – make sure the pin is visible through the inspection hole.`]}]},
+    {id:'3.6.03', title:`Wire Locking of Electrical Connectors`, pts:[
+      `Aircraft systems and components vibrate. Over time, vibration can work components and connectors loose, causing system failure and endangering lives.`,
+      `To prevent this, connectors have a positive locking mechanism: <b>bayonet coupling</b>, <b>ratchet release</b>, or <b>locking wire</b> on threaded couplings.`,
+      `Wire locking on connectors follows the same standard as other aircraft components: turns per inch, angle of approach and tangential angle. These standards may change with the aircraft manufacturer.`,
+      `Wire locking also stops the cable clamp screws loosening under vibration.`,
+      `Any threaded connector in an <b>unpressurised area</b> that is not self-locking must be wire locked, and any connector clamp in an unpressurised area must be wire locked.`],
+     warn:`Threaded connectors that are not self-locking, and connector clamps, in unpressurised areas must be wire locked.`}
+   ]},
+  {id:'AV.03.07', title:`Contact Insertion and Extraction`,
+   lo:`Understand the correct contact insertion and extraction techniques, to prevent damage to contacts and connector housings.`,
+   topics:[
+    {id:'3.7.01', title:`Contacts and Locking Mechanisms`, pts:[
+      `The earliest connectors had contacts that could not be removed – they were fixed in during manufacture and soldered to the cable.`,
+      `Plessey developed a connector with removable, locked contacts. Modern connectors have a locking mechanism built into the insert that accepts a range of contact sizes.`,
+      `There are two types of locking mechanism: <b>front release</b> and <b>rear release</b>. They work in a similar way, but <b>the tools are not interchangeable</b>.`,
+      `Front release is the earlier type and has been partly superseded by rear release. It is still widely used. If approved, a front-release connector may be replaced with a rear-release type when removed because of a modification or defect.`,
+      `To identify the type: a <b>blue line</b> on the connector signifies a <b>rear release</b> mechanism.`]},
+    {id:'3.7.02', title:`Tool Selection and Plastic Tools`, pts:[
+      `The part numbers of the tools needed to insert and remove contacts are in the <b>Standard Practices Manual</b>. To find them: use the index to find the section for the connector family and type (e.g. MIL-C-26500 front release connectors, 20-61-11); the table then gives the description and location (e.g. Contact Insertion Tools, paragraph 10.B, page 60).`,
+      `If the preferred tool is not in stores, alternative part numbers are given in that section.`,
+      `<b>Plastic</b> insertion and extraction tools were introduced to prevent damage to contact retaining clips and insert materials. They are colour-coded for contact size. In a composite tool, the extractor end is always <b>white</b>.`],
+     tables:[{cap:`Colour coding of plastic insertion tools`, head:[`Tool colour`,`Contact size`], rows:[
+       [`Red`,`20`],
+       [`Blue`,`16`],
+       [`Yellow`,`12 and 22`],
+       [`White (extractor end)`,`Extraction`]]}]},
+    {id:'3.7.03', title:`Installing and Removing a Contact with the Plastic Tool`, groups:[
+      {h:`Installing (coloured end)`, pts:[
+        `(a) Hold the coloured insertion half between thumb and forefinger. Lay the cable along the slot, leaving about 1/2" protruding from the tool end to the crimp barrel.`,
+        `(b) Squeeze the cable hard into the tool at the tip and, at the same time, quickly pull the protruding cable away from the tool.`,
+        `(c) The cable has snapped into place. Pull it back through the tool until the tip seats on the back of the crimp barrel.`,
+        `(d) With the rear seal facing you, slowly push the contact straight into the connector seal.`,
+        `(e) A <b>firm stop</b> shows when the contact is positively seated.`]},
+      {h:`Removing (white end)`, pts:[
+        `(a) With the rear of the connector facing you, lay the cable along the slot of the white removal half, leaving about 1/2" between the tool end and the rear of the connector.`,
+        `(b) Squeeze the cable hard into the tool about 1/4" from the tip and quickly pull the connector away from the tool.`,
+        `(c) The cable has snapped into place. Slide the tool down the cable into the rear seal and push slowly until positive resistance is felt – the contact retaining clip is now unlocked.`,
+        `(d) Press the cable against the serrations of the plastic tool, and pull the tool and the contact-cable assembly out of the connector.`]}],
+     warn:`Do not tip, spread or rotate the tool while it is in the connector.`},
+    {id:'3.7.04', title:`Tweezer-Type Tools and Removing a Contact`, groups:[
+      {h:`To install a contact`, pts:[
+        `Squeeze the handles to open the tool tips, and place them round the cable insulation. Slide the tool along the cable until the tip butts against the shoulder on the contact.`,
+        `Carefully push the contact forward, directly in line with the grommet hole, until it snaps into position.`,
+        `Slide the tool back along the insulation until it clears the grommet, then remove it.`]},
+      {h:`To remove a contact`, pts:[
+        `Open the tool tips enough to go round the cable insulation. Slide the tool down the cable until the tips enter the grommet and reach a positive stop (a slight increase in resistance is felt just before).`,
+        `Holding the tips firmly against the stop on the contact, grip the cable and remove the tool, contact and cable together.`]},
+      {h:`Removing a contact – general procedure`, pts:[
+        `The method depends on the locking mechanism, so first <b>identify the connector as front or rear release</b> (a blue line means rear release).`,
+        `Remove any backshell or strain relief clamp.`,
+        `Remove or loosen any compression ring.`,
+        `Select the correct removal tool.`]}],
+     warn:`The tips of tools for small contacts have very thin walls and sharp edges that can cut the cable insulation or sealing grommet. Do not squeeze, spread, tip or rotate the tweezers while entering the grommet.`}
+   ]},
+  {id:'AV.03.08', title:`Cable Protection`,
+   lo:`Understand the methods used to protect aircraft cables from abrasion, heat and environmental damage.`,
+   topics:[
+    {id:'3.8.01', title:`Cable Protection and Support`, pts:[
+      `The risk of mechanical damage, and of damage by fluids or vapours, must be kept to a minimum. Where possible, route cables to avoid these risks; otherwise provide adequate protection.`,
+      `Cables must be installed or protected so that heat sources (plus heat generated in the cable under load) cannot take them above the <b>maximum permissible continuous temperature</b> they are designed for.`,
+      `Cables must not be bent so sharply that damage or deterioration is likely.`,
+      `The ends of conduits, tubes and ducts that carry cables must be prepared or <b>bushed with insulating material</b> at the points of entry. Continuous ducts may need inspection panels.`,
+      `Cable clamps suit a specific situation. Cable troughs and conduits are other ways to enclose and protect looms, especially large ones. With conduits, drainage holes should exist at low points to relieve condensation.`],
+     groups:[
+      {h:`Cable support – take particular care:`, pts:[
+        `Next to cable terminations.`,
+        `Where relative movement is likely between adjacent parts of the structure.`,
+        `Where cables are close to moving parts.`,
+        `At bends, especially where several small cables run together as a heavy group.`]}]},
+    {id:'3.8.02', title:`Loop Clamps and Securing`, groups:[
+      {h:`Loop clamps`, pts:[
+        `Support cable bundles and prevent contact with adjacent structures.`,
+        `Made of nylon, aluminium alloy or stainless steel, in sizes from <b>0.25" to 1.625"</b>. Metal loop clamps have a protective layer of insulating material.`,
+        `Always replace with the <b>same part number</b> as originally installed (options only where the manual allows).`,
+        `Use only the smallest loop clamp that holds the bundle secure, allows no abrasive movement, and does not crush or pinch the cable.`,
+        `Do not let cables cross under loop clamps (except multiple-conductor twisted cables) – they can be damaged.`,
+        `If the clamp cannot grip properly, increase the bundle size with: <b>filler rods or plugs</b> ("rubber nails"), a length of unshrunk heat shrink, or approved insulation tape.`]},
+      {h:`Securing (open wire bundle)`, pts:[
+        `Wires are bundled and installed with <b>no external protection</b>. Used when there is no great danger of mechanical damage (chafing, rubbing). It is easy to install and maintain, and lighter in weight.`,
+        `Wires are grouped and tied in bundles for neat, efficient routing. <b>No one bundle should carry wires from circuits that would disable both main and back-up systems.</b>`,
+        `Bundles must not interfere with controls or moving components, and must be routed where people, baggage or cargo cannot damage them.`]}]},
+    {id:'3.8.03', title:`Wire Clamping, Splicing in Bundles and Standoffs`, groups:[
+      {h:`Wire and cable clamping`, pts:[
+        `Cables and wire bundles are secured to structure by metal clamps (<b>P clips</b>) lined with synthetic rubber or similar material.`,
+        `Make sure the stress from the cable on the clamp is not in a direction that tends to bend the clamp.`,
+        `When a clamp is mounted on a vertical member, the <b>loop should be at the bottom</b> and the fastener placed <b>on top of the loop</b>.`]},
+      {h:`Wire splicing in a bundle`, pts:[
+        `Splicing may be done if approved for the installation. It is typically an approved crimp-type connector – a metal tube with a plastic insulator on the outside, or a plain metal tube covered with a plastic tube after the splice is made.`,
+        `The stripped wire is inserted into the end of the tube and crimped with a terminal crimping tool.`,
+        `Spliced wires go on the <b>outside of the bundle</b>. If several splices are made in one bundle, <b>stagger</b> them to reduce the bundle diameter.`]},
+      {h:`Standoff supports`, pts:[
+        `A standoff raises the loop clamp or P clip away from adjacent structure. Standoffs come in a variety of heights.`,
+        `With plastic or nylon loop clamps, washers are normally needed to spread the load around the mounting hole.`]}]}
+   ]},
+  {id:'AV.03.09', title:`Terminal Block Contact Installation`,
+   lo:`Understand the correct method of installing contacts on terminal blocks, to make secure and reliable electrical connections.`,
+   topics:[
+    {id:'3.9.01', title:`Terminal Block Contact Installation`, pts:[
+      `Similar contacts are used with some <b>terminal blocks</b> on aircraft, and need their own insertion and extraction methods.`,
+      `The tooling is identified in exactly the same way as for connectors, and contacts are inserted and extracted in a similar way to <b>rear release</b> connectors.`],
+     groups:[
+      {h:`Contact installation`, pts:[
+        `Start the cabled contacts into the correct sockets of the module by hand.`,
+        `With the approved tool, slide the insertion end over the cable and put the tool tip against the shoulder on the contact.`,
+        `Align the contact and tool <b>perpendicular to the module face</b> and carefully insert into the cavity until the contact seats. You will hear a click, followed by increased resistance to further movement.`,
+        `Remove the tool carefully, keeping perpendicular alignment.`,
+        `Check each contact is seated: grasp the cable between thumb and forefinger and pull slowly in line with the contact, until your fingers slip on the cable.`]}]},
+    {id:'3.9.02', title:`Terminal Block Contact Removal`, pts:[
+      `Remove any support ties on the cable/contact to be extracted.`,
+      `With the approved extraction tool, snap the <b>white end</b> (the extraction end) over the cable. Carefully slide it <b>straight</b> into the cavity, over the rear of the contact, until the tool bottoms.`,
+      `Grip the cable and tool together and pull out in a <b>straight line</b>.`]}
+   ]},
+  {id:'AV.03.10', title:`Aircraft Coaxial Cables`,
+   lo:`Understand the construction, characteristics and applications of aircraft coaxial cables used for signal transmission.`,
+   topics:[
+    {id:'3.10.01', title:`Coaxial Connectors`, pts:[
+      `Coaxial connectors connect and disconnect equipment or systems that use <b>radio frequency (RF)</b> voltage and current.`,
+      `They are designed to maintain the integrity and performance of the cable, and must not affect the <b>characteristic impedance</b> of the coaxial cable they are attached to.`,
+      `Many configurations and sizes are fitted to aircraft, but they generally fall into two types: single connectors attached individually to items of equipment; and single connectors fitted with multiple-contact connectors, as a sub-assembly of the main connector body.`,
+      `Most coaxial cables are used for aircraft radio systems. They are shielded to eliminate aircraft radio interference.`]},
+    {id:'3.10.02', title:`Fabricating a Coaxial Cable`, pts:[
+      `Make sure the materials are serviceable. Damaged materials and cables may degrade the coaxial properties.`,
+      `Use a <b>proper coaxial cable stripper</b> to remove the outer insulation neatly, leaving the shield fraying for the grounding metal ferrule. Strip the core insulation neatly, with enough length for the core to be crimped into the coaxial contact.`,
+      `Crimp the cable to the connector: start with the <b>cable core</b>, then the <b>metal ferrule</b>, and finally install the <b>insulating sleeve</b> if required.`,
+      `After fabrication, do a <b>continuity check</b> and an <b>insulation test</b>. Make sure the testers are calibrated and serviceable. Only competent maintenance personnel may do the insulation test.`,
+      `Once the cable is verified, do housekeeping: clean and return all tools, and make sure the work area is clean and free of Foreign Object Debris (FOD).`,
+      `The notes show an exploded view of a standard BNC connector.`]}
+   ]},
+  {id:'AV.03.11', title:`Wire-Locking`,
+   lo:`Understand the purpose of wire-locking, and how it stops components loosening because of vibration.`,
+   topics:[
+    {id:'3.11.01', title:`Wire-Locking Guidelines`, pts:[
+      `Locking wire is non-corrodible steel wire of a specific gauge, e.g. 22 SWG or (more commonly) 32 SWG. Wire of 40 SWG is also used.`,
+      `Nuts, bolts and screws for locking wire are supplied already drilled. Hexagonal heads usually have a hole at each corner; round heads have a single hole across the diameter.`,
+      `After tightening, pass the wire through the hole and secure it to companion bolts or a nearby point. The wire must be <b>taut</b> and positioned to prevent the nut or bolt unscrewing.`,
+      `The wire may be single or double twist; the <b>double twist</b> method is normally preferred.`,
+      `If the locking wire is broken or tampered with, re-lock the parts using <b>new wire</b>.`,
+      `With the double twist method, the strand leaving the hole passes over the wire looped round the nut or bolt, so the loop is pressed down.`,
+      `After the last nut or bolt, twist the wire into a <b>pigtail 3 to 5 twists long</b> before cutting. Bend the pigtail <b>inwards</b> round the nut or bolt to avoid injury.`,
+      `Tools: pliers, wire twister and wire cutter.`,
+      `Route the wire so it opposes any tendency of the locked parts to unscrew. For right-hand threaded bolts it is routed in a <b>"reversed S"</b> direction. For left-hand threads it is routed the opposite way.`,
+      `Use only new, unkinked wire.`]},
+    {id:'3.11.02', title:`Important Steps in Wire-Locking`, pts:[
+      `Check whether the hardware has a <b>right-hand or left-hand thread</b>.`,
+      `Use the correct gauge of wire. Use <b>only copper wire</b> for wire-locking oxygen bottle valves and for cockpit panels.`,
+      `Use only new wire – locking wire must never be re-used.`,
+      `Make sure the loosening tendency of either part is countered by the tightening of the other part.`,
+      `A tightened wire should be taut with approximately <b>8 to 10 twists per inch</b>.`,
+      `Cut surplus wire and bend it so it cannot catch. Dispose of cut wire in the <b>F.O.D. bins</b> provided.`],
+     warn:`Locking wire must never be re-used.`}
+   ]},
+  {id:'AV.03.12', title:`Sealing of Joints`,
+   lo:`Understand why joints are sealed, and the role of sealants in preventing leakage, contamination and environmental damage.`,
+   topics:[
+    {id:'3.12.01', title:`Sealing Compounds and Mixing`, pts:[
+      `Sealing compounds seal areas of the aircraft to withstand pressurisation, prevent fuel leakage, keep fumes out of certain areas, or prevent corrosion by sealing against the weather.`,
+      `Most sealants have two or more ingredients mixed in the right proportions to give the strength, flexibility and adherence needed. Some are ready for use as packaged; others need mixing.`,
+      `<b>One-part sealant</b> is supplied ready for use. A thinner recommended by the manufacturer may change the consistency.`,
+      `<b>Two-part sealant</b> is packed separately to prevent curing before use: a <b>base</b> compound and an <b>accelerator</b>. It is generally mixed in <b>equal portions by weight</b>, or as the manufacturer recommends.`,
+      `Weigh sealant carefully on a balance. Stir the base and accelerator before weighing. <b>Discard accelerator that is dried out or lumpy.</b> Some kits are pre-weighed.`,
+      `Mix thoroughly but carefully, to avoid trapping air. A trial on a piece of glass shows whether it is well mixed.`,
+      `Working life of mixed sealant is typically half an hour to four hours, depending on class. Apply it as soon as possible, or store it refrigerated.`]},
+    {id:'3.12.02', title:`Curing, Types and Classes of Sealant`, pts:[
+      `Curing rate varies with temperature and humidity. Below <b>60°F</b> curing is extremely slow; above <b>70°F</b> it is typically faster. The ideal is <b>77°F with 50% relative humidity</b>.`,
+      `Heat (infrared lamps or heated air) can speed curing, but the temperature must not exceed <b>120°F</b>.`,
+      `Cure the sealant to a <b>tack-free</b> condition before applying any top coating. Tack-free means a sheet of plastic pressed onto the sealant no longer sticks.`,
+      `Types: <b>pressure</b> sealant (air-pressurised areas); <b>weather</b> sealant (exterior surfaces); <b>fuel cell</b> sealant (pressurised fuel tanks); <b>temperature-resistant</b> sealant (high-temperature areas).`,
+      `The <b>number</b> after class A, B or D (e.g. 1/2, 2) is the <b>minimum time in hours</b> the sealant stays applicable. For class C, the numbers 20–48 show the minimum squeeze-out life.`],
+     tables:[
+      {cap:`Designation of sealants (classes)`, head:[`Class`,`Description and use`], rows:[
+        [`A`,`Low viscosity (watery) – application by brushing`],
+        [`B`,`Heavy thixotropic (pasty) – application by sealant gun or spatula`],
+        [`C`,`Heavy thixotropic with a long squeeze-out time`],
+        [`D`,`Extra-heavy paste – hole-filling applications`],
+        [`E`,`Low viscosity – spray application`]]},
+      {cap:`Times in hours for various sealants`, head:[`Class`,`Application time`,`Squeeze-out life`,`Tack-free time`,`Cure time`], rows:[
+        [`A 1/2`,`1/2`,`–`,`12`,`48`],
+        [`A 2`,`2`,`–`,`40`,`72`],
+        [`B 1/2`,`1/2`,`–`,`12`,`48`],
+        [`B 2`,`2`,`2`,`40`,`72`],
+        [`B 4`,`4`,`4`,`48`,`90`]]}]},
+    {id:'3.12.03', title:`Sealant Application Procedures`, pts:[
+      `<b>Removal</b> – to remove damaged or deteriorated sealant, use a <b>plastic scraper</b> (or a locally made plastic tool). <b>Do not use metal scrapers or knives</b> – they can scratch and cut the structure.`,
+      `<b>Cleaning</b> – clean the area of all debris and oil with an approved solvent and a clean cheesecloth or non-woven cloth. Start at the top and work downward. Dry the surfaces immediately with a clean cloth. <b>Do not touch the area with fingers</b> – skin oil leaves a film the sealant will not stick to.`,
+      `<b>Masking</b> – to keep sealant off adjacent areas during application and smoothing, mask the area with the approved type of tape. Masking helps with fillet sealing of exterior lap and butt seams.`]}
+   ]}
+];
+
+const KEYVALS = [
+  [`Crimp: conductor protrusion beyond the barrel`,`About 1/32 inch`],
+  [`Terminal lugs on one stud`,`No more than 4 lugs, or 3 lugs and a bus bar`],
+  [`Crimped splices: spacing`,`Not less than 500 mm apart`],
+  [`Crimped splices: number`,`Maximum 2 in any 3-metre cable run`],
+  [`Crimped splice: minimum cable bend radius`,`3 times the overall length of the heat-shrink tubing`],
+  [`Crimped splice: size and voltage limit`,`Not in cable larger than size 6, or above 240 V ac RMS`],
+  [`PICO 500D1 pneumatic tool: air supply`,`6 to 9 bar (clean dry air or inert gas)`],
+  [`M22520/2-01 crimp tool range`,`20 to 32 AWG`],
+  [`Heat guns / soldering irons: distance from fuel`,`Not within 100 feet of refuelling, open tanks, vents, spills`],
+  [`Soldered joints: temperature limit`,`Below 150°C`],
+  [`Electrical solder`,`60% tin, 40% lead; melts at 190°C; 22 SWG flux-cored`],
+  [`Wire locking: twists per inch`,`Approximately 8 to 10`],
+  [`Wire locking: pigtail`,`3 to 5 twists, bent inwards`],
+  [`Sealant: ideal cure condition`,`77°F at 50% relative humidity`],
+  [`Sealant: maximum cure heat`,`120°F`]
+];
+
+const QUESTIONS = {
+ 'AV.03.01':[
+  {q:`What is possibly the prime consideration for aircraft electrical cables?`,o:[`Reliability under all flight conditions`,`Lowest possible price for each metre of cable`,`Lightest possible weight in every installation`,`Bright attractive colours for the cable sleeves`],a:0,e:`Reliability is the prime consideration, because aircraft and crew safety may depend on a circuit working correctly under all flight conditions.`},
+  {q:`Fumes from which heated insulation are dangerous?`,o:[`Heated PTFE insulation`,`Heated copper conductor`,`Heated tinned braid`,`Heated cable marker`],a:0,e:`Fumes from heated PTFE are dangerous.`},
+  {q:`Why is a twisted two-conductor cable used to feed the compass card light?`,o:[`The magnetic fields cancel each other out`,`It stays physically stronger when vibrating`,`It carries a much higher current to the lamp`,`It reduces the length of cable that is needed`],a:0,e:`Twisting means the fields from the current to and from the light cancel, so they do not deflect the compass.`},
+  {q:`Conductors of size 24 and smaller are normally made of…`,o:[`Copper alloy with higher tensile strength`,`Pure aluminium, to save weight on the aircraft`,`Solid steel rod, for extra mechanical strength`,`Plain untinned soft copper with no plating`],a:0,e:`Size 24 and smaller conductors are copper alloy, which has a higher tensile strength.`},
+  {q:`Why is the conductor of aircraft cable plated?`,o:[`To resist oxidation in heat and moisture`,`To make the cable much easier to bend round`,`To make the cable noticeably lighter in weight`,`To help with the cable colour code and marking`],a:0,e:`The plating resists oxidation, which occurs with increased temperatures and moist atmospheres.`},
+  {q:`Most aircraft wiring uses MIL-W-5086 or MIL-W-22759 cable. What is it?`,o:[`Stranded tinned copper cable`,`Solid aluminium rod cable`,`Bare steel wire cable`,`Unplated single-strand cable`],a:0,e:`The majority of wiring is MIL-W-5086 or MIL-W-22759 stranded tinned copper cable with PVC, nylon or Teflon insulation.`},
+  {q:`How is a multi-core equipment cable given magnetic screening?`,o:[`A sheath of tinned copper braid round the cores`,`A layer of plastic tape wrapped round the cores`,`A steel tube that is slid over all of the cores`,`A coat of black paint applied to the outer sleeve`],a:0,e:`A sheath of tinned copper braid encloses the cores when magnetic screening is required.`},
+  {q:`Which describes a coaxial cable?`,o:[`Central conductor, insulator and a braid conductor`,`Two twisted conductors around a central steel core`,`One bare conductor wrapped in paper tape only`,`Three parallel wires with no screen around them`],a:0,e:`A coaxial cable has a central conductor, an insulator and a second conductor (normally the braid), with an outer insulator.`},
+  {q:`What is true of data bus cable?`,o:[`Use the cable that the system maker specifies`,`Any twisted pair from stores will be acceptable`,`It may be pinched if it must pass a tight space`,`The length of the cable never matters at all`],a:0,e:`Digital systems differ in frequency, voltage and current, so use the correct cable. Do not pinch or bend it, and note that length may be critical.`}
+ ],
+ 'AV.03.02':[
+  {q:`Which stripping tool must you use on an aircraft?`,o:[`The approved tool listed in the AMM`,`A sharp knife from the toolbox`,`Side cutters, if the cable is small`,`Whichever tool the last person used`],a:0,e:`The AMM details the approved tools, which must be adhered to for any crimping task.`},
+  {q:`What can result if the wrong stripping tool is used?`,o:[`Lost strands and a lower current rating`,`A brighter and more visible insulation sleeve`,`A longer lasting copper conductor in the cable`,`A smoother and much faster cable termination`],a:0,e:`Using the wrong tool can lose strands (reducing current-carrying capacity), reduce insulation protection and give unacceptable terminal characteristics.`},
+  {q:`When should a stripping tool be treated as suspect?`,o:[`If it nicks or severs conductor strands`,`If it strips the insulation off quite cleanly`,`If the stripped length comes out as correct`,`If the strands lie together neatly afterwards`],a:0,e:`Bruised, nicked or severed strands, kinks next to the terminal and ragged insulation cuts make the tool suspect.`},
+  {q:`How many stages are in the cut-and-pull action of a double-blade stripper?`,o:[`Five`,`Two`,`Three`,`Seven`],a:0,e:`There are five stages: relaxed, half pressure, full pressure, half released and fully released.`},
+  {q:`In which stage do the blades cut the insulation and the grip secure the cable?`,o:[`Half pressure`,`Relaxed`,`Fully released`,`Half released`],a:0,e:`At half pressure the cable grip secures the cable and the blades cut the insulation.`},
+  {q:`Why must strippers be kept clean and free from debris?`,o:[`The handle interlocks are high tolerance`,`The blades are made from very soft plastic`,`Dirt would make the tool too heavy to hold`,`Dirt could change the apparent cable colour`],a:0,e:`Because high-tolerance mechanical interlocks are used, the strippers must be clean and free from debris.`},
+  {q:`After stripping, what should be done with the conductor strands?`,o:[`Re-impose the lay with a gentle twist`,`Bend the strands back over the insulation`,`Tin the strands with a hot soldering iron`,`Cut off one strand to make it fit`],a:0,e:`Re-impose the lay with a gentle twist, then inspect for severed or nicked strands, kinks, correct strip length and insulation damage.`}
+ ],
+ 'AV.03.03':[
+  {q:`Which is the most commonly used method of terminating aircraft cables?`,o:[`Solderless (crimped) termination`,`Soldered termination`,`Wire-wrap termination`,`Twisting the wires together`],a:0,e:`The solderless (crimped) termination is the most common. Soldering is rare and confined to internal equipment wiring.`},
+  {q:`Which is an advantage of crimped terminations?`,o:[`Good conductivity and corrosion proof`,`The joint can be re-made many times over`,`No inspection is ever needed after crimping`,`It works properly without any special tool`],a:0,e:`Crimps give good conductivity, uniformity, strength and are corrosion proof.`},
+  {q:`Why is the inside of some terminal barrels serrated?`,o:[`Strands flow in and the oxide layer is broken`,`So that the barrel is easier to cut to length`,`So the terminal locks itself onto the stud`,`So the correct colour can be seen from outside`],a:0,e:`The strands flow into the serrations for high tensile strength, and the serrations help break down the oxide layer.`},
+  {q:`A pre-insulated terminal for 12–10 AWG wire has which colour sleeve?`,o:[`Yellow`,`Red`,`Blue`,`White`],a:0,e:`Red is 22–16 AWG, blue is 16–14 AWG and yellow is 12–10 AWG.`},
+  {q:`Why is the oxide film on aluminium a problem?`,o:[`It insulates and thickens with heat, raising resistance`,`It makes the aluminium too heavy to be fitted`,`It improves the joint when the current is high`,`It only changes the colour of the metal surface`],a:0,e:`The oxide acts as an insulator and thickens as current heats the joint, raising resistance and causing corrosion.`},
+  {q:`How is the oxide removed on crimped aluminium terminals?`,o:[`Zinc granular compound crimped into the joint`,`The joint is rubbed with coarse sandpaper only`,`The joint is dipped into hot molten solder first`,`The oxide is painted over before the crimping`],a:0,e:`A zinc granular compound is forced around the strands and through the oxide film when crimping.`},
+  {q:`Why are large flat washers used with bolted aluminium terminals?`,o:[`To spread clamping pressure on the soft metal`,`To make the stud look neater and more tidy`,`To insulate the lug from the stud completely`,`To raise the torque that needs to be applied`],a:0,e:`Aluminium is soft, so larger washers spread the clamping pressure over a wider surface.`},
+  {q:`What does "PIDG" stand for?`,o:[`Pre-Insulated Diamond Grip`,`Pre-Installed Dual Grip`,`Precision Insulated Direct Gauge`,`Pressed Insulation Diamond Gap`],a:0,e:`PIDG means Pre-Insulated Diamond Grip, the characteristic of the finished crimp.`},
+  {q:`The validity label on a precision crimp tool has expired. What must you do?`,o:[`Treat it as unserviceable and return it`,`Use it for non-critical wiring jobs only`,`Use it for as long as the ratchet still works`,`Use it one more time, then send it back`],a:0,e:`If the test date has expired, the tool is considered unserviceable and must be returned for check.`},
+  {q:`How far should the conductor extend beyond the PIDG barrel after insertion?`,o:[`About 1/32 inch`,`About 1/2 inch`,`About 1/4 inch`,`It should not extend at all`],a:0,e:`The conductor should extend beyond the barrel by approximately 1/32 inch.`},
+  {q:`What is the maximum number of terminal lugs on one stud?`,o:[`Four, or three lugs plus a bus bar`,`Six lugs, or four plus a bus bar`,`Two lugs, with no bus bar at all`,`Any number, as long as it is tight`],a:0,e:`No more than four lugs, or three lugs and a bus bar, on any one stud. Four lugs plus a bus bar is not permitted.`},
+  {q:`Where is a crimped splice NEVER used?`,o:[`In a multicore cable`,`In a single-core power cable`,`In a cable in the cabin ceiling`,`In a cable of size 22`],a:0,e:`A crimped splice is never used in a multicore cable.`},
+  {q:`Which is a place where a crimped splice must NOT be used?`,o:[`A designated fire zone`,`A duct in the cabin ceiling`,`A steady area with no flexing`,`A size 22 signal wire`],a:0,e:`Forbidden areas include fire zones, areas subject to flexing, and coaxial and thermocouple cables.`},
+  {q:`What is the minimum distance between crimped splices in the same cable run?`,o:[`500 mm`,`50 mm`,`100 mm`,`5 metres`],a:0,e:`Not less than 500 mm, with a maximum of 2 splices in any 3-metre cable run.`},
+  {q:`Crimped splices must not be located…`,o:[`Under clips and ties`,`Along the loom centre`,`Near the cable ends`,`Inside the loom sleeve`],a:0,e:`Crimped splices are not to be located under clips and ties.`},
+  {q:`How many cables may each barrel of a crimped splice contain?`,o:[`One cable only`,`Two cables`,`Three cables`,`As many as will fit`],a:0,e:`Each barrel of a crimped splice contains one cable only.`},
+  {q:`The M22520/1-01 crimp tool makes which type of crimp?`,o:[`An 8-impression crimp`,`A 2-impression crimp`,`A 4-impression crimp`,`A 16-impression crimp`],a:0,e:`It produces an 8-impression crimp for maximum tensile strength. The depth is set by an 8-position selector knob.`},
+  {q:`Before using any crimp tool, what must you check?`,o:[`The calibration tag is still in date`,`The handle colour matches your uniform`,`The tool weighs the correct amount`,`The tool was used earlier that day`],a:0,e:`Check the calibration tag is in date. If it is out of date the tool MUST NOT be used.`},
+  {q:`What air supply does the PICO 500D1 pneumatic crimping tool use?`,o:[`Clean dry air at 6 to 9 bar`,`Clean dry air at 1 to 2 bar`,`Oily air at 20 to 30 bar`,`Any workshop air at 60 to 90 bar`],a:0,e:`It runs on clean dry air or inert gas at 6 to 9 bar, depending on the contact size.`}
+ ],
+ 'AV.03.04':[
+  {q:`Why are air deflectors fitted to hot air guns?`,o:[`Even shrinking, and keeps hot air off parts`,`So that the gun cools down much more quickly`,`So the gun can reach a higher air temperature`,`So the noise from the gun fan is reduced`],a:0,e:`Deflectors keep the air flow uniform so the sleeving shrinks evenly, and keep hot air away from aircraft components.`},
+  {q:`What can uneven shrinking of heat-shrink sleeving cause?`,o:[`Distortion that may be impossible to remove`,`A stronger seal all along the cable run`,`A cooler nozzle on the gun while it is in use`,`A shorter sleeve with no visible markings`],a:0,e:`Failure to shrink uniformly may distort the component, and it may be impossible to remove once shrinking has begun.`},
+  {q:`What should you do before putting a hot air gun down or changing deflectors?`,o:[`Run cold air through it to cool it`,`Switch it over to the maximum heat setting`,`Wrap the nozzle in a clean cloth to protect it`,`Leave it running on the bench while you wait`],a:0,e:`Select the cold setting and run cold air through the nozzle and deflector to cool them first.`},
+  {q:`Why is the mains heat gun not suitable for use on aircraft?`,o:[`Exposed heating elements and motor are a fire risk`,`It is too heavy for one person to hold safely`,`It is too quiet to be used in a safe manner`,`It would shrink the tubing much too slowly`],a:0,e:`Exposed heating elements and the motor give a fire risk.`},
+  {q:`What is used to shrink thermofit products in aircraft applications?`,o:[`The thermo pistol`,`A soldering iron`,`A hot plate`,`A blow torch`],a:0,e:`For aircraft applications, thermofit products should be shrunk using the thermo pistol.`},
+  {q:`How far should a heat gun or soldering iron be kept from refuelling or fuel spills?`,o:[`Not within 100 feet`,`Not within 10 feet`,`Not within 1 foot`,`Not within 1,000 feet`],a:0,e:`Do not use them within 100 feet of refuelling, open fuel tanks, fuel vents, fuel spills or other flammable liquids.`},
+  {q:`What happens if too much heat is applied to a cable?`,o:[`The cable can be damaged`,`The cable becomes stronger`,`The insulation turns brighter`,`Nothing happens to the cable`],a:0,e:`Too much heat can damage the cable, so a heat gun must not be used near the cable assembly.`}
+ ],
+ 'AV.03.05':[
+  {q:`Soft soldering is used mainly where…`,o:[`Joint strength is not of fundamental importance`,`Maximum joint strength is the main requirement`,`Structural joints will carry a heavy flight load`,`Thick steel plates are being joined together`],a:0,e:`Soft soldering is used where strength is not fundamental. The joint has excellent electrical conductivity.`},
+  {q:`Why is flux used when soldering?`,o:[`It removes oxide and helps solder flow and stick`,`It cools the iron while it is being used`,`It makes the finished joint stronger than a weld`,`It changes the colour of the completed joint`],a:0,e:`Flux removes oxide from the metal faces and helps the solder flow and adhere.`},
+  {q:`Which solder is the most suitable for electrical work?`,o:[`60% tin and 40% lead`,`90% lead and 10% tin`,`100% copper with no tin`,`50% zinc and 50% tin`],a:0,e:`60% tin and 40% lead, which melts at 190°C.`},
+  {q:`Soldered joints can only be used at temperatures below…`,o:[`150°C`,`15°C`,`500°C`,`1,500°C`],a:0,e:`Soldered joints can only be used below 150°C.`},
+  {q:`In what form is the soft solder normally used for electrical work supplied?`,o:[`22 SWG flux-cored wire`,`6 mm solid solder rod`,`Plain unfluxed solder strip`,`Loose powder in a small can`],a:0,e:`Normally supplied as 22 SWG flux-cored wire.`},
+  {q:`Where should the flux-cored solder be applied?`,o:[`To the work, not to the iron`,`To the iron tip only, and then moved across`,`To the surface of the bench beside the joint`,`To the lid of the flux tin until it melts`],a:0,e:`Apply the solder to the work. If the work is hot enough, it melts and runs into the joint.`},
+  {q:`What does "tinning" the soldering iron mean?`,o:[`Coating the clean bit with solder`,`Sanding the bit down to bare steel`,`Cooling the bit in a bucket of water`,`Wrapping the bit with insulating tape`],a:0,e:`Tinning is coating the contact surface of the bit with tin or solder.`},
+  {q:`How should a soldered joint be cooled?`,o:[`Allow it to cool naturally`,`Quench it with cold water`,`Blow on it with compressed air`,`Wipe it with a damp cloth`],a:0,e:`Remove the iron and let the joint cool naturally. The solder must set before the surfaces move.`},
+  {q:`How does a solder removal gun remove solder?`,o:[`Suction pulls the molten solder inside`,`Gravity makes the molten solder pour out`,`It wicks the solder up onto a small brush`,`It blows the molten solder away from the joint`],a:0,e:`Pressing the release knob frees the plunger, creating suction at the tip that draws the molten solder into the gun.`},
+  {q:`Why remove flux residue from joints used at high frequencies?`,o:[`Its dielectric properties can affect the circuit`,`It makes the circuit boards look rather untidy`,`It stops the solder from ever setting hard`,`It adds extra weight to the circuit board`],a:0,e:`Residue should be removed at high frequencies so its dielectric properties do not affect the circuit.`}
+ ],
+ 'AV.03.06':[
+  {q:`Which half of a connector is normally stationary and part of the equipment?`,o:[`The receptacle`,`The plug`,`The grommet`,`The shell nut`],a:0,e:`The receptacle is normally part of the equipment or structure. The plug is the removable half, usually at the end of a cable.`},
+  {q:`Which part seals against moisture, air and dirt on the cable side?`,o:[`Sealing grommet`,`Insert`,`Interfacial seal`,`Shell`],a:0,e:`The sealing grommet is used on the cable side. The interfacial seal protects the area around each contact.`},
+  {q:`What is the insert of a connector?`,o:[`A dielectric insulator holding the contacts`,`The outer case which holds all the parts`,`The ring that locks the two halves together`,`A seal that is fitted on the cable side`],a:0,e:`The insert is a dielectric insulator that positions and supports the contacts.`},
+  {q:`Which are the three coupling methods for connectors?`,o:[`Screw thread, bayonet and push-pull`,`Screw, spring clip and adhesive glue`,`Bayonet, soldered joint and crimped joint`,`Push, rotate and a welded connection`],a:0,e:`Screw thread, bayonet and push-pull.`},
+  {q:`How is a fully engaged bayonet connector shown?`,o:[`Master lines on plug and receptacle align`,`A buzzer sounds from inside the connector shell`,`The cable behind the connector goes slack`,`The shell of the connector changes its colour`],a:0,e:`The spigots sit in the holes and the master lines align to show correct coupling.`},
+  {q:`What should you examine before mating a connector?`,o:[`Bent, dented or splayed contacts`,`The colour of the finish on the shell`,`The overall weight of the plug half`,`The date of manufacture and nothing more`],a:0,e:`Examine for bent, dented or splayed contacts, and check the accessory and saddle clamp are tight.`},
+  {q:`How should a connector be mated?`,o:[`Without excess force, aligning the master key`,`By twisting the bundle until the plug fits`,`By forcing the pins into the resilient insert`,`By tapping the plug in using a small hammer`],a:0,e:`Do not use excessive force. Align the master key with the keyway and start the plug with light forward pressure.`},
+  {q:`After mating a connector with a locking pin, what must you check?`,o:[`The pin is visible through the inspection hole`,`The pin has been removed from the plug`,`The pin has been bent flat against the shell`,`The pin is hidden away behind the shell`],a:0,e:`With a locking pin, make sure the pin is visible through the inspection hole.`},
+  {q:`Which connectors must be wire locked in an unpressurised area?`,o:[`Threaded ones that are not self-locking`,`Bayonet ones that are fully engaged and locked`,`Only the ones that are in the cockpit`,`None, because they always lock by themselves`],a:0,e:`Any threaded connector in an unpressurised area that is not self-locking must be wire locked, as must any connector clamp.`}
+ ],
+ 'AV.03.07':[
+  {q:`What are the two types of contact locking mechanism?`,o:[`Front release and rear release`,`Top release and bottom release`,`Left release and right release`,`Hot release and cold release`],a:0,e:`Front release and rear release. The tools are not interchangeable.`},
+  {q:`A blue line on a connector signifies…`,o:[`A rear release mechanism`,`A front release mechanism`,`A coaxial connector`,`A sealed connector`],a:0,e:`A blue line signifies a rear release mechanism.`},
+  {q:`Can the same tool be used on front release and rear release connectors?`,o:[`No – the tools are not interchangeable`,`Yes – all contact tools can be interchanged`,`Yes – but only the plastic tools interchange`,`Yes – but only the metal tools interchange`],a:0,e:`Both systems are similar, but the tools are not interchangeable.`},
+  {q:`Where are the part numbers for contact insertion tools found?`,o:[`The Standard Practices Manual`,`The flight crew operating handbook`,`The notice on the tool store door`,`The aircraft technical logbook entries`],a:0,e:`Part numbers are in the Standard Practices Manual, found via its index.`},
+  {q:`Why were plastic insertion and extraction tools introduced?`,o:[`To avoid damage to retaining clips and inserts`,`To protect the user's fingers from cuts`,`To prevent static electricity from building up`,`To make it harder for the tools to be stolen`],a:0,e:`They prevent damage to contact retaining clips and insert materials.`},
+  {q:`Which colour plastic tool is used for size 20 contacts?`,o:[`Red`,`Blue`,`Yellow`,`White`],a:0,e:`Red is size 20, blue is 16, yellow is 12 and 22. The extractor end is always white.`},
+  {q:`Which colour is the extractor end of a composite tool?`,o:[`White`,`Red`,`Blue`,`Yellow`],a:0,e:`In composite tools the extractor is always white.`},
+  {q:`What must you NOT do while the plastic tool is inside the connector?`,o:[`Tip, spread or rotate it`,`Hold it steady in line with the contact`,`Push it in slowly and carefully`,`Keep it straight with the connector`],a:0,e:`Do not tip, spread or rotate the tool while it is in the connector.`},
+  {q:`Why take care with tweezer tools for small contacts?`,o:[`Thin walls with sharp edges can cut the grommet`,`They are too heavy to hold in small hands`,`They get very hot while they are in use`,`They are magnetic and may attract the wire`],a:0,e:`The very thin wall sections have sharp edges that can cut the cable insulation or sealing grommet.`},
+  {q:`What is the first thing to do when removing a contact?`,o:[`Identify the connector as front or rear release`,`Pull as hard as you can on the cable`,`Heat the connector up with a hot air gun`,`Spray the contact area with a lubricant`],a:0,e:`The method depends on the locking mechanism, so identify front or rear release first.`}
+ ],
+ 'AV.03.08':[
+  {q:`Where is particular care needed in supporting cables?`,o:[`Next to cable terminations`,`Along straight, clear runs`,`In sealed, closed ducts`,`Under the cabin carpet`],a:0,e:`Take particular care next to terminations, where relative movement occurs, near moving parts and at bends.`},
+  {q:`What should be provided at the low points of conduits?`,o:[`Drainage holes`,`Sealed plugs`,`A coat of paint`,`No holes at all`],a:0,e:`Drainage holes should exist at low points to relieve condensation.`},
+  {q:`What is the size range of loop clamps?`,o:[`0.25 inch to 1.625 inches`,`1 inch to 10 inches in diameter`,`0.01 inch to 0.1 inch in diameter`,`5 inches to 20 inches in diameter`],a:0,e:`Loop clamps come in sizes from 0.25" to 1.625".`},
+  {q:`With what should a loop clamp be replaced?`,o:[`The same part number as the original`,`Any size that happens to fit the bundle`,`A plain nylon cable tie of similar length`,`Whichever type is cheapest in the stores`],a:0,e:`Replace with the same part number, unless the manual gives options.`},
+  {q:`Which method increases bundle size so a loop clamp grips properly?`,o:[`Filler rods, unshrunk heat shrink or tape`,`String wrapped round the bundle and glued`,`Metal shims that are slid under the clamp`,`Extra spare cables pushed inside the bundle`],a:0,e:`Use filler rods or plugs, a length of unshrunk heat shrink, or approved insulation tape.`},
+  {q:`Where should the loop of a clamp be on a vertical member?`,o:[`At the bottom, with the fastener on top`,`At the top, with the fastener underneath`,`At the side, with the fastener next to it`,`There is no fixed rule about the position`],a:0,e:`The loop should always be at the bottom, with the fastener on top of the loop.`},
+  {q:`Where are splices placed in a cable bundle?`,o:[`On the outside of the bundle`,`At the centre of the bundle`,`Under the clamp`,`All together in one place`],a:0,e:`Spliced wires go on the outside of the bundle.`},
+  {q:`If several splices are made in one bundle, they should be…`,o:[`Staggered to reduce the bundle diameter`,`Lined up together at one point on the bundle`,`Taped together into one single lump`,`Avoided, so that no splice is ever made`],a:0,e:`Stagger the splices to reduce the diameter of the bundle.`},
+  {q:`Why are washers used with plastic loop clamps on standoffs?`,o:[`To spread the load around the mounting hole`,`To make the clamp grip the bundle tighter`,`To insulate the bolt from the clamp body`,`To colour-code the position of the clamp`],a:0,e:`Washers spread the load around the mounting hole.`}
+ ],
+ 'AV.03.09':[
+  {q:`How is the tooling for terminal block contacts identified?`,o:[`In exactly the same way as for connectors`,`By guessing the size of the contact in use`,`By the colour of the terminal block itself`,`By the weight of the contact and its cable`],a:0,e:`The tooling is identified in exactly the same way as for connectors.`},
+  {q:`Which end of the plastic tool is used to remove a contact?`,o:[`The white (extraction) end`,`The coloured end`,`Either end, it makes no difference`,`Neither – use pliers instead`],a:0,e:`Snap the white end of the tool over the cable for extraction.`},
+  {q:`How do you know a contact has seated in the module?`,o:[`A click, then increased resistance`,`A loud buzzer sounds from the terminal block`,`The contact changes to a red colour`,`The insertion tool snaps cleanly in half`],a:0,e:`Seating is indicated by a clicking sound, followed by increased resistance to further forward movement.`},
+  {q:`At what angle should the contact and tool be to the module face?`,o:[`Perpendicular`,`45 degrees`,`Parallel`,`Any angle at all`],a:0,e:`Align the contact and tool perpendicular to the module face.`},
+  {q:`How do you check a contact is properly seated?`,o:[`Pull the cable slowly in line with it`,`Pull hard on the cable with a pair of pliers`,`Tap the block firmly with a small hammer`,`Spray the block with a cleaning solvent`],a:0,e:`Grasp the cable between thumb and forefinger and pull slowly in line, until your fingers slip on the cable.`},
+  {q:`What should you do before extracting a terminal block contact?`,o:[`Remove any support ties on the cable`,`Cut the cable close to the terminal block`,`Heat the terminal block with a hot air gun`,`Remove the whole terminal block from its mount`],a:0,e:`Remove any support ties on the cable or contact to be extracted.`}
+ ],
+ 'AV.03.10':[
+  {q:`Coaxial connectors are used to connect equipment that uses…`,o:[`Radio frequency (RF) voltage and current`,`Heavy DC power feeds from the battery only`,`Hydraulic pressure sensors on the aircraft only`,`Cabin lighting circuits and nothing else`],a:0,e:`They connect and disconnect equipment or systems using RF voltage and current.`},
+  {q:`A coaxial connector must not affect the cable's…`,o:[`Characteristic impedance`,`Outer colour`,`Total weight`,`Shell finish`],a:0,e:`It must not affect the characteristic impedance of the coaxial cable.`},
+  {q:`Why are aircraft coaxial cables shielded?`,o:[`To eliminate aircraft radio interference`,`To make them completely waterproof`,`To make them cheaper for the factory to build`,`To change the frequency of the signal carried`],a:0,e:`Most coaxial cables are used for radio systems and are shielded to eliminate aircraft radio interference.`},
+  {q:`How is the shield left when stripping coaxial cable?`,o:[`Fraying, for the grounding metal ferrule`,`Cut off neatly flush with the insulation`,`Folded back over the sleeve and taped down`,`Removed from the cable completely and discarded`],a:0,e:`Remove the outer insulator neatly, leaving the shield fraying for the grounding metal ferrule.`},
+  {q:`In which order is a coaxial cable crimped to its connector?`,o:[`Core, then ferrule, then insulating sleeve`,`Sleeve, then ferrule, then the core`,`Ferrule, then the sleeve, then the core`,`Core, then the sleeve, then the ferrule`],a:0,e:`Start with the cable core, then the metal ferrule, and finally the insulating sleeve if required.`},
+  {q:`Which tests are done after fabricating a coaxial cable?`,o:[`A continuity check and an insulation test`,`A visual check of the connector only`,`A heat test of the finished connector`,`A weight check of the finished cable`],a:0,e:`A continuity check and an insulation test must be done.`},
+  {q:`Who may carry out the insulation test?`,o:[`Only competent maintenance personnel`,`Any trainee who is in the workshop`,`Anyone who happens to be standing nearby`,`Stores staff who issue the test equipment`],a:0,e:`Only competent maintenance personnel are allowed to perform an insulation test.`}
+ ],
+ 'AV.03.11':[
+  {q:`What is locking wire made of?`,o:[`Non-corrodible steel wire`,`Soft copper strip of any thickness`,`Nylon cord with a waxed finish`,`Waxed string of any suitable gauge`],a:0,e:`Non-corrodible steel wire of a suitable gauge, e.g. 22, 32 or 40 SWG.`},
+  {q:`Approximately how many twists per inch should a tightened locking wire have?`,o:[`8 to 10`,`2 to 3`,`15 to 20`,`30 to 40`],a:0,e:`A tightened wire should be taut with approximately 8 to 10 twists per inch.`},
+  {q:`Can locking wire be re-used?`,o:[`Never – always use new wire`,`Once, if it is straight`,`Yes, on non-critical bolts`,`Yes, if the pigtail is intact`],a:0,e:`Locking wire must never be re-used.`},
+  {q:`How long is the pigtail at the end of a wire locking run, and where does it point?`,o:[`3 to 5 twists, bent inwards`,`1 to 2 twists, bent outwards`,`8 to 10 twists, left upright`,`No pigtail – cut it off flush`],a:0,e:`Twist a pigtail 3 to 5 twists long and bend it inwards around the nut or bolt to avoid injury.`},
+  {q:`Right-hand threaded bolts are wire locked in which direction?`,o:[`The "reversed S" direction`,`A straight line`,`A clockwise loop`,`Any direction`],a:0,e:`The wire is routed in a "reversed S" direction to oppose loosening.`},
+  {q:`For which items must only copper wire be used?`,o:[`Oxygen bottle valves and cockpit panels`,`Engine mounting bolts and wheel nuts`,`Landing gear bolts and hub nuts`,`Propeller hub bolts and flap hinges`],a:0,e:`Use only copper wire for wire-locking oxygen bottle valves and for cockpit panels.`},
+  {q:`Which tools may be needed for wire locking?`,o:[`Pliers, wire twister and wire cutter`,`Hammer, cold chisel and a flat file`,`Inspection torch, mirror and masking tape`,`A single large open-ended spanner only`],a:0,e:`Pliers, a wire twister and a wire cutter.`},
+  {q:`Where should surplus cut locking wire be put?`,o:[`In the F.O.D. bins provided`,`On the hangar floor`,`In your pocket`,`In the aircraft bilge`],a:0,e:`Surplus wire must be cut, bent so it cannot catch, and the cut wire disposed of in the F.O.D. bins.`}
+ ],
+ 'AV.03.12':[
+  {q:`What is the ideal condition for curing most sealants?`,o:[`77°F with 50% relative humidity`,`50°F with 10% relative humidity`,`100°F with 90% relative humidity`,`120°F with 0% relative humidity`],a:0,e:`77°F with 50% relative humidity. Below 60°F curing is extremely slow.`},
+  {q:`What is the maximum temperature when heat is used to speed curing?`,o:[`120°F`,`60°F`,`77°F`,`200°F`],a:0,e:`The temperature must not exceed 120°F at any time in the curing cycle.`},
+  {q:`What does "tack-free" mean for a sealant?`,o:[`A plastic sheet pressed on no longer sticks`,`It cannot be touched by anyone at all`,`It has dried to the state of a fine dust`,`It has fully hardened all the way through`],a:0,e:`Tack-free is the condition at which a sheet of plastic pressed onto the sealant no longer adheres.`},
+  {q:`Which tool is used to remove damaged sealant?`,o:[`A plastic scraper`,`A metal scraper`,`Steel wool`,`A file`],a:0,e:`Use a plastic scraper. Metal scrapers and knives can scratch and cut the structure.`},
+  {q:`Which sealant class is low viscosity (watery) and applied by brushing?`,o:[`Class A`,`Class B`,`Class D`,`Class E`],a:0,e:`Class A is for brushing. B is pasty (gun or spatula), D is extra-heavy for hole filling, E is for spraying.`},
+  {q:`Which sealant class is an extra-heavy paste for hole filling?`,o:[`Class D`,`Class A`,`Class C`,`Class E`],a:0,e:`Class D is the extra-heavy paste-type sealant for hole-filling applications.`},
+  {q:`How are two-part sealants generally mixed?`,o:[`Equal portions by weight, or as advised`,`Equal portions by eye, using a spatula`,`Two parts of accelerator to one of base`,`Any ratio will do, as long as it is stirred`],a:0,e:`Generally equal portions by weight of base and accelerator, or as the manufacturer recommends.`},
+  {q:`Why must you not touch a cleaned area with your fingers before sealing?`,o:[`Skin oil leaves a film that sealant will not stick to`,`Fingers would leave marks on the paint finish`,`Skin heat would make the sealant cure faster`,`Fingers could tear the masking tape off the seam`],a:0,e:`Skin oil produces a film on the metal to which the sealant will not adhere.`},
+  {q:`Where do you start when cleaning an area to be sealed?`,o:[`At the top, working downward`,`At the bottom, working upward`,`At the centre, working outward`,`Wherever you choose to begin`],a:0,e:`Begin at the top of the area to be sealed and work downward, then dry with a clean cloth.`}
+ ]
+};
+const FINAL_COUNT = 25;
+const KNOWLEDGE_CHECK = [
+ {q:`Q1: What is the primary function of aircraft electrical cables in avionics systems?`, a:`To distribute electrical power and signals to the many consumers across the aircraft, safely and reliably. Reliability is the prime consideration, because aircraft and crew safety may depend on a circuit working under all flight conditions.`},
+ {q:`Q2: Why must care be taken during the cable stripping process?`, a:`A wrong or damaged tool can nick or sever strands, cause kinks and ragged insulation cuts. That reduces the current-carrying capacity, weakens insulation protection and gives unacceptable mechanical or electrical terminal characteristics. Always use the approved tool from the AMM.`},
+ {q:`Q3: Why is correct handling of electrical basic tools important in avionics maintenance?`, a:`Crimp tools must be the correct type, matched by colour and AWG, and in calibration (check the tag or validity label). Correct handling gives crimps that are strong and conductive, and avoids damaged conductors, unserviceable tools and safety hazards.`},
+ {q:`Q4: What is the purpose of using appropriate heat sources for heat-shrink applications?`, a:`To shrink sleeving evenly without damaging cables or aircraft parts. Use deflectors, cool the gun before putting it down, and use the thermo pistol, not a mains heat gun, on aircraft. Keep heat sources 100 feet from fuel and flammables.`},
+ {q:`Q5: Why are correct soldering and desoldering techniques important in avionics work?`, a:`They give reliable, conductive joints without damaging components or insulation: clean and tinned surfaces, flux, solder applied to the work, no more heat or solder than needed, natural cooling. Desoldering must remove the solder without overheating.`},
+ {q:`Q6: What must be checked before mating an aircraft electrical connector?`, a:`Check for bent, dented or splayed contacts, and that the accessory and saddle clamp are tight. Then align the master key with the keyway and mate without excessive force.`},
+ {q:`Q7: Why must proper tools be used for contact insertion and extraction?`, a:`Front and rear release tools are not interchangeable. The right tool, correctly used, avoids damaging contact retaining clips, the insert, the grommet and the cable insulation.`},
+ {q:`Q8: Why is cable protection required in aircraft avionics installations?`, a:`To protect cables from mechanical damage, abrasion, heat, and fluids or vapours, so they stay below their maximum continuous temperature and are well supported at terminations, bends and moving parts.`},
+ {q:`Q9: What is the purpose of correct terminal block contact installation?`, a:`To make secure, reliable connections: contacts must be seated perpendicular with the approved tool (click, then increased resistance) and then pull-tested by hand along the contact line.`},
+ {q:`Q10: Why are coaxial cables used in aircraft avionics systems?`, a:`To carry radio-frequency signals, for example between radios and antennas. The shield protects the signal and prevents interference, and connectors must not change the cable's characteristic impedance.`},
+ {q:`Q11: What is the purpose of wire-locking in avionics installations?`, a:`To stop nuts, bolts, screws and connectors loosening under vibration. The wire must be new, taut, correctly routed against loosening and finished with a pigtail bent inwards.`},
+ {q:`Q12: Why are joints sealed in avionics installations?`, a:`To prevent leakage, contamination and environmental damage: pressurisation loss, fuel leaks, fumes entering areas, and corrosion from weather.`}
+];
+const SUMMARY = [
+  `Introduces basic tools used in avionics maintenance tasks.`,
+  `Covers correct handling of electrical wiring and connectors.`,
+  `Explains proper connector inspection, mating and locking techniques.`,
+  `Reinforces correct wire-locking practices used in avionics installations.`,
+  `Supports damage prevention, reliability and airworthiness of avionics systems.`
+];
+
+
+/* ================= STATE ================= */
+const KEY='av03_tracker_v1';
+let mem=null;
+function blank(){return {name:'',topics:{},quiz:{},started:Date.now()};}
+function load(){
+  try{const s=localStorage.getItem(KEY); if(s) return Object.assign(blank(),JSON.parse(s));}catch(e){}
+  return blank();
+}
+let S=load();
+function save(){ mem=S; try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} }
+let toastTimer=null;
+function toast(m,ms){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),ms||2200);}
+
+/* ================= HELPERS ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function secTopicsDone(sec){return sec.topics.filter(t=>S.topics[t.id]).length;}
+function quizPassed(id){return !!(S.quiz[id]&&S.quiz[id].passed);}
+function secDone(sec){return secTopicsDone(sec)===sec.topics.length && quizPassed(sec.id);}
+function totals(){
+  let done=0,total=0;
+  SECTIONS.forEach(s=>{done+=secTopicsDone(s);total+=s.topics.length;total+=1;if(quizPassed(s.id))done++;});
+  total+=1; if(quizPassed('FINAL'))done++;
+  return {done,total,pct:Math.round(done/total*100)};
+}
+function allDone(){return SECTIONS.every(secDone)&&quizPassed('FINAL');}
+function statusPill(q){
+  if(!q) return '<span class="pill todo">Not attempted</span>';
+  return q.passed?`<span class="pill ok">Passed · best ${q.best}%</span>`:`<span class="pill warn">Best ${q.best}% · retry</span>`;
+}
+
+/* ================= NAV ================= */
+let view='home';
+const TABS=[['home','Dashboard'],['learn','Learn'],['quiz','Quiz'],['tools','Tools'],['report','Progress Report']];
+function renderNav(){
+  $('#nav').innerHTML=TABS.map(t=>`<button class="${view===t[0]?'on':''}" data-v="${t[0]}">${t[1]}</button>`).join('');
+  $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+}
+function go(v,opt){view=v;quizState=null;renderNav();render(opt);window.scrollTo({top:0});}
+function render(opt){
+  ({home:renderHome,learn:renderLearn,quiz:renderQuizMenu,tools:renderTools,report:renderReport})[view](opt);
+}
+
+/* ================= HOME ================= */
+function renderHome(){
+  const t=totals();
+  const C=2*Math.PI*62, off=C*(1-t.pct/100);
+  $('#app').innerHTML=`
+  <div class="card hero">
+    <div class="ring"><svg width="150" height="150"><circle cx="75" cy="75" r="62" fill="none" stroke="#e6ecf4" stroke-width="14"/><circle cx="75" cy="75" r="62" fill="none" stroke="${t.pct===100?'#1b8a4b':'#d6001c'}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}"/></svg>
+      <div class="num"><b>${t.pct}%</b><span>${t.done} of ${t.total} done</span></div></div>
+    <div style="flex:1;min-width:240px">
+      <h2>${S.name?'Welcome, '+esc(S.name):'Welcome, trainee'}</h2>
+      <p class="lead" style="margin-bottom:12px">Complete every topic, pass each section quiz (${PASS_MARK}%), then pass the Final Assessment to finish ${MODULE_ID}.</p>
+      ${S.name?'':`<label class="nm" for="nm">Enter your name to personalise your report</label><div style="display:flex;gap:8px;flex-wrap:wrap"><input id="nm" type="text" placeholder="Your full name"><button class="btn ghost" id="savenm">Save name</button></div>`}
+    </div>
+  </div>
+  <h2 style="margin-top:22px">Module checklist</h2>
+  <p class="lead">Tick topics in the Learn tab as you finish them. Quizzes record automatically.</p>
+  <div class="grid g3">${SECTIONS.map(s=>{
+    const d=secTopicsDone(s),n=s.topics.length;
+    return `<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3>${s.id}</h3>${secDone(s)?'<span class="pill ok">Complete</span>':'<span class="pill todo">In progress</span>'}</div>
+      <div style="font-weight:600;margin-bottom:10px">${s.title}</div>
+      <div class="small">Topics ${d}/${n}</div><div class="bar"><span style="width:${d/n*100}%"></span></div>
+      <div style="margin:10px 0 12px" class="small">Quiz: ${statusPill(S.quiz[s.id])}</div>
+      <button class="btn sm ghost" data-learn="${s.id}">Learn</button> <button class="btn sm" data-quiz="${s.id}">Quiz</button></div>`;}).join('')}
+  </div>
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <div><h3>Final Assessment</h3><div class="small">${FINAL_COUNT} random questions from all ${SECTIONS.length} sections · pass mark ${PASS_MARK}%</div><div style="margin-top:6px">${statusPill(S.quiz.FINAL)}</div></div>
+    <button class="btn red" data-quiz="FINAL">Start Final Assessment</button>
+  </div>`;
+  if($('#savenm')) $('#savenm').onclick=()=>{const v=$('#nm').value.trim(); if(v){S.name=v;save();renderHome();toast('Name saved');}};
+  document.querySelectorAll('[data-learn]').forEach(b=>b.onclick=()=>go('learn',{open:b.dataset.learn}));
+  document.querySelectorAll('[data-quiz]').forEach(b=>b.onclick=()=>go('quiz',{start:b.dataset.quiz}));
+}
+
+/* ================= LEARN ================= */
+function tableHTML(tb){
+  return `<div class="tblwrap"><table class="t"><tr>${tb.head.map(h=>`<th>${h}</th>`).join('')}</tr>${tb.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>${tb.cap?`<div class="cap">${tb.cap}</div>`:''}`;
+}
+function topicHTML(t){
+  const done=!!S.topics[t.id];
+  let body='';
+  if(t.pts) body+=`<ul>${t.pts.map(p=>`<li>${p}</li>`).join('')}</ul>`;
+  if(t.tables) body+=t.tables.map(tableHTML).join('');
+  if(t.groups) body+=t.groups.map(g=>`<h5>${g.h}</h5><ul>${g.pts.map(p=>`<li>${p}</li>`).join('')}</ul>`).join('');
+  return `<div class="topic ${done?'done':''}" id="tp-${t.id}">
+    <button class="chk" data-t="${t.id}" aria-label="Mark ${esc(t.title)} complete" aria-pressed="${done}" title="Mark complete">${done?'✓':''}</button>
+    <div style="flex:1;min-width:0"><h4><small>${t.id}</small>${t.title}</h4>
+    ${body}
+    ${t.tip?`<div class="tip"><b>Tip:</b> ${t.tip}</div>`:''}${t.warn?`<div class="warnbox"><b>Remember:</b> ${t.warn}</div>`:''}</div></div>`;
+}
+function bindChecks(){
+  document.querySelectorAll('.chk').forEach(b=>{
+    b.onclick=()=>{
+      const id=b.dataset.t; if(S.topics[id]) delete S.topics[id]; else S.topics[id]=Date.now(); save();
+      const sec=SECTIONS.find(s=>s.topics.some(t=>t.id===id)); const t=sec.topics.find(t=>t.id===id);
+      document.getElementById('tp-'+id).outerHTML=topicHTML(t); bindChecks();
+      document.getElementById('cnt-'+sec.id).textContent=`${secTopicsDone(sec)}/${sec.topics.length} done`;
+      if(S.topics[id]) toast(`${id} marked complete`);
+    };
+  });
+}
+function renderLearn(opt){
+  const open=opt&&opt.open;
+  $('#app').innerHTML=`<h2>Learn</h2><p class="lead">Read each topic, then tick the box on the left when you understand it.</p>`+
+  `<div class="card"><h3>Learning outcomes</h3><p style="margin:0 0 6px">By the end of this module (8 hours), trainees will be able to:</p><ul style="margin:0;padding-left:20px">${OUTCOMES.map(o=>`<li>${o}</li>`).join('')}</ul></div>`+
+  SECTIONS.map((s,i)=>`<details class="sec" id="sec-${s.id}" ${(open?open===s.id:i===0)?'open':''}>
+    <summary><span class="code">${s.id}</span>${s.title}<span class="right" id="cnt-${s.id}">${secTopicsDone(s)}/${s.topics.length} done</span></summary>
+    <div class="lo"><b>Learning objective:</b> ${s.lo}</div>
+    ${s.topics.map(topicHTML).join('')}
+    <div style="padding:14px 20px;border-top:1px solid var(--line)"><button class="btn" data-quiz="${s.id}">Take the ${s.id} quiz →</button></div>
+  </details>`).join('')+
+  `<h2 style="margin-top:26px">Summary</h2><div class="card"><ul style="margin:0;padding-left:20px">${SUMMARY.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+   <h2 style="margin-top:26px">Knowledge Check (self-check)</h2><p class="lead">Think of your answer first, then tap to reveal a model answer.</p>`+
+   KNOWLEDGE_CHECK.map((k,i)=>`<div class="card"><b>${k.q}</b><div style="margin-top:8px"><button class="btn sm ghost" data-rev="${i}">Show model answer</button></div><div id="rev-${i}" style="display:none;margin-top:10px" class="tip">${k.a}</div></div>`).join('');
+  bindChecks();
+  document.querySelectorAll('[data-quiz]').forEach(b=>b.onclick=()=>go('quiz',{start:b.dataset.quiz}));
+  document.querySelectorAll('[data-rev]').forEach(b=>b.onclick=()=>{const e=$('#rev-'+b.dataset.rev);const show=e.style.display==='none';e.style.display=show?'block':'none';b.textContent=show?'Hide model answer':'Show model answer';});
+  if(open){const el=document.getElementById('sec-'+open); if(el) el.scrollIntoView();}
+}
+
+/* ================= QUIZ ================= */
+let quizState=null;
+function renderQuizMenu(opt){
+  if(opt&&opt.start){return startQuiz(opt.start);}
+  $('#app').innerHTML=`<h2>Quiz</h2><p class="lead">Pass mark is ${PASS_MARK}%. You can retry as many times as you like – your best score is kept.</p>
+  <div class="grid g2">${SECTIONS.map(s=>`<div class="card"><h3>${s.id} · ${s.title}</h3>
+    <div class="small" style="margin-bottom:8px">${QUESTIONS[s.id].length} questions</div>${statusPill(S.quiz[s.id])}
+    ${S.quiz[s.id]?`<div class="small" style="margin-top:6px">Attempts: ${S.quiz[s.id].attempts} · Last: ${S.quiz[s.id].last}%</div>`:''}
+    <div style="margin-top:12px"><button class="btn" data-q="${s.id}">${S.quiz[s.id]?'Retry':'Start'} quiz</button></div></div>`).join('')}
+  <div class="card" style="border-color:var(--red)"><h3>Final Assessment</h3>
+    <div class="small" style="margin-bottom:8px">${FINAL_COUNT} random questions from ${SECTIONS[0].id} – ${SECTIONS[SECTIONS.length-1].id}</div>${statusPill(S.quiz.FINAL)}
+    ${S.quiz.FINAL?`<div class="small" style="margin-top:6px">Attempts: ${S.quiz.FINAL.attempts} · Last: ${S.quiz.FINAL.last}%</div>`:''}
+    <div style="margin-top:12px"><button class="btn red" data-q="FINAL">${S.quiz.FINAL?'Retry':'Start'} final</button></div></div></div>`;
+  document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>startQuiz(b.dataset.q));
+}
+function startQuiz(id){
+  let pool = id==='FINAL' ? shuffle([].concat(...Object.values(QUESTIONS))).slice(0,FINAL_COUNT) : shuffle(QUESTIONS[id]);
+  const items=pool.map(q=>{
+    const opts=shuffle(q.o.map((t,i)=>({t,ok:i===q.a})));
+    return {q:q.q,e:q.e,opts,pick:null};
+  });
+  quizState={id,items,i:0};
+  view='quiz'; renderNav(); renderQuestion(); window.scrollTo({top:0});
+}
+function quizTitle(id){return id==='FINAL'?'Final Assessment':id+' · '+SECTIONS.find(s=>s.id===id).title;}
+function renderQuestion(){
+  const Q=quizState, it=Q.items[Q.i], answered=it.pick!==null;
+  $('#app').innerHTML=`<div class="card">
+    <div class="qhead"><b style="color:var(--navy)">${quizTitle(Q.id)}</b><span class="small">Question ${Q.i+1} of ${Q.items.length}</span></div>
+    <div class="bar"><span style="width:${(Q.i+(answered?1:0))/Q.items.length*100}%"></span></div>
+    <div class="qtext">${esc(it.q)}</div>
+    ${it.opts.map((o,k)=>{
+      let cls=''; if(answered){ if(o.ok) cls='right'; else if(k===it.pick) cls='wrong'; }
+      return `<button class="opt ${cls}" data-k="${k}" ${answered?'disabled':''}>${String.fromCharCode(65+k)}.&nbsp; ${esc(o.t)}</button>`;}).join('')}
+    ${answered?`<div class="fb ${it.opts[it.pick].ok?'ok':'no'}"><b>${it.opts[it.pick].ok?'Correct!':'Not quite.'}</b> ${esc(it.e)}</div>
+      <button class="btn red" id="nx">${Q.i<Q.items.length-1?'Next question →':'See my result'}</button>`:''}
+    <div style="margin-top:14px"><button class="btn sm ghost" id="quit">Quit quiz</button></div></div>`;
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{it.pick=+b.dataset.k;renderQuestion();});
+  if($('#nx')) $('#nx').onclick=()=>{ if(Q.i<Q.items.length-1){Q.i++;renderQuestion();window.scrollTo({top:0});} else finishQuiz(); };
+  $('#quit').onclick=()=>{ if(confirm('Quit this quiz? Your answers will not be saved.')) go('quiz'); };
+}
+function finishQuiz(){
+  const Q=quizState; const right=Q.items.filter(i=>i.opts[i.pick].ok).length;
+  const pct=Math.round(right/Q.items.length*100); const pass=pct>=PASS_MARK;
+  const prev=S.quiz[Q.id]||{attempts:0,best:0,passed:false};
+  S.quiz[Q.id]={attempts:prev.attempts+1,best:Math.max(prev.best,pct),last:pct,passed:prev.passed||pass,date:Date.now(),lastRight:right,lastTotal:Q.items.length};
+  save();
+  const wrong=Q.items.filter(i=>!i.opts[i.pick].ok);
+  $('#app').innerHTML=`<div class="card" style="text-align:center"><div class="small">${quizTitle(Q.id)}</div>
+    <div class="score" style="color:${pass?'var(--ok)':'var(--bad)'}">${pct}%</div>
+    <div style="font-size:18px;margin:6px 0">${right} of ${Q.items.length} correct · ${pass?'<b style="color:var(--ok)">PASS</b>':'<b style="color:var(--bad)">Not yet – pass mark '+PASS_MARK+'%</b>'}</div>
+    <p class="small">${pass?'Well done! This has been recorded in your progress.':'Review the questions below, revisit the topic in the Learn tab, then try again.'}</p>
+    <button class="btn red" id="again">Try again</button> <button class="btn ghost" id="hm">Dashboard</button></div>
+    ${wrong.length?`<div class="card"><h3>Review: questions to revisit (${wrong.length})</h3>${wrong.map(i=>`<div class="review"><div><b>${esc(i.q)}</b></div><div><span class="n">Your answer:</span> ${esc(i.opts[i.pick].t)}</div><div><span class="y">Correct answer:</span> ${esc(i.opts.find(o=>o.ok).t)}</div><div class="small">${esc(i.e)}</div></div>`).join('')}</div>`:'<div class="card"><b>Perfect score – no questions to review!</b></div>'}`;
+  $('#again').onclick=()=>startQuiz(Q.id); $('#hm').onclick=()=>go('home');
+  window.scrollTo({top:0});
+}
+
+/* ================= TOOLS ================= */
+function renderTools(){
+  const AWG=[[22,'Red','22–16','0.5–1.5'],[20,'Red','22–16','0.5–1.5'],[18,'Red','22–16','0.5–1.5'],[16,'Red or Blue','22–16 / 16–14','0.5–1.5 / 1.5–2.5'],[14,'Blue','16–14','1.5–2.5'],[12,'Yellow','12–10','4–6'],[10,'Yellow','12–10','4–6']];
+  $('#app').innerHTML=`<h2>Tools</h2><p class="lead">Quick practice aids based on the course notes. For real maintenance always use the values in the approved manual for your aircraft and equipment.</p>
+  <div class="grid g2">
+   <div class="card tool"><h3>Crimp terminal colour for a wire size</h3><div class="small">Pre-insulated terminals and AMP tools: red 22–16 AWG, blue 16–14 AWG, yellow 12–10 AWG.</div>
+     <label for="awg">Wire size (AWG)</label><select id="awg">${AWG.map(a=>`<option value="${a[0]}">AWG ${a[0]}</option>`).join('')}</select>
+     <div class="result" id="r1"></div></div>
+   <div class="card tool"><h3>Crimped splice location check</h3><div class="small">Spacing not less than 500 mm; maximum 2 splices in any 3-metre cable run.</div>
+     <label for="gap">Distance between two splices (mm)</label><input type="number" id="gap" step="any" min="0" placeholder="e.g. 600">
+     <label for="cnt">Number of splices in a 3-metre run</label><input type="number" id="cnt" step="1" min="0" placeholder="e.g. 2">
+     <div class="result" id="r2">Enter a distance and/or a number.</div></div>
+   <div class="card tool"><h3>Splice: minimum bend radius</h3><div class="small">A splice must not be made in a curved cable with a radius of less than 3 times the overall length of the heat-shrink tubing used.</div>
+     <div style="margin-top:6px"><span class="formula">Radius<sub>min</sub> = 3 × tubing length</span></div>
+     <label for="tub">Heat-shrink tubing length (any unit, e.g. mm)</label><input type="number" id="tub" step="any" min="0" placeholder="e.g. 40">
+     <div class="result" id="r3">Enter the tubing length.</div></div>
+   <div class="card tool"><h3>Sealant curing temperature check</h3><div class="small">Ideal: 77°F (25°C) at 50% relative humidity. Below 60°F: extremely slow. Above 70°F: faster. Heat-accelerated curing must not exceed 120°F.</div>
+     <label for="tmp">Temperature</label><input type="number" id="tmp" step="any" placeholder="e.g. 25">
+     <label for="unit">Unit</label><select id="unit"><option value="C">°C</option><option value="F">°F</option></select>
+     <div class="result" id="r4">Enter a temperature.</div></div>
+   <div class="card tool"><h3>Key values look-up</h3>
+     <label for="kv">Choose an item</label><select id="kv">${KEYVALS.map((s,i)=>`<option value="${i}">${s[0]}</option>`).join('')}</select>
+     <div class="result" id="r5"></div></div>
+  </div>`;
+  const r=(v,d)=>Math.round(v*Math.pow(10,d))/Math.pow(10,d);
+  const col=()=>{const a=AWG.find(x=>x[0]==$('#awg').value);$('#r1').innerHTML=a[0]===16?`Red or Blue<br><span style="font-weight:600;font-size:14px">AWG 16 is in both ranges (22–16 and 16–14) – check the terminal and tool markings. (${a[3]} mm²)</span>`:`${a[1]} (${a[2]} AWG, ${a[3]} mm²)`;};
+  $('#awg').onchange=col; col();
+  const spl=()=>{const g=parseFloat($('#gap').value),n=parseFloat($('#cnt').value),out=[];
+    if(!isNaN(g)) out.push(g>=500?`Spacing ${g} mm – OK (not less than 500 mm)`:`Spacing ${g} mm – too close (minimum 500 mm)`);
+    if(!isNaN(n)) out.push(n<=2?`${n} in 3 m – OK (maximum 2)`:`${n} in 3 m – too many (maximum 2)`);
+    $('#r2').innerHTML=out.length?out.join('<br>'):'Enter a distance and/or a number.';};
+  $('#gap').oninput=spl; $('#cnt').oninput=spl;
+  $('#tub').oninput=()=>{const v=parseFloat($('#tub').value);if(isNaN(v)||v<=0){$('#r3').textContent='Enter the tubing length.';return;}$('#r3').textContent=`Minimum bend radius = ${r(v*3,2)} (3 × ${v})`;};
+  const temp=()=>{const v=parseFloat($('#tmp').value);if(isNaN(v)){$('#r4').textContent='Enter a temperature.';return;}
+    const f=$('#unit').value==='C'?v*9/5+32:v, c=$('#unit').value==='C'?v:(v-32)*5/9; let s;
+    if(f<60) s='Below 60°F – curing is extremely slow';
+    else if(f<=70) s='60–70°F – slower than the faster range above 70°F';
+    else if(f<=120) s=(Math.abs(f-77)<=2?'Close to the ideal 77°F (25°C) – ':'Above 70°F – ')+'curing is typically faster';
+    else s='Above 120°F – over the limit for heat-accelerated curing';
+    $('#r4').innerHTML=`${r(f,1)}°F / ${r(c,1)}°C<br><span style="font-weight:600;font-size:15px">${s}</span>`;};
+  $('#tmp').oninput=temp; $('#unit').onchange=temp;
+  const kv=()=>{$('#r5').textContent=KEYVALS[+$('#kv').value][1];}; $('#kv').onchange=kv; kv();
+}
+
+/* ================= PDF REPORT (built in-app, no print dialog needed) ================= */
+function pdfSafe(s){
+  s=String(s).replace(/[\u2013\u2014]/g,'-').replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"').replace(/\u00B7/g,'|').replace(/\u2026/g,'...');
+  let o='';
+  for(const ch of s){const c=ch.charCodeAt(0); if(c<32) continue; o+= (c<=255)?ch:'?';}
+  return o.replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');
+}
+function pdfDate(t){const d=new Date(t);const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return String(d.getDate()).padStart(2,'0')+' '+m[d.getMonth()]+' '+d.getFullYear();}
+function buildReportPDF(){
+  const t=totals(), done=allDone(), pages=[]; let c=null;
+  const NAVY='#0b2545', RED='#d6001c', INK='#1b2430', GREY='#5b6778', GREEN='#1b8a4b';
+  const rgb=h=>{h=h.replace('#','');return [0,2,4].map(i=>(parseInt(h.substr(i,2),16)/255).toFixed(3)).join(' ');};
+  const rect=(x,y,w,h,col)=>c.push(`${rgb(col)} rg ${x} ${y} ${w} ${h} re f`);
+  const box=(x,y,w,h,col)=>c.push(`${rgb(col)} RG 0.8 w ${x} ${y} ${w} ${h} re S`);
+  const line=(x1,y1,x2,y2,col,w)=>c.push(`${rgb(col)} RG ${w||0.5} w ${x1} ${y1} m ${x2} ${y2} l S`);
+  const text=(x,y,s,size,bold,col)=>c.push(`BT /${bold?'F2':'F1'} ${size} Tf ${rgb(col||INK)} rg ${x} ${y} Td (${pdfSafe(s)}) Tj ET`);
+  const newPage=()=>{c=[];pages.push(c);};
+  const contHeader=()=>{rect(0,800,595,42,NAVY);rect(0,797,595,3,RED);text(40,815,MODULE_NAME+' - Trainee Progress Report (continued)',10,true,'#ffffff');};
+  const lastDate=Math.max(0,...Object.values(S.quiz).map(q=>q.date||0));
+  newPage();
+  rect(0,742,595,100,NAVY); rect(0,738,595,4,RED);
+  text(40,818,'ST ENGINEERING  |  MTC  |  MAMT AVIONICS',8,false,'#cfe0f5');
+  text(40,788,MODULE_NAME,20,true,'#ffffff');
+  text(40,764,'Trainee Progress Report',12,false,'#cfe0f5');
+  text(40,712,'Trainee:',10,true,GREY); text(100,712,S.name||'-',11,true,INK);
+  text(340,712,'Report date:',10,true,GREY); text(410,712,pdfDate(Date.now()),10,false,INK);
+  text(40,694,'Overall progress:',10,true,GREY); text(135,694,`${t.pct}%  (${t.done} of ${t.total} items complete)`,10,false,INK);
+  text(340,694,'Last quiz activity:',10,true,GREY); text(435,694,lastDate?pdfDate(lastDate):'-',10,false,INK);
+  rect(40,670,515,10,'#e6ecf4'); if(t.pct>0) rect(40,670,515*t.pct/100,10,t.pct===100?GREEN:NAVY);
+  if(done){ rect(40,632,515,26,'#e5f6ec'); text(50,641,`MODULE COMPLETE - all topics done, all quizzes passed, Final Assessment ${S.quiz.FINAL.best}%`,10,true,'#14633a'); }
+  else { rect(40,632,515,26,'#fff4de'); text(50,641,'MODULE IN PROGRESS - not all topics and quizzes are complete yet',10,true,'#8a5200'); }
+  const cols=[46,300,352,424,490];
+  rect(40,598,515,22,NAVY);
+  ['Section','Topics','Quiz (best)','Attempts','Status'].forEach((h,i)=>text(cols[i],605,h,9,true,'#ffffff'));
+  let y=598;
+  const rows=SECTIONS.map(s=>{const q=S.quiz[s.id];return [s.id+'  '+s.title,`${secTopicsDone(s)}/${s.topics.length}`,q?q.best+'%':'-',String(q?q.attempts:0),secDone(s)?'Complete':'Open',secDone(s)];});
+  const f=S.quiz.FINAL; rows.push(['Final Assessment','-',f?f.best+'%':'-',String(f?f.attempts:0),quizPassed('FINAL')?'Passed':'Open',quizPassed('FINAL')]);
+  rows.forEach(r=>{
+    if(y<110){newPage();contHeader();y=790;}
+    y-=24; line(40,y,555,y,'#d9e1ec',0.6);
+    r.slice(0,4).forEach((v,i)=>text(cols[i],y+8,v,i===0?9:10,false,INK));
+    text(cols[4],y+8,r[4],10,true,r[5]?GREEN:GREY);
+  });
+  if(y<140){newPage();contHeader();y=790;}
+  y-=34; text(40,y,'Topic checklist',13,true,NAVY); line(40,y-6,555,y-6,RED,1.2); y-=10;
+  SECTIONS.forEach(s=>{
+    if(y<110){newPage();contHeader();y=770;}
+    y-=22; text(40,y,s.id+'  '+s.title,10,true,NAVY);
+    s.topics.forEach(tp=>{
+      if(y<80){newPage();contHeader();y=770;}
+      y-=16; const d=!!S.topics[tp.id];
+      if(d){ rect(48,y-1,9,9,GREEN); line(50,y+3,52.5,y,'#ffffff',1.3); line(52.5,y,56,y+7,'#ffffff',1.3); } else box(48,y-1,9,9,'#9aa9bf');
+      text(66,y,tp.id,9,true,GREY); text(104,y,tp.title,10,false,d?INK:GREY);
+      text(440,y,d?'Completed':'Not yet completed',9,false,d?GREEN:'#9aa9bf');
+    });
+  });
+  const N=pages.length;
+  pages.forEach((pg,i)=>{
+    c=pg;
+    line(40,56,555,56,'#d9e1ec',0.8);
+    text(40,42,`Pass mark ${PASS_MARK}%. Self-recorded progress from the ${MODULE_NAME} Trainee Tracker (on the trainee's own device).`,8,false,GREY);
+    text(40,31,'Training aid only - always follow the approved maintenance manual and your instructor\'s directions.',8,false,GREY);
+    text(500,31,`Page ${i+1} of ${N}`,8,true,GREY);
+  });
+  const objs=[null,
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    `<< /Type /Pages /Kids [${pages.map((_,i)=>`${5+2*i} 0 R`).join(' ')}] /Count ${N} >>`,
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'];
+  pages.forEach((cs,i)=>{
+    const content=cs.join('\n');
+    objs[5+2*i]=`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${6+2*i} 0 R >>`;
+    objs[6+2*i]=`<< /Length ${content.length} >>\nstream\n${content}\nendstream`;
+  });
+  const total=4+2*N;
+  let pdf='%PDF-1.4\n'; const off=[];
+  for(let i=1;i<=total;i++){off[i]=pdf.length; pdf+=`${i} 0 obj\n${objs[i]}\nendobj\n`;}
+  const xr=pdf.length;
+  pdf+=`xref\n0 ${total+1}\n0000000000 65535 f \n`+off.slice(1).map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')+`trailer\n<< /Size ${total+1} /Root 1 0 R >>\nstartxref\n${xr}\n%%EOF`;
+  const bytes=new Uint8Array(pdf.length); for(let i=0;i<pdf.length;i++) bytes[i]=pdf.charCodeAt(i)&255;
+  return new Blob([bytes],{type:'application/pdf'});
+}
+function downloadPDF(){
+  try{
+    const blob=buildReportPDF();
+    const fn=MODULE_ID.replace('.','')+'_Progress_Report_'+(S.name||'Trainee').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'')+'.pdf';
+    if(navigator.msSaveOrOpenBlob){navigator.msSaveOrOpenBlob(blob,fn);return;}
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=fn; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),10000);
+    toast('PDF created: '+fn+' (check your Downloads folder)',4000);
+  }catch(e){ toast('Sorry, the PDF could not be created. Please use Print report instead.',4500); }
+}
+
+/* ================= REPORT ================= */
+function fmtDate(t){return t?new Date(t).toLocaleDateString('en-SG',{day:'2-digit',month:'short',year:'numeric'}):'–';}
+function renderReport(){
+  const t=totals(); const done=allDone();
+  const lastDate=Math.max(0,...Object.values(S.quiz).map(q=>q.date||0));
+  $('#app').innerHTML=`<h2>Progress Report</h2><p class="lead">Download your report as a PDF to give to your instructor, or export a backup file.</p>
+  <div class="card noprint"><label class="nm" for="nm2">Trainee name</label><input id="nm2" type="text" value="${esc(S.name)}" placeholder="Your full name"> <button class="btn sm" id="sv">Save</button></div>
+  ${done?`<div class="cert"><div class="small">ST Engineering · MTC · MAMT Avionics</div><div class="big">${MODULE_NAME}</div><p>Module completed by</p><div class="big" style="color:var(--red)">${esc(S.name||'(enter your name)')}</div><p class="small">All topics completed · all quizzes passed · Final Assessment ${S.quiz.FINAL.best}% · ${fmtDate(S.quiz.FINAL.date)}</p></div><br>`:''}
+  <div class="card"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><div><b>Trainee:</b> ${esc(S.name||'–')}</div><div><b>Overall:</b> ${t.pct}% (${t.done}/${t.total})</div><div><b>Report date:</b> ${fmtDate(Date.now())}</div></div>
+   <div class="bar" style="margin:12px 0"><span style="width:${t.pct}%"></span></div>
+   <div class="repwrap"><table class="rep"><tr><th>Section</th><th>Topics</th><th>Quiz (best)</th><th>Attempts</th><th>Status</th></tr>
+   ${SECTIONS.map(s=>{const q=S.quiz[s.id];return `<tr><td><b>${s.id}</b> ${s.title}</td><td>${secTopicsDone(s)}/${s.topics.length}</td><td>${q?q.best+'%':'–'}</td><td>${q?q.attempts:0}</td><td>${secDone(s)?'<span class="pill ok">Complete</span>':'<span class="pill todo">Open</span>'}</td></tr>`;}).join('')}
+   <tr><td><b>Final Assessment</b></td><td>–</td><td>${S.quiz.FINAL?S.quiz.FINAL.best+'%':'–'}</td><td>${S.quiz.FINAL?S.quiz.FINAL.attempts:0}</td><td>${quizPassed('FINAL')?'<span class="pill ok">Passed</span>':'<span class="pill todo">Open</span>'}</td></tr></table></div>
+   <p class="small" style="margin-bottom:0">Pass mark ${PASS_MARK}%. Last activity: ${fmtDate(lastDate)}. Self-recorded progress on this device.</p></div>
+  <div class="card noprint"><h3>Manage progress</h3>
+    <div class="actions">
+      <button class="btn red" id="pdf">Download PDF report</button>
+      <button class="btn ghost" id="pr">Print report</button>
+    </div>
+    <p class="small" style="margin:6px 0 14px">The PDF saves straight to your Downloads folder – no print window needed. If you add or change your name, press <b>Save</b> first.</p>
+    <div class="actions">
+      <button class="btn ghost" id="ex">Export backup (.json)</button>
+      <label class="btn ghost" style="margin:0">Import backup<input type="file" id="im" accept=".json,application/json" style="display:none"></label>
+      <button class="btn ghost" id="rs" style="color:var(--bad);border-color:var(--bad)">Reset all progress</button>
+    </div>
+    <p class="small" style="margin-bottom:0">Progress is stored in this browser only. Export a backup before clearing browser data or switching device.</p></div>`;
+  $('#sv').onclick=()=>{S.name=$('#nm2').value.trim();save();renderReport();toast('Name saved');};
+  $('#pdf').onclick=()=>{ const v=$('#nm2').value.trim(); if(v!==S.name){S.name=v;save();} downloadPDF(); };
+  $('#pr').onclick=()=>{ try{window.print();}catch(e){} toast('If no print window opened, please use "Download PDF report" instead.',4000); };
+  $('#ex').onclick=()=>{const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=MODULE_ID.replace('.','')+'_progress_'+(S.name||'trainee').replace(/\s+/g,'_')+'.json';document.body.appendChild(a);a.click();a.remove();toast('Backup downloaded');};
+  $('#im').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(!d||typeof d!=='object'||!d.topics||!d.quiz)throw 0;S=Object.assign(blank(),d);save();renderReport();toast('Progress imported');}catch(x){alert('That file is not a valid '+MODULE_ID+' progress backup.');}};rd.readAsText(f);};
+  $('#rs').onclick=()=>{if(confirm('Reset ALL progress and scores? This cannot be undone.')){S=blank();save();go('home');toast('Progress reset');}};
+}
+
+/* ================= INIT ================= */
+renderNav(); render();
+</script>
+</body>
+</html>
