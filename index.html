@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AV.01 General Tools and Equipment – Trainee Tracker</title>
+<style>
+:root{
+  --navy:#0b2545; --navy2:#13315c; --red:#d6001c; --sky:#e8f0fa; --bg:#f3f6fa;
+  --ink:#1b2430; --mute:#5b6778; --line:#d9e1ec; --ok:#1b8a4b; --okbg:#e5f6ec; --bad:#c0262d; --badbg:#fdecec; --warn:#b36b00; --warnbg:#fff4de;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-bottom:5px solid var(--red)}
+.hwrap{max-width:1050px;margin:0 auto;padding:18px 20px 0}
+.brand{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.8}
+.title{display:flex;align-items:center;gap:14px;margin:6px 0 14px;flex-wrap:wrap}
+.badge{background:var(--red);color:#fff;font-weight:700;padding:6px 12px;border-radius:8px;font-size:18px;letter-spacing:.04em}
+h1{margin:0;font-size:24px;line-height:1.2}
+.sub{font-size:13px;opacity:.85}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:transparent;color:#cfe0f5;border:0;padding:11px 18px;font-size:15px;font-weight:600;cursor:pointer;border-radius:10px 10px 0 0;font-family:inherit}
+nav button:hover{background:rgba(255,255,255,.1)}
+nav button.on{background:var(--bg);color:var(--navy)}
+main{max-width:1050px;margin:0 auto;padding:22px 20px 60px}
+h2{color:var(--navy);margin:0 0 6px;font-size:22px}
+h3{color:var(--navy);margin:0 0 6px;font-size:17px}
+p.lead{color:var(--mute);margin:0 0 18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(11,37,69,.05)}
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--navy2)}
+.btn.red{background:var(--red)} .btn.red:hover{background:#b30017}
+.btn.ghost{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+.btn.ghost:hover{background:var(--sky)}
+.btn.sm{padding:6px 12px;font-size:13px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.pill.ok{background:var(--okbg);color:var(--ok)} .pill.todo{background:#eef1f6;color:var(--mute)} .pill.warn{background:var(--warnbg);color:var(--warn)}
+.bar{height:10px;background:#e6ecf4;border-radius:99px;overflow:hidden}
+.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--navy2),var(--red));width:0;transition:width .4s}
+.hero{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.ring{position:relative;width:150px;height:150px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font-size:32px;color:var(--navy)} .ring .num span{font-size:12px;color:var(--mute)}
+.small{font-size:13px;color:var(--mute)}
+label.nm{display:block;font-size:13px;font-weight:600;color:var(--mute);margin-bottom:4px}
+input[type=text],input[type=number],select{font:inherit;padding:9px 12px;border:1px solid #b9c5d6;border-radius:9px;width:100%;max-width:340px;background:#fff}
+input:focus,select:focus,button:focus-visible{outline:3px solid #8db4ea;outline-offset:1px}
+details.sec{background:#fff;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}
+details.sec>summary{cursor:pointer;list-style:none;padding:16px 20px;display:flex;align-items:center;gap:12px;font-weight:700;color:var(--navy);font-size:17px;flex-wrap:wrap}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary .code{background:var(--navy);color:#fff;padding:3px 10px;border-radius:7px;font-size:14px}
+details.sec>summary .right{margin-left:auto;font-size:13px;color:var(--mute);font-weight:600}
+.lo{background:var(--sky);margin:0 20px 12px;padding:10px 14px;border-radius:10px;font-size:14px;color:var(--navy2)}
+.topic{border-top:1px solid var(--line);padding:16px 20px;display:flex;gap:16px;align-items:flex-start}
+.topic.done{background:#f6fcf8}
+.topic .chk{flex:none;width:30px;height:30px;border-radius:8px;border:2px solid #9aa9bf;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;margin-top:2px;font-family:inherit;padding:0}
+.topic.done .chk{background:var(--ok);border-color:var(--ok)}
+.topic h4{margin:0 0 4px;color:var(--navy);font-size:16px}
+.topic h4 small{color:var(--red);font-weight:700;margin-right:6px}
+.topic ul{margin:6px 0;padding-left:20px}
+.topic li{margin:3px 0}
+.topic p.pt{margin:8px 0}
+.tip{background:var(--warnbg);border-left:4px solid #e0a100;padding:8px 12px;border-radius:6px;font-size:14px;margin-top:8px}
+.warnbox{background:var(--badbg);border-left:4px solid var(--bad);padding:8px 12px;border-radius:6px;font-size:14px;margin-top:8px}
+.tblwrap{overflow-x:auto}
+table.t{border-collapse:collapse;width:100%;font-size:14px;margin-top:8px}
+table.t th,table.t td{border:1px solid var(--line);padding:6px 10px;text-align:center}
+table.t th{background:var(--navy);color:#fff}
+table.t tr:nth-child(even) td{background:#f7f9fc}
+.cap{text-align:center;font-weight:700;font-size:14px;margin-top:6px;color:var(--navy)}
+.qhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.qtext{font-size:19px;font-weight:600;color:var(--navy);margin:10px 0 14px}
+.opt{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-radius:12px;padding:13px 16px;margin-bottom:10px;font-size:16px;cursor:pointer;font-family:inherit;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--navy2);background:var(--sky)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--bad);background:var(--badbg)}
+.opt:disabled{cursor:default}
+.fb{padding:12px 16px;border-radius:10px;margin:6px 0 14px;font-size:15px}
+.fb.ok{background:var(--okbg);color:#14633a} .fb.no{background:var(--badbg);color:#8f1d22}
+.score{font-size:52px;font-weight:800;color:var(--navy);line-height:1}
+.review{border-top:1px solid var(--line);padding:10px 0;font-size:15px}
+.review .y{color:var(--ok);font-weight:700}.review .n{color:var(--bad);font-weight:700}
+.tool label{display:block;font-size:13px;font-weight:600;color:var(--mute);margin:10px 0 4px}
+.result{background:var(--sky);border-radius:10px;padding:10px 14px;margin-top:12px;font-weight:700;color:var(--navy);font-size:17px;min-height:44px}
+.formula{font-family:Consolas,monospace;background:#f1f4f9;padding:6px 10px;border-radius:7px;display:inline-block}
+.cert{border:3px double var(--navy);border-radius:var(--radius);padding:28px;text-align:center;background:#fff}
+.cert .big{font-size:26px;font-weight:800;color:var(--navy)}
+.repwrap{overflow-x:auto}
+table.rep{width:100%;border-collapse:collapse;font-size:15px;min-width:520px}
+table.rep th,table.rep td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left}
+table.rep th{color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+footer{max-width:1050px;margin:0 auto;padding:0 20px 30px;font-size:12px;color:var(--mute)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 20px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:9;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+@media print{
+  header nav,.noprint,footer,.toast{display:none!important}
+  body{background:#fff} main{padding:0}
+  .card{box-shadow:none;break-inside:avoid}
+}
+@media (max-width:600px){h1{font-size:20px} .topic{padding:14px} .qtext{font-size:17px} nav button{padding:9px 12px;font-size:14px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hwrap">
+    <div class="brand">ST Engineering · Maintenance Training Centre (MTC) · Military Aviation Maintenance Training (MAMT)</div>
+    <div class="title">
+      <span class="badge">AV.01</span>
+      <div><h1>General Tools and Equipment</h1><div class="sub">Avionics Module · 6 hours · Trainee Progress Tracker &amp; Quiz</div></div>
+    </div>
+    <nav id="nav"></nav>
+  </div>
+</header>
+<main id="app"></main>
+<footer>Training aid based on course notes AV.01 (Issue 1, Rev 0). Always follow the approved maintenance manual and your instructor's directions. Your progress is saved on this device and browser only – use <b>Export</b> on the Progress Report page to keep a backup.</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= DATA ================= */
+const PASS_MARK = 80;
+const SECTIONS = [
+  {id:'AV.01.01', title:'Dimensions and Measurement Tools',
+   lo:'Identify common dimension and measurement tools – rulers, steel tapes, vernier callipers, feeler gauges and wire gauges – and state their purpose and measurement units (metric and imperial).',
+   topics:[
+    {id:'1.1.01', title:'Ruler', pts:[
+      'Engineering workshop rules are used for general measuring.',
+      'They are usually graduated in both imperial and metric units, and are classified by length.',
+      'Imperial units (inches, feet, pounds, gallons) are mainly used in the United States. Metric units (metres, kilograms, litres) are used in most other countries and are based on the decimal system.',
+      'Inch rules can be graduated in 1/8", 1/16", 1/32" and 1/64". Example: on a 1/8" scale, 4/8" = 1/2".'],
+     tip:'Always count the small divisions carefully and reduce the fraction. 4/8" is read as 1/2".'},
+    {id:'1.1.02', title:'Steel Tape', pts:[
+      'A steel tape is flexible.',
+      'It is mostly used for measuring long distances, e.g. in layout work.']},
+    {id:'1.1.03', title:'Vernier Calliper', pts:[
+      'Measures internal and external dimensions, and depth (e.g. the depth of a blind hole).',
+      'Accuracy: 0.001 inch or 0.02 mm.',
+      'Main rule is graduated on both sides: upper edge in millimetres, lower edge in inches.',
+      'Before use: close the jaws and check for zero error. If it is not zeroed, adjust as required.',
+      'After use: clean with a dry, clean cloth and return it to its proper case/box.'],
+     tip:'No zero check = no trust in the reading. Always close the jaws first.'},
+    {id:'1.1.04', title:'Feeler Gauges (Thickness Gauge)', pts:[
+      'Used to measure small clearances or gaps between components.',
+      'Made of a series of thin, flexible steel blades in graduated thicknesses – in most cases from 0.001" to 0.005".',
+      'Feeler gauges are classified by the length of the blades.']},
+    {id:'1.1.05', title:'Wire gauge', paras:[
+      '<b>SWG (Standard Wire Gauge)</b> and <b>AWG (American Wire Gauge)</b> are two different standardized systems used to measure the thickness (diameter) of wire and certain sheet metals.',
+      'In both systems, <b>a smaller gauge number means a thicker wire or sheet</b>.',
+      'The following table shows the standard wire gauge size.'],
+     table:true}
+   ]},
+  {id:'AV.01.02', title:'Dismantling and Assembly Tools',
+   lo:'Identify common dismantling and assembly tools – pliers, screwdrivers, spanners, ratchets, sockets and special tools – and describe their intended use and limitations.',
+   topics:[
+    {id:'1.2.01', title:'Pliers', pts:[
+      'Pliers come in many forms and sizes and are classified by type and overall length.',
+      'Combination pliers – holding sheet metal and small work, and cutting small-diameter wire.',
+      'Diagonals – used only for cutting and stripping electrical wire. Hold them so the cut piece moves away from you.',
+      'Flat nose – holding sheet metal and light work. Round nose – holding circular work.',
+      'Needle nose – placing and removing small items in narrow spaces; preferred for electrical and radio repair.',
+      'Safety wire twister – used for wire-locking operations. Camloc pliers – gripping camloc fasteners to install or remove them.'],
+     warn:'Pliers are NOT a substitute for spanners. Never use them to tighten or slacken nuts or bolts.'},
+    {id:'1.2.02', title:'Screwdriver', pts:[
+      'Used to turn screws. One end has a wooden or plastic handle; the other end is shaped to fit the slot in the screw or bolt head.',
+      'Classified by the length of the blade.',
+      'Two groups: common (blade) screwdrivers, and cruciform screwdrivers (Phillips, and Reed & Prince).',
+      'The Phillips type is the most commonly used in Service.']},
+    {id:'1.2.03', title:'Spanner (Wrench)', pts:[
+      'Fits over hexagonal bolts or nuts to tighten or loosen them. Select the correct size to avoid damaging the bolt head or nut.',
+      'Set / open-end – fits one size per opening (single-ended = one size, double-ended = two sizes).',
+      'Ring / close-end – gives full enclosure of the hexagon head or nut.',
+      'Box / tube – also gives full enclosure; useful where access to the bolt head or nut is limited.',
+      'Adjustable – fits various sizes, but tends to work loose and can damage the hardware.'],
+     tip:'Correct size first. A wrong-size spanner rounds off the head.'},
+    {id:'1.2.04', title:'Ratchet and Socket', pts:[
+      'Used for the installation and removal of bolts and nuts.',
+      'The ratchet drive must be compatible with the socket drive – e.g. a 1/4" drive ratchet needs a 1/4" drive socket.',
+      'Accessories include extension bars and step-up / step-down adaptors.']},
+    {id:'1.2.05', title:'Johnson Bar Screw Extractor', pts:[
+      'A high-quality tool for removing stubborn screws – including Phillips, Tri-Wing and Hi-Torque types – without damaging the aircraft skin.']},
+    {id:'1.2.06', title:'EZ Grip Friction Drop', pts:[
+      'A friction-enhancing compound used to remove worn, damaged or corroded screws and bolts.',
+      'It increases the grip between the tool and the fastener without damaging surfaces or leaving problematic residues.',
+      'Each drop of the aircraft-grade solution contains thousands of hardened aluminium cubes in a non-toxic carrying agent, forming a temporary bridge between tool and fastener head.']}
+   ]},
+  {id:'AV.01.03', title:'Calculate and Set Torque Wrench Values',
+   lo:'Explain the purpose of torque control, identify types of torque wrenches, and describe the importance of calibration and torque tables.',
+   topics:[
+    {id:'1.3.01', title:'Torque Wrenches', pts:[
+      'Why torque matters: every nut, bolt, stud and screw must be tightened to the proper torque so the structure develops its designed strength and the risk of fatigue failure is greatly reduced.',
+      'Three common types: flexible beam, rigid frame and ratchet type.',
+      'Flexible beam and rigid frame: read the torque visually on a dial or scale on the handle.',
+      'Ratchet type: unlock the grip, set the value on the micrometre-type scale, relock the grip, fit the socket, then pull clockwise with a smooth, steady motion. At the set value the handle "breaks" and moves freely for a short distance.',
+      'A fast or jerky pull gives an improper torque.',
+      'Torque wrenches must be tested at least once a month, or more often if necessary.'],
+     warn:'Do not use a handle extension on a flexible beam type torque wrench at any time.'},
+    {id:'1.3.02', title:'Torque Tables', pts:[
+      'Use the standard torque table as a guide when no specific torque value is called out in the maintenance procedure.',
+      'To get foot-pounds, divide inch-pounds by 12.',
+      'Do not lubricate nuts or bolts unless they are corrosion-resistant steel parts or you are specifically instructed to.',
+      'Tighten by rotating the nut if possible. If you must turn the bolt head, use the high side of the torque range. Never exceed the maximum allowable torque.',
+      'Use maximum ranges only when the materials joined are thick, wide and strong enough to resist breaking or warping.',
+      'For corrosion-resisting steel nuts, use the values given for shear-type nuts.']},
+    {id:'1.3.03', title:'Calibration of Torque Wrenches', pts:[
+      'Equipment accuracy can change with use and time, so it needs periodic recalibration or checking – before a significant change in accuracy is likely to have occurred.',
+      'Calibration must be traceable to national measurement standards.',
+      'When using an external calibration service, obtain a valid certificate from a laboratory that demonstrates competence, measurement capability and traceability.',
+      'Maintenance and calibration typically include periodic cleaning, servicing, calibration and safety checks.']},
+    {id:'1.3.04', title:'Torque Wrench Adaptors and Extensions', pts:[
+      'Any drive-end extension changes the dial reading needed to achieve the actual torque in the torque tables.',
+      'When a drive-end extension is used, the wrench reading must be calculated with the formula in the handbook supplied with the torque wrench.',
+      'Apply force to the handle (or handle extension) perpendicular to the handle and in its plane.',
+      'When the task is complete, set the torque wrench to its minimum value to prevent over-tensioning stress on the internal spring.'],
+     tip:'Try the Torque Extension Calculator in the Tools tab.'}
+   ]}
+];
+const fmtMM=v=>Number.isInteger(v)?v.toFixed(1):String(v);
+const SWG = [[4,6.0],[5,5.5],[6,4.8],[7,4.5],[8,4.0],[9,3.6],[10,3.3],[11,3.0],[12,2.7],[13,2.4],[14,2.1],[15,1.9],[16,1.65],[17,1.45],[18,1.25],[19,1.05],[20,0.95],[21,0.85],[22,0.72],[23,0.62],[24,0.58]];
+
+const QUESTIONS = {
+ 'AV.01.01':[
+  {q:'What is the accuracy of the vernier calliper described in the course notes?',o:['0.1 inch or 1 mm','0.001 inch or 0.02 mm','0.01 inch or 0.5 mm','0.0001 inch or 0.002 mm'],a:1,e:'The vernier calliper reads to 0.001 inch or 0.02 mm.'},
+  {q:'What must you check before using a vernier calliper?',o:['The colour of the jaws and the case','Zero error, by closing the jaws together','The total length of the main rule','That the jaws have been oiled'],a:1,e:'Close the jaws together and check for zero error. Adjust if it is not zeroed.'},
+  {q:'A feeler gauge is used to measure…',o:['The diameter of a wire or cable','Long distances in layout work','Small clearances or gaps between components','The pitch of internal threads'],a:2,e:'Feeler gauges measure small clearances or gaps between components.'},
+  {q:'A wire gauge is used to check…',o:['Wire diameter or sheet-metal thickness','Torque applied to a fastener','Depth of a blind hole only','Screw length or thread pitch'],a:0,e:'A wire gauge measures the thickness (diameter) of wire and certain sheet metals.'},
+  {q:'According to the course notes SWG table, what is the size of SWG 18?',o:['1.65 mm','1.45 mm','1.25 mm','0.95 mm'],a:2,e:'SWG 18 = 1.25 mm in the course notes table.'},
+  {q:'Which tool is mostly used for measuring long distances?',o:['Feeler gauge','Steel tape','Wire gauge','Vernier calliper'],a:1,e:'A steel tape is flexible and is mostly used for long distances.'},
+  {q:'Which set of measurements can a vernier calliper take?',o:['Internal, external and depth','External dimensions only','Small clearances only','Wire gauge numbers only'],a:0,e:'It measures internal and external dimensions, and depth, e.g. a blind hole.'},
+  {q:'On a ruler graduated in 1/8", what is 4/8" equal to?',o:['1/8"','1/4"','1/2"','3/4"'],a:2,e:'4/8" reduces to 1/2".'},
+  {q:'How are feeler gauges classified?',o:['By blade colour','By the length of the blades','By the number of blades only','By the country of origin'],a:1,e:'Feeler gauges are classified by the length of the blades.'},
+  {q:'How should you look after a vernier calliper after use?',o:['Wash it in solvent and leave it on the bench','Clean with a dry clean cloth and return it to its case/box','Oil the jaws heavily','Store it with the jaws tightly clamped in the tool box'],a:1,e:'Clean it with a dry clean cloth and return it to its proper case/box.'}
+ ],
+ 'AV.01.02':[
+  {q:'Pliers should NEVER be used to…',o:['Hold small work firmly','Cut small-diameter wire','Tighten or slacken nuts and bolts','Hold thin sheet metal'],a:2,e:'Pliers are not a substitute for spanners.'},
+  {q:'Which pliers are used exclusively for cutting and stripping electrical wire?',o:['Flat nose','Round nose','Diagonals','Camloc pliers'],a:2,e:'Diagonals are used exclusively for cutting and stripping electrical wire.'},
+  {q:'When cutting wire with diagonals, which is the safe practice?',o:['Hold them so the cut piece moves away from the operator','Hold them so the cut piece flies towards the operator','Cut quickly without looking at the wire','Cut only wires that are still live'],a:0,e:'Hold them so the cut piece moves away from the operator.'},
+  {q:'Which pliers are used for placing and removing small items in narrow spaces?',o:['Needle nose','Combination','Round nose','Safety wire twister'],a:0,e:'Needle nose pliers suit narrow spaces and electrical/radio repair work.'},
+  {q:'What is a safety wire twister used for?',o:['Gripping camloc fasteners','Wire-locking operations','Measuring wire','Removing stubborn screws'],a:1,e:'A safety wire twister is used for wire-locking operations.'},
+  {q:'Which type of screwdriver is the most common in Service use?',o:['Flat blade','Reed and Prince','Phillips','Hex'],a:2,e:'The Phillips type is the most common in-Service.'},
+  {q:'Which spanner gives full enclosure of the bolt head and is useful where access is limited?',o:['Open-end','Adjustable','Box or tube','Single-ended'],a:2,e:'Box / tube spanners give full enclosure and suit limited access.'},
+  {q:'What is a disadvantage of an adjustable spanner?',o:['It can only fit one size of nut','It tends to work loose and can damage the hardware','It cannot be used on hexagon nuts','It is always too short to reach'],a:1,e:'Adjustable spanners tend to work loose and may damage the hardware.'},
+  {q:'You have a 1/4" drive ratchet. Which socket should you use?',o:['1/2" drive socket','3/8" drive socket','1/4" drive socket','Any size – they all fit'],a:2,e:'The ratchet drive must be compatible with the socket drive.'},
+  {q:'What is a Johnson Bar used for?',o:['Measuring the torque on screws and bolts','Removing stubborn screws without damaging the aircraft skin','Cutting and twisting safety wire','Measuring small gaps between parts'],a:1,e:'It removes stubborn screws (Phillips, Tri-Wing, Hi-Torque) without damaging the aircraft skin.'},
+  {q:'What does EZ Grip Friction Drop do?',o:['Lubricates seized nuts and bolts','Increases grip between tool and a worn or damaged fastener','Cleans corrosion off aircraft skin panels','Locks nuts in place on a bolt'],a:1,e:'It increases the grip between the tool and the fastener head to help removal.'}
+ ],
+ 'AV.01.03':[
+  {q:'Which are the three most commonly used torque wrench types?',o:['Flexible beam, rigid frame and ratchet','Digital, laser and spring','Open-end, ring and box','Flat, round and needle'],a:0,e:'Flexible beam, rigid frame and ratchet types.'},
+  {q:'Why is correct torque important on aircraft fasteners?',o:['It makes the torque wrench last much longer','It lets the structure develop its designed strength and reduces fatigue failure','It makes the fastener head look neat and tidy','It removes the need for any later inspection'],a:1,e:'Proper torque lets the structure develop its designed strength and greatly reduces fatigue failure.'},
+  {q:'On a ratchet type torque wrench, what tells you the set torque has been reached?',o:['A loud buzzer sounds from the wrench','The handle "breaks" and moves freely for a short distance','The scale on the handle turns red','The socket pops off the square drive'],a:1,e:'At the set value the handle releases and moves freely for a short distance.'},
+  {q:'How should you pull a torque wrench?',o:['Fast and jerky','Smooth and steady','Using a pipe extension on the handle','Anticlockwise only'],a:1,e:'A fast or jerky motion results in an improperly torqued unit.'},
+  {q:'At least how often must torque wrenches be tested?',o:['Once a year','Once every six months','Once a month','Never, if they look fine'],a:2,e:'Test at least once a month, or more often if necessary.'},
+  {q:'How do you convert inch-pounds to foot-pounds?',o:['Multiply by 12','Divide by 12','Add 12','Divide by 10'],a:1,e:'Divide inch-pounds by 12 to get foot-pounds.'},
+  {q:'What should you do to a torque wrench after completing a task?',o:['Leave it at the last value','Set it to maximum','Set it to its minimum value','Remove the handle'],a:2,e:'Set it to minimum to avoid over-tensioning stress on the internal spring.'},
+  {q:'Calibration of torque wrenches must be traceable to…',o:['The manufacturer\'s brochure','National measurement standards','The supervisor\'s tool','A previous trainee\'s record'],a:1,e:'Calibration must be traceable to national measurement standards.'},
+  {q:'You fit a drive-end extension to a torque wrench. What is mandatory?',o:['Ignore the extension completely','Use the formula to compute the wrench reading','Double the required torque value','Use a flexible beam wrench only'],a:1,e:'Any drive-end extension changes the required reading, so the formula must be used.'},
+  {q:'In which direction should force be applied to the handle?',o:['Along the length of the handle','Perpendicular to the handle and in its plane','At 45° to the handle','Any direction that feels easy'],a:1,e:'Apply force perpendicular to the handle and in its plane.'},
+  {q:'You must turn the bolt head instead of the nut. What do you do with the torque range?',o:['Use the low side of the range','Use the high side but never exceed the maximum','Exceed the maximum slightly to be safe','Ignore the range and tighten by feel'],a:1,e:'Approach the high side of the range and do not exceed the maximum allowable torque.'},
+  {q:'Should you lubricate nuts and bolts before torquing?',o:['Yes – always, to make torquing easier','No – never, under any circumstance','No – except corrosion-resistant steel parts or when specifically instructed','Yes – but only with engine oil'],a:2,e:'Do not lubricate except for corrosion-resistant steel parts or where specifically instructed.'}
+ ]
+};
+const FINAL_COUNT = 15;
+const KNOWLEDGE_CHECK = [
+ {q:'Q1: Why must the correct measuring tool be selected for a specific task?', a:'Each tool is designed for a specific use and measures to a different accuracy and range (e.g. steel tape for long distances, vernier calliper to 0.02 mm, feeler gauge for small gaps). The wrong tool gives inaccurate readings that can lead to wrong fit, damage or an unairworthy repair.'},
+ {q:'Q2: State two safety precautions when using dismantling or assembly tools.', a:'Examples: use the correct size spanner so the nut or bolt head is not damaged; never use pliers to tighten or slacken nuts and bolts; hold diagonals so the cut piece moves away from you; use a ratchet with a compatible drive-size socket; use each tool only for its designed purpose.'},
+ {q:'Q3: What is the purpose of using a torque wrench instead of a standard wrench?', a:'A torque wrench applies and indicates a controlled, measured torque, so each fastener carries the load it was designed for – no more, no less.'},
+ {q:'Q4: What should be done to a torque wrench after completing a task?', a:'Set it to its minimum value, to prevent over-tensioning stress on the internal spring. Then clean it and return it to its proper place.'},
+ {q:'Q5: Name one consequence of incorrect torque application on aircraft fasteners.', a:'Examples: the structure cannot develop its designed strength; increased risk of failure due to fatigue; stripped, damaged or broken fasteners; loosening in service.'}
+];
+
+/* ================= STATE ================= */
+const KEY='av01_tracker_v1';
+let mem=null;
+function blank(){return {name:'',topics:{},quiz:{},started:Date.now()};}
+function load(){
+  try{const s=localStorage.getItem(KEY); if(s) return Object.assign(blank(),JSON.parse(s));}catch(e){}
+  return blank();
+}
+let S=load();
+function save(){ mem=S; try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} }
+let toastTimer=null;
+function toast(m,ms){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),ms||2200);}
+
+/* ================= HELPERS ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function secTopicsDone(sec){return sec.topics.filter(t=>S.topics[t.id]).length;}
+function quizPassed(id){return !!(S.quiz[id]&&S.quiz[id].passed);}
+function secDone(sec){return secTopicsDone(sec)===sec.topics.length && quizPassed(sec.id);}
+function totals(){
+  let done=0,total=0;
+  SECTIONS.forEach(s=>{done+=secTopicsDone(s);total+=s.topics.length;total+=1;if(quizPassed(s.id))done++;});
+  total+=1; if(quizPassed('FINAL'))done++;
+  return {done,total,pct:Math.round(done/total*100)};
+}
+function allDone(){return SECTIONS.every(secDone)&&quizPassed('FINAL');}
+function statusPill(q){
+  if(!q) return '<span class="pill todo">Not attempted</span>';
+  return q.passed?`<span class="pill ok">Passed · best ${q.best}%</span>`:`<span class="pill warn">Best ${q.best}% · retry</span>`;
+}
+
+/* ================= NAV ================= */
+let view='home';
+const TABS=[['home','Dashboard'],['learn','Learn'],['quiz','Quiz'],['tools','Tools'],['report','Progress Report']];
+function renderNav(){
+  $('#nav').innerHTML=TABS.map(t=>`<button class="${view===t[0]?'on':''}" data-v="${t[0]}">${t[1]}</button>`).join('');
+  $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+}
+function go(v,opt){view=v;quizState=null;renderNav();render(opt);window.scrollTo({top:0});}
+function render(opt){
+  ({home:renderHome,learn:renderLearn,quiz:renderQuizMenu,tools:renderTools,report:renderReport})[view](opt);
+}
+
+/* ================= HOME ================= */
+function renderHome(){
+  const t=totals();
+  const C=2*Math.PI*62, off=C*(1-t.pct/100);
+  $('#app').innerHTML=`
+  <div class="card hero">
+    <div class="ring"><svg width="150" height="150"><circle cx="75" cy="75" r="62" fill="none" stroke="#e6ecf4" stroke-width="14"/><circle cx="75" cy="75" r="62" fill="none" stroke="${t.pct===100?'#1b8a4b':'#d6001c'}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}"/></svg>
+      <div class="num"><b>${t.pct}%</b><span>${t.done} of ${t.total} done</span></div></div>
+    <div style="flex:1;min-width:240px">
+      <h2>${S.name?'Welcome, '+esc(S.name):'Welcome, trainee'}</h2>
+      <p class="lead" style="margin-bottom:12px">Complete every topic, pass each section quiz (${PASS_MARK}%), then pass the Final Assessment to finish AV.01.</p>
+      ${S.name?'':`<label class="nm" for="nm">Enter your name to personalise your report</label><div style="display:flex;gap:8px;flex-wrap:wrap"><input id="nm" type="text" placeholder="Your full name"><button class="btn ghost" id="savenm">Save name</button></div>`}
+    </div>
+  </div>
+  <h2 style="margin-top:22px">Module checklist</h2>
+  <p class="lead">Tick topics in the Learn tab as you finish them. Quizzes record automatically.</p>
+  <div class="grid g3">${SECTIONS.map(s=>{
+    const d=secTopicsDone(s),n=s.topics.length;
+    return `<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3>${s.id}</h3>${secDone(s)?'<span class="pill ok">Complete</span>':'<span class="pill todo">In progress</span>'}</div>
+      <div style="font-weight:600;margin-bottom:10px">${s.title}</div>
+      <div class="small">Topics ${d}/${n}</div><div class="bar"><span style="width:${d/n*100}%"></span></div>
+      <div style="margin:10px 0 12px" class="small">Quiz: ${statusPill(S.quiz[s.id])}</div>
+      <button class="btn sm ghost" data-learn="${s.id}">Learn</button> <button class="btn sm" data-quiz="${s.id}">Quiz</button></div>`;}).join('')}
+  </div>
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <div><h3>Final Assessment</h3><div class="small">${FINAL_COUNT} random questions from all three sections · pass mark ${PASS_MARK}%</div><div style="margin-top:6px">${statusPill(S.quiz.FINAL)}</div></div>
+    <button class="btn red" data-quiz="FINAL">Start Final Assessment</button>
+  </div>`;
+  if($('#savenm')) $('#savenm').onclick=()=>{const v=$('#nm').value.trim(); if(v){S.name=v;save();renderHome();toast('Name saved');}};
+  document.querySelectorAll('[data-learn]').forEach(b=>b.onclick=()=>go('learn',{open:b.dataset.learn}));
+  document.querySelectorAll('[data-quiz]').forEach(b=>b.onclick=()=>go('quiz',{start:b.dataset.quiz}));
+}
+
+/* ================= LEARN ================= */
+function topicHTML(t){
+  const done=!!S.topics[t.id];
+  let body='';
+  if(t.pts) body+=`<ul>${t.pts.map(p=>`<li>${p}</li>`).join('')}</ul>`;
+  if(t.paras) body+=t.paras.map(p=>`<p class="pt">${p}</p>`).join('');
+  if(t.table){
+    body+=`<div class="tblwrap"><table class="t"><tr><th>SWG No:</th><th>Size in mm</th><th>SWG No:</th><th>Size in mm</th><th>SWG No:</th><th>Size in mm</th></tr>`+
+      [0,1,2,3,4,5,6].map(r=>`<tr>`+[0,1,2].map(c=>{const x=SWG[c*7+r];return `<td>${x[0]}</td><td>${fmtMM(x[1])}</td>`;}).join('')+`</tr>`).join('')+`</table></div><div class="cap">Standard Wire Gauge Table</div>`;
+  }
+  return `<div class="topic ${done?'done':''}" id="tp-${t.id}">
+    <button class="chk" data-t="${t.id}" aria-label="Mark ${t.title} complete" aria-pressed="${done}" title="Mark complete">${done?'✓':''}</button>
+    <div style="flex:1;min-width:0"><h4><small>${t.id}</small>${t.title}</h4>
+    ${body}
+    ${t.tip?`<div class="tip"><b>Tip:</b> ${t.tip}</div>`:''}${t.warn?`<div class="warnbox"><b>Remember:</b> ${t.warn}</div>`:''}</div></div>`;
+}
+function bindChecks(){
+  document.querySelectorAll('.chk').forEach(b=>{
+    b.onclick=()=>{
+      const id=b.dataset.t; if(S.topics[id]) delete S.topics[id]; else S.topics[id]=Date.now(); save();
+      const sec=SECTIONS.find(s=>s.topics.some(t=>t.id===id)); const t=sec.topics.find(t=>t.id===id);
+      document.getElementById('tp-'+id).outerHTML=topicHTML(t); bindChecks();
+      document.getElementById('cnt-'+sec.id).textContent=`${secTopicsDone(sec)}/${sec.topics.length} done`;
+      if(S.topics[id]) toast(`${id} marked complete`);
+    };
+  });
+}
+function renderLearn(opt){
+  const open=opt&&opt.open;
+  $('#app').innerHTML=`<h2>Learn</h2><p class="lead">Read each topic, then tick the box on the left when you understand it.</p>`+
+  `<div class="card"><h3>Introduction</h3><p style="margin:0">Each tool is designed for a specific use. <b>Never misuse a tool</b> – use it only for its designed purpose and in the correct manner. After use, clean it and return it to its proper place. Tools in AV.01 are grouped as: dimension and measurement tools, marking-out tools, cutting tools, and assembly and disassembly tools.</p></div>`+
+  SECTIONS.map((s,i)=>`<details class="sec" id="sec-${s.id}" ${(open?open===s.id:i===0)?'open':''}>
+    <summary><span class="code">${s.id}</span>${s.title}<span class="right" id="cnt-${s.id}">${secTopicsDone(s)}/${s.topics.length} done</span></summary>
+    <div class="lo"><b>Learning objective:</b> ${s.lo}</div>
+    ${s.topics.map(topicHTML).join('')}
+    <div style="padding:14px 20px;border-top:1px solid var(--line)"><button class="btn" data-quiz="${s.id}">Take the ${s.id} quiz →</button></div>
+  </details>`).join('')+
+  `<h2 style="margin-top:26px">Summary</h2><div class="card"><ul style="margin:0;padding-left:20px">
+   <li>Correct tool selection and proper use are essential to ensure safe and effective aircraft maintenance.</li>
+   <li>Accurate measurement and correct torque application are critical to prevent component damage and ensure airworthiness.</li>
+   <li>Proper care, handling and control of tools help prevent errors, Foreign Object Damage (FOD) and maintenance incidents.</li></ul></div>
+   <h2 style="margin-top:26px">Knowledge Check (self-check)</h2><p class="lead">Think of your answer first, then tap to reveal a model answer.</p>`+
+   KNOWLEDGE_CHECK.map((k,i)=>`<div class="card"><b>${k.q}</b><div style="margin-top:8px"><button class="btn sm ghost" data-rev="${i}">Show model answer</button></div><div id="rev-${i}" style="display:none;margin-top:10px" class="tip">${k.a}</div></div>`).join('');
+  bindChecks();
+  document.querySelectorAll('[data-quiz]').forEach(b=>b.onclick=()=>go('quiz',{start:b.dataset.quiz}));
+  document.querySelectorAll('[data-rev]').forEach(b=>b.onclick=()=>{const e=$('#rev-'+b.dataset.rev);const show=e.style.display==='none';e.style.display=show?'block':'none';b.textContent=show?'Hide model answer':'Show model answer';});
+  if(open){const el=document.getElementById('sec-'+open); if(el) el.scrollIntoView();}
+}
+
+/* ================= QUIZ ================= */
+let quizState=null;
+function renderQuizMenu(opt){
+  if(opt&&opt.start){return startQuiz(opt.start);}
+  $('#app').innerHTML=`<h2>Quiz</h2><p class="lead">Pass mark is ${PASS_MARK}%. You can retry as many times as you like – your best score is kept.</p>
+  <div class="grid g2">${SECTIONS.map(s=>`<div class="card"><h3>${s.id} · ${s.title}</h3>
+    <div class="small" style="margin-bottom:8px">${QUESTIONS[s.id].length} questions</div>${statusPill(S.quiz[s.id])}
+    ${S.quiz[s.id]?`<div class="small" style="margin-top:6px">Attempts: ${S.quiz[s.id].attempts} · Last: ${S.quiz[s.id].last}%</div>`:''}
+    <div style="margin-top:12px"><button class="btn" data-q="${s.id}">${S.quiz[s.id]?'Retry':'Start'} quiz</button></div></div>`).join('')}
+  <div class="card" style="border-color:var(--red)"><h3>Final Assessment</h3>
+    <div class="small" style="margin-bottom:8px">${FINAL_COUNT} random questions from AV.01.01 – AV.01.03</div>${statusPill(S.quiz.FINAL)}
+    ${S.quiz.FINAL?`<div class="small" style="margin-top:6px">Attempts: ${S.quiz.FINAL.attempts} · Last: ${S.quiz.FINAL.last}%</div>`:''}
+    <div style="margin-top:12px"><button class="btn red" data-q="FINAL">${S.quiz.FINAL?'Retry':'Start'} final</button></div></div></div>`;
+  document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>startQuiz(b.dataset.q));
+}
+function startQuiz(id){
+  let pool = id==='FINAL' ? shuffle([].concat(...Object.values(QUESTIONS))).slice(0,FINAL_COUNT) : shuffle(QUESTIONS[id]);
+  const items=pool.map(q=>{
+    const opts=shuffle(q.o.map((t,i)=>({t,ok:i===q.a})));
+    return {q:q.q,e:q.e,opts,pick:null};
+  });
+  quizState={id,items,i:0};
+  view='quiz'; renderNav(); renderQuestion(); window.scrollTo({top:0});
+}
+function quizTitle(id){return id==='FINAL'?'Final Assessment':id+' · '+SECTIONS.find(s=>s.id===id).title;}
+function renderQuestion(){
+  const Q=quizState, it=Q.items[Q.i], answered=it.pick!==null;
+  $('#app').innerHTML=`<div class="card">
+    <div class="qhead"><b style="color:var(--navy)">${quizTitle(Q.id)}</b><span class="small">Question ${Q.i+1} of ${Q.items.length}</span></div>
+    <div class="bar"><span style="width:${(Q.i+(answered?1:0))/Q.items.length*100}%"></span></div>
+    <div class="qtext">${esc(it.q)}</div>
+    ${it.opts.map((o,k)=>{
+      let cls=''; if(answered){ if(o.ok) cls='right'; else if(k===it.pick) cls='wrong'; }
+      return `<button class="opt ${cls}" data-k="${k}" ${answered?'disabled':''}>${String.fromCharCode(65+k)}.&nbsp; ${esc(o.t)}</button>`;}).join('')}
+    ${answered?`<div class="fb ${it.opts[it.pick].ok?'ok':'no'}"><b>${it.opts[it.pick].ok?'Correct!':'Not quite.'}</b> ${esc(it.e)}</div>
+      <button class="btn red" id="nx">${Q.i<Q.items.length-1?'Next question →':'See my result'}</button>`:''}
+    <div style="margin-top:14px"><button class="btn sm ghost" id="quit">Quit quiz</button></div></div>`;
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{it.pick=+b.dataset.k;renderQuestion();});
+  if($('#nx')) $('#nx').onclick=()=>{ if(Q.i<Q.items.length-1){Q.i++;renderQuestion();window.scrollTo({top:0});} else finishQuiz(); };
+  $('#quit').onclick=()=>{ if(confirm('Quit this quiz? Your answers will not be saved.')) go('quiz'); };
+}
+function finishQuiz(){
+  const Q=quizState; const right=Q.items.filter(i=>i.opts[i.pick].ok).length;
+  const pct=Math.round(right/Q.items.length*100); const pass=pct>=PASS_MARK;
+  const prev=S.quiz[Q.id]||{attempts:0,best:0,passed:false};
+  S.quiz[Q.id]={attempts:prev.attempts+1,best:Math.max(prev.best,pct),last:pct,passed:prev.passed||pass,date:Date.now(),lastRight:right,lastTotal:Q.items.length};
+  save();
+  const wrong=Q.items.filter(i=>!i.opts[i.pick].ok);
+  $('#app').innerHTML=`<div class="card" style="text-align:center"><div class="small">${quizTitle(Q.id)}</div>
+    <div class="score" style="color:${pass?'var(--ok)':'var(--bad)'}">${pct}%</div>
+    <div style="font-size:18px;margin:6px 0">${right} of ${Q.items.length} correct · ${pass?'<b style="color:var(--ok)">PASS</b>':'<b style="color:var(--bad)">Not yet – pass mark '+PASS_MARK+'%</b>'}</div>
+    <p class="small">${pass?'Well done! This has been recorded in your progress.':'Review the questions below, revisit the topic in the Learn tab, then try again.'}</p>
+    <button class="btn red" id="again">Try again</button> <button class="btn ghost" id="hm">Dashboard</button></div>
+    ${wrong.length?`<div class="card"><h3>Review: questions to revisit (${wrong.length})</h3>${wrong.map(i=>`<div class="review"><div><b>${esc(i.q)}</b></div><div><span class="n">Your answer:</span> ${esc(i.opts[i.pick].t)}</div><div><span class="y">Correct answer:</span> ${esc(i.opts.find(o=>o.ok).t)}</div><div class="small">${esc(i.e)}</div></div>`).join('')}</div>`:'<div class="card"><b>Perfect score – no questions to review!</b></div>'}`;
+  $('#again').onclick=()=>startQuiz(Q.id); $('#hm').onclick=()=>go('home');
+  window.scrollTo({top:0});
+}
+
+/* ================= TOOLS ================= */
+function renderTools(){
+  const fr=[];
+  for(let n=1;n<=63;n++){let d=64,k=n; while(k%2===0&&d%2===0){k/=2;d/=2;} if(!fr.some(f=>f[0]===k&&f[1]===d)) fr.push([k,d]);}
+  fr.sort((a,b)=>a[0]/a[1]-b[0]/b[1]);
+  $('#app').innerHTML=`<h2>Tools</h2><p class="lead">Quick calculators for practice. For real maintenance always use values and formulas from the approved manual and the handbook supplied with your equipment.</p>
+  <div class="grid g2">
+   <div class="card tool"><h3>Inch-pounds ⇄ Foot-pounds</h3><div class="small">Divide in·lb by 12 to get ft·lb.</div>
+     <label for="inlb">Inch-pounds (in·lb)</label><input type="number" id="inlb" step="any" placeholder="e.g. 600">
+     <label for="ftlb">Foot-pounds (ft·lb)</label><input type="number" id="ftlb" step="any" placeholder="e.g. 50">
+     <div class="result" id="r1">Enter a value in either box.</div></div>
+   <div class="card tool"><h3>Torque wrench extension calculator</h3><div class="small">When a drive-end extension is used, the wrench reading changes.</div>
+     <div style="margin-top:6px"><span class="formula">T<sub>W</sub> = T<sub>A</sub> × L ÷ (L + E)</span></div>
+     <div class="small" style="margin-top:6px">T<sub>A</sub> = torque you want at the fastener · L = length of the wrench (drive centre to where you hold the handle) · E = effective length of the extension (same length unit as L, extension in line with the wrench).</div>
+     <label for="ta">Desired torque at fastener T<sub>A</sub></label><input type="number" id="ta" step="any" placeholder="e.g. 100">
+     <label for="lw">Wrench length L</label><input type="number" id="lw" step="any" placeholder="e.g. 15">
+     <label for="ex">Extension length E</label><input type="number" id="ex" step="any" placeholder="e.g. 3">
+     <div class="result" id="r2">Enter all three values.</div>
+     <div class="small" style="margin-top:8px">Always confirm with the formula in your torque wrench handbook. Do not use a handle extension on a flexible beam wrench.</div></div>
+   <div class="card tool"><h3>SWG lookup (course notes table)</h3>
+     <label for="swg">Select SWG number</label><select id="swg">${SWG.map(s=>`<option value="${s[0]}">SWG ${s[0]}</option>`).join('')}</select>
+     <div class="result" id="r3"></div></div>
+   <div class="card tool"><h3>Ruler fraction → decimal &amp; mm</h3>
+     <label for="frac">Fraction of an inch</label><select id="frac">${fr.map(f=>`<option value="${f[0]}/${f[1]}">${f[0]}/${f[1]}"</option>`).join('')}</select>
+     <div class="result" id="r4"></div><div class="small" style="margin-top:8px">1 inch = 25.4 mm</div></div>
+  </div>`;
+  const inlb=$('#inlb'),ftlb=$('#ftlb');
+  const r=(v,d)=>Math.round(v*Math.pow(10,d))/Math.pow(10,d);
+  inlb.oninput=()=>{ if(inlb.value===''){ftlb.value='';$('#r1').textContent='Enter a value in either box.';return;} ftlb.value=r(inlb.value/12,3); $('#r1').textContent=`${inlb.value} in·lb = ${r(inlb.value/12,3)} ft·lb`; };
+  ftlb.oninput=()=>{ if(ftlb.value===''){inlb.value='';$('#r1').textContent='Enter a value in either box.';return;} inlb.value=r(ftlb.value*12,2); $('#r1').textContent=`${ftlb.value} ft·lb = ${r(ftlb.value*12,2)} in·lb`; };
+  const calc=()=>{const A=parseFloat($('#ta').value),L=parseFloat($('#lw').value),E=parseFloat($('#ex').value);
+    if([A,L,E].some(isNaN)||L<=0||E<0||A<0){$('#r2').textContent='Enter all three values.';return;}
+    $('#r2').innerHTML=`Set the wrench to <span style="color:var(--red)">${r(A*L/(L+E),2)}</span> (target ${A})`;};
+  ['ta','lw','ex'].forEach(i=>$('#'+i).oninput=calc);
+  const sw=()=>{const x=SWG.find(s=>s[0]==$('#swg').value);$('#r3').textContent=`SWG ${x[0]} = ${fmtMM(x[1])} mm`;}; $('#swg').onchange=sw; sw();
+  const fc=()=>{const [n,d]=$('#frac').value.split('/').map(Number);$('#r4').textContent=`${n}/${d}" = ${r(n/d,4)} in = ${r(n/d*25.4,2)} mm`;}; $('#frac').onchange=fc; fc();
+}
+
+/* ================= PDF REPORT (built in-app, no print dialog needed) ================= */
+function pdfSafe(s){
+  s=String(s).replace(/[\u2013\u2014]/g,'-').replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"').replace(/\u00B7/g,'|').replace(/\u2026/g,'...');
+  let o='';
+  for(const ch of s){const c=ch.charCodeAt(0); if(c<32) continue; o+= (c<=255)?ch:'?';}
+  return o.replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');
+}
+function pdfDate(t){const d=new Date(t);const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return String(d.getDate()).padStart(2,'0')+' '+m[d.getMonth()]+' '+d.getFullYear();}
+function buildReportPDF(){
+  const t=totals(), done=allDone(), c=[];
+  const NAVY='#0b2545', RED='#d6001c', INK='#1b2430', GREY='#5b6778', GREEN='#1b8a4b';
+  const rgb=h=>{h=h.replace('#','');return [0,2,4].map(i=>(parseInt(h.substr(i,2),16)/255).toFixed(3)).join(' ');};
+  const rect=(x,y,w,h,col)=>c.push(`${rgb(col)} rg ${x} ${y} ${w} ${h} re f`);
+  const box=(x,y,w,h,col)=>c.push(`${rgb(col)} RG 0.8 w ${x} ${y} ${w} ${h} re S`);
+  const line=(x1,y1,x2,y2,col,w)=>c.push(`${rgb(col)} RG ${w||0.5} w ${x1} ${y1} m ${x2} ${y2} l S`);
+  const text=(x,y,s,size,bold,col)=>c.push(`BT /${bold?'F2':'F1'} ${size} Tf ${rgb(col||INK)} rg ${x} ${y} Td (${pdfSafe(s)}) Tj ET`);
+  const lastDate=Math.max(0,...Object.values(S.quiz).map(q=>q.date||0));
+  rect(0,742,595,100,NAVY); rect(0,738,595,4,RED);
+  text(40,818,'ST ENGINEERING  |  MTC  |  MAMT AVIONICS',8,false,'#cfe0f5');
+  text(40,788,'AV.01 General Tools and Equipment',20,true,'#ffffff');
+  text(40,764,'Trainee Progress Report',12,false,'#cfe0f5');
+  text(40,712,'Trainee:',10,true,GREY); text(100,712,S.name||'-',11,true,INK);
+  text(340,712,'Report date:',10,true,GREY); text(410,712,pdfDate(Date.now()),10,false,INK);
+  text(40,694,'Overall progress:',10,true,GREY); text(135,694,`${t.pct}%  (${t.done} of ${t.total} items complete)`,10,false,INK);
+  text(340,694,'Last quiz activity:',10,true,GREY); text(435,694,lastDate?pdfDate(lastDate):'-',10,false,INK);
+  rect(40,670,515,10,'#e6ecf4'); if(t.pct>0) rect(40,670,515*t.pct/100,10,t.pct===100?GREEN:NAVY);
+  if(done){ rect(40,632,515,26,'#e5f6ec'); text(50,641,`MODULE COMPLETE - all topics done, all quizzes passed, Final Assessment ${S.quiz.FINAL.best}%`,10,true,'#14633a'); }
+  else { rect(40,632,515,26,'#fff4de'); text(50,641,'MODULE IN PROGRESS - not all topics and quizzes are complete yet',10,true,'#8a5200'); }
+  const cols=[46,300,352,424,490];
+  rect(40,598,515,22,NAVY);
+  ['Section','Topics','Quiz (best)','Attempts','Status'].forEach((h,i)=>text(cols[i],605,h,9,true,'#ffffff'));
+  let y=598;
+  const rows=SECTIONS.map(s=>{const q=S.quiz[s.id];return [s.id+'  '+s.title,`${secTopicsDone(s)}/${s.topics.length}`,q?q.best+'%':'-',String(q?q.attempts:0),secDone(s)?'Complete':'Open',secDone(s)];});
+  const f=S.quiz.FINAL; rows.push(['Final Assessment','-',f?f.best+'%':'-',String(f?f.attempts:0),quizPassed('FINAL')?'Passed':'Open',quizPassed('FINAL')]);
+  rows.forEach(r=>{
+    y-=24; line(40,y,555,y,'#d9e1ec',0.6);
+    r.slice(0,4).forEach((v,i)=>text(cols[i],y+8,v,i===0?9:10,false,INK));
+    text(cols[4],y+8,r[4],10,true,r[5]?GREEN:GREY);
+  });
+  y-=34; text(40,y,'Topic checklist',13,true,NAVY); line(40,y-6,555,y-6,RED,1.2); y-=10;
+  SECTIONS.forEach(s=>{
+    y-=20; text(40,y,s.id+'  '+s.title,10,true,NAVY);
+    s.topics.forEach(tp=>{
+      y-=16; const d=!!S.topics[tp.id];
+      if(d){ rect(48,y-1,9,9,GREEN); line(50,y+3,52.5,y,'#ffffff',1.3); line(52.5,y,56,y+7,'#ffffff',1.3); } else box(48,y-1,9,9,'#9aa9bf');
+      text(66,y,tp.id,9,true,GREY); text(100,y,tp.title,10,false,d?INK:GREY);
+      text(400,y,d?'Completed':'Not yet completed',9,false,d?GREEN:'#9aa9bf');
+    });
+  });
+  line(40,56,555,56,'#d9e1ec',0.8);
+  text(40,42,`Pass mark ${PASS_MARK}%. Self-recorded progress from the AV.01 Trainee Tracker (on the trainee's own device).`,8,false,GREY);
+  text(40,31,'Training aid only - always follow the approved maintenance manual and your instructor\'s directions.',8,false,GREY);
+  const content=c.join('\n');
+  const objs=[null,
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>',
+    `<< /Length ${content.length} >>\nstream\n${content}\nendstream`];
+  let pdf='%PDF-1.4\n'; const off=[];
+  for(let i=1;i<=6;i++){off[i]=pdf.length; pdf+=`${i} 0 obj\n${objs[i]}\nendobj\n`;}
+  const xr=pdf.length;
+  pdf+='xref\n0 7\n0000000000 65535 f \n'+off.slice(1).map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')+`trailer\n<< /Size 7 /Root 1 0 R >>\nstartxref\n${xr}\n%%EOF`;
+  const bytes=new Uint8Array(pdf.length); for(let i=0;i<pdf.length;i++) bytes[i]=pdf.charCodeAt(i)&255;
+  return new Blob([bytes],{type:'application/pdf'});
+}
+function downloadPDF(){
+  try{
+    const blob=buildReportPDF();
+    const fn='AV01_Progress_Report_'+(S.name||'Trainee').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'')+'.pdf';
+    if(navigator.msSaveOrOpenBlob){navigator.msSaveOrOpenBlob(blob,fn);return;}
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=fn; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),10000);
+    toast('PDF created: '+fn+' (check your Downloads folder)',4000);
+  }catch(e){ toast('Sorry, the PDF could not be created. Please use Print report instead.',4500); }
+}
+
+/* ================= REPORT ================= */
+function fmtDate(t){return t?new Date(t).toLocaleDateString('en-SG',{day:'2-digit',month:'short',year:'numeric'}):'–';}
+function renderReport(){
+  const t=totals(); const done=allDone();
+  const lastDate=Math.max(0,...Object.values(S.quiz).map(q=>q.date||0));
+  $('#app').innerHTML=`<h2>Progress Report</h2><p class="lead">Download your report as a PDF to give to your instructor, or export a backup file.</p>
+  <div class="card noprint"><label class="nm" for="nm2">Trainee name</label><input id="nm2" type="text" value="${esc(S.name)}" placeholder="Your full name"> <button class="btn sm" id="sv">Save</button></div>
+  ${done?`<div class="cert"><div class="small">ST Engineering · MTC · MAMT Avionics</div><div class="big">AV.01 General Tools and Equipment</div><p>Module completed by</p><div class="big" style="color:var(--red)">${esc(S.name||'(enter your name)')}</div><p class="small">All topics completed · all quizzes passed · Final Assessment ${S.quiz.FINAL.best}% · ${fmtDate(S.quiz.FINAL.date)}</p></div><br>`:''}
+  <div class="card"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><div><b>Trainee:</b> ${esc(S.name||'–')}</div><div><b>Overall:</b> ${t.pct}% (${t.done}/${t.total})</div><div><b>Report date:</b> ${fmtDate(Date.now())}</div></div>
+   <div class="bar" style="margin:12px 0"><span style="width:${t.pct}%"></span></div>
+   <div class="repwrap"><table class="rep"><tr><th>Section</th><th>Topics</th><th>Quiz (best)</th><th>Attempts</th><th>Status</th></tr>
+   ${SECTIONS.map(s=>{const q=S.quiz[s.id];return `<tr><td><b>${s.id}</b> ${s.title}</td><td>${secTopicsDone(s)}/${s.topics.length}</td><td>${q?q.best+'%':'–'}</td><td>${q?q.attempts:0}</td><td>${secDone(s)?'<span class="pill ok">Complete</span>':'<span class="pill todo">Open</span>'}</td></tr>`;}).join('')}
+   <tr><td><b>Final Assessment</b></td><td>–</td><td>${S.quiz.FINAL?S.quiz.FINAL.best+'%':'–'}</td><td>${S.quiz.FINAL?S.quiz.FINAL.attempts:0}</td><td>${quizPassed('FINAL')?'<span class="pill ok">Passed</span>':'<span class="pill todo">Open</span>'}</td></tr></table></div>
+   <p class="small" style="margin-bottom:0">Pass mark ${PASS_MARK}%. Last activity: ${fmtDate(lastDate)}. Self-recorded progress on this device.</p></div>
+  <div class="card noprint"><h3>Manage progress</h3>
+    <div class="actions">
+      <button class="btn red" id="pdf">Download PDF report</button>
+      <button class="btn ghost" id="pr">Print report</button>
+    </div>
+    <p class="small" style="margin:6px 0 14px">The PDF saves straight to your Downloads folder – no print window needed. If you add or change your name, press <b>Save</b> first.</p>
+    <div class="actions">
+      <button class="btn ghost" id="ex">Export backup (.json)</button>
+      <label class="btn ghost" style="margin:0">Import backup<input type="file" id="im" accept=".json,application/json" style="display:none"></label>
+      <button class="btn ghost" id="rs" style="color:var(--bad);border-color:var(--bad)">Reset all progress</button>
+    </div>
+    <p class="small" style="margin-bottom:0">Progress is stored in this browser only. Export a backup before clearing browser data or switching device.</p></div>`;
+  $('#sv').onclick=()=>{S.name=$('#nm2').value.trim();save();renderReport();toast('Name saved');};
+  $('#pdf').onclick=()=>{ const v=$('#nm2').value.trim(); if(v!==S.name){S.name=v;save();} downloadPDF(); };
+  $('#pr').onclick=()=>{ try{window.print();}catch(e){} toast('If no print window opened, please use "Download PDF report" instead.',4000); };
+  $('#ex').onclick=()=>{const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AV01_progress_'+(S.name||'trainee').replace(/\s+/g,'_')+'.json';document.body.appendChild(a);a.click();a.remove();toast('Backup downloaded');};
+  $('#im').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(!d||typeof d!=='object'||!d.topics||!d.quiz)throw 0;S=Object.assign(blank(),d);save();renderReport();toast('Progress imported');}catch(x){alert('That file is not a valid AV.01 progress backup.');}};rd.readAsText(f);};
+  $('#rs').onclick=()=>{if(confirm('Reset ALL progress and scores? This cannot be undone.')){S=blank();save();go('home');toast('Progress reset');}};
+}
+
+/* ================= INIT ================= */
+renderNav(); render();
+</script>
+</body>
+</html>
