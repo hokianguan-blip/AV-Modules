@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AV.02 EWIS and Related Accessories – Trainee Tracker</title>
+<style>
+:root{
+  --navy:#0b2545; --navy2:#13315c; --red:#d6001c; --sky:#e8f0fa; --bg:#f3f6fa;
+  --ink:#1b2430; --mute:#5b6778; --line:#d9e1ec; --ok:#1b8a4b; --okbg:#e5f6ec; --bad:#c0262d; --badbg:#fdecec; --warn:#b36b00; --warnbg:#fff4de;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-bottom:5px solid var(--red)}
+.hwrap{max-width:1050px;margin:0 auto;padding:18px 20px 0}
+.brand{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.8}
+.title{display:flex;align-items:center;gap:14px;margin:6px 0 14px;flex-wrap:wrap}
+.badge{background:var(--red);color:#fff;font-weight:700;padding:6px 12px;border-radius:8px;font-size:18px;letter-spacing:.04em}
+h1{margin:0;font-size:24px;line-height:1.2}
+.sub{font-size:13px;opacity:.85}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:transparent;color:#cfe0f5;border:0;padding:11px 18px;font-size:15px;font-weight:600;cursor:pointer;border-radius:10px 10px 0 0;font-family:inherit}
+nav button:hover{background:rgba(255,255,255,.1)}
+nav button.on{background:var(--bg);color:var(--navy)}
+main{max-width:1050px;margin:0 auto;padding:22px 20px 60px}
+h2{color:var(--navy);margin:0 0 6px;font-size:22px}
+h3{color:var(--navy);margin:0 0 6px;font-size:17px}
+p.lead{color:var(--mute);margin:0 0 18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(11,37,69,.05)}
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.btn{display:inline-block;background:var(--navy);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--navy2)}
+.btn.red{background:var(--red)} .btn.red:hover{background:#b30017}
+.btn.ghost{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+.btn.ghost:hover{background:var(--sky)}
+.btn.sm{padding:6px 12px;font-size:13px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.pill.ok{background:var(--okbg);color:var(--ok)} .pill.todo{background:#eef1f6;color:var(--mute)} .pill.warn{background:var(--warnbg);color:var(--warn)}
+.bar{height:10px;background:#e6ecf4;border-radius:99px;overflow:hidden}
+.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--navy2),var(--red));width:0;transition:width .4s}
+.hero{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.ring{position:relative;width:150px;height:150px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font-size:32px;color:var(--navy)} .ring .num span{font-size:12px;color:var(--mute)}
+.small{font-size:13px;color:var(--mute)}
+label.nm{display:block;font-size:13px;font-weight:600;color:var(--mute);margin-bottom:4px}
+input[type=text],input[type=number],select{font:inherit;padding:9px 12px;border:1px solid #b9c5d6;border-radius:9px;width:100%;max-width:340px;background:#fff}
+input:focus,select:focus,button:focus-visible{outline:3px solid #8db4ea;outline-offset:1px}
+details.sec{background:#fff;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}
+details.sec>summary{cursor:pointer;list-style:none;padding:16px 20px;display:flex;align-items:center;gap:12px;font-weight:700;color:var(--navy);font-size:17px;flex-wrap:wrap}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary .code{background:var(--navy);color:#fff;padding:3px 10px;border-radius:7px;font-size:14px}
+details.sec>summary .right{margin-left:auto;font-size:13px;color:var(--mute);font-weight:600}
+.lo{background:var(--sky);margin:0 20px 12px;padding:10px 14px;border-radius:10px;font-size:14px;color:var(--navy2)}
+.topic{border-top:1px solid var(--line);padding:16px 20px;display:flex;gap:16px;align-items:flex-start}
+.topic.done{background:#f6fcf8}
+.topic .chk{flex:none;width:30px;height:30px;border-radius:8px;border:2px solid #9aa9bf;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;margin-top:2px;font-family:inherit;padding:0}
+.topic.done .chk{background:var(--ok);border-color:var(--ok)}
+.topic h4{margin:0 0 4px;color:var(--navy);font-size:16px}
+.topic h4 small{color:var(--red);font-weight:700;margin-right:6px}
+.topic h5{margin:12px 0 2px;color:var(--navy2);font-size:14px;text-transform:none}
+.topic ul{margin:6px 0;padding-left:20px}
+.topic li{margin:3px 0}
+.topic p.pt{margin:8px 0}
+.tip{background:var(--warnbg);border-left:4px solid #e0a100;padding:8px 12px;border-radius:6px;font-size:14px;margin-top:8px}
+.warnbox{background:var(--badbg);border-left:4px solid var(--bad);padding:8px 12px;border-radius:6px;font-size:14px;margin-top:8px}
+.tblwrap{overflow-x:auto}
+table.t{border-collapse:collapse;width:100%;font-size:14px;margin-top:8px}
+table.t th,table.t td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+table.t th{background:var(--navy);color:#fff}
+table.t tr:nth-child(even) td{background:#f7f9fc}
+.cap{text-align:center;font-weight:700;font-size:14px;margin-top:6px;color:var(--navy)}
+.qhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.qtext{font-size:19px;font-weight:600;color:var(--navy);margin:10px 0 14px}
+.opt{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-radius:12px;padding:13px 16px;margin-bottom:10px;font-size:16px;cursor:pointer;font-family:inherit;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--navy2);background:var(--sky)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--bad);background:var(--badbg)}
+.opt:disabled{cursor:default}
+.fb{padding:12px 16px;border-radius:10px;margin:6px 0 14px;font-size:15px}
+.fb.ok{background:var(--okbg);color:#14633a} .fb.no{background:var(--badbg);color:#8f1d22}
+.score{font-size:52px;font-weight:800;color:var(--navy);line-height:1}
+.review{border-top:1px solid var(--line);padding:10px 0;font-size:15px}
+.review .y{color:var(--ok);font-weight:700}.review .n{color:var(--bad);font-weight:700}
+.tool label{display:block;font-size:13px;font-weight:600;color:var(--mute);margin:10px 0 4px}
+.result{background:var(--sky);border-radius:10px;padding:10px 14px;margin-top:12px;font-weight:700;color:var(--navy);font-size:17px;min-height:44px}
+.formula{font-family:Consolas,monospace;background:#f1f4f9;padding:6px 10px;border-radius:7px;display:inline-block}
+.cert{border:3px double var(--navy);border-radius:var(--radius);padding:28px;text-align:center;background:#fff}
+.cert .big{font-size:26px;font-weight:800;color:var(--navy)}
+.repwrap{overflow-x:auto}
+table.rep{width:100%;border-collapse:collapse;font-size:15px;min-width:520px}
+table.rep th,table.rep td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left}
+table.rep th{color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+footer{max-width:1050px;margin:0 auto;padding:0 20px 30px;font-size:12px;color:var(--mute)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 20px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:9;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+@media print{
+  header nav,.noprint,footer,.toast{display:none!important}
+  body{background:#fff} main{padding:0}
+  .card{box-shadow:none;break-inside:avoid}
+}
+@media (max-width:600px){h1{font-size:20px} .topic{padding:14px} .qtext{font-size:17px} nav button{padding:9px 12px;font-size:14px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hwrap">
+    <div class="brand">ST Engineering · Maintenance Training Centre (MTC) · Military Aviation Maintenance Training (MAMT)</div>
+    <div class="title">
+      <span class="badge">AV.02</span>
+      <div><h1>EWIS and Related Accessories</h1><div class="sub">Avionics Module · 18 hours · Trainee Progress Tracker &amp; Quiz</div></div>
+    </div>
+    <nav id="nav"></nav>
+  </div>
+</header>
+<main id="app"></main>
+<footer>Training aid based on course notes AV.02 (Issue 1, 14 May 2026, Rev 0). Always follow the approved maintenance manual and your instructor's directions. Your progress is saved on this device and browser only – use <b>Export</b> on the Progress Report page to keep a backup.</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= DATA ================= */
+const PASS_MARK = 80;
+const MODULE_NAME = 'AV.02 EWIS and Related Accessories';
+const OUTCOMES = [
+  `Understand Electrical Wiring Interconnection System (EWIS) principles used in aircraft.`,
+  `Apply approved practices for fastening, wire locking, and O-ring installation.`,
+  `Apply correct methods for aircraft wiring looms and cable management.`,
+  `Perform appropriate cleaning and degreasing of aircraft components and wire harnesses.`,
+  `Identify and apply suitable protection methods for aircraft wires and components.`,
+  `Support safety, reliability, and continued airworthiness of aircraft EWIS installations.`
+];
+
+const SECTIONS = [
+  {id:'AV.02.01', title:`Fastening, Wire Locking and O-Rings`,
+   lo:`Correctly secure aircraft components using approved fastening, wire locking and O-ring techniques to prevent loosening, leakage or failure.`,
+   topics:[
+    {id:'2.1.01', title:`Joints, Bolts and Bolt Assembly`, pts:[
+      `Two types of joint secure parts: semi-permanent and permanent.`,
+      `<b>Semi-permanent joints</b> – for parts that need frequent removal without damage to parts and fasteners, e.g. bolts, nuts and screws.`,
+      `<b>Permanent joints</b> – used where parts are unlikely to be dismantled during their useful life; parts may be damaged when removed, e.g. rivets and welding.`,
+      `Most bolts in aircraft structures are general-purpose AN bolts, or NAS or MS internal-wrenching or close-tolerance bolts. Where the manufacturer makes special bolts, use them or their equivalent replacement.`,
+      `Bolt types shown in the course notes: standard head, drilled hex head, countersunk head, internal hex head, eyebolt and clevis bolt.`,
+      `Bolts are usually used in shear, so the smooth shank length (<b>grip length</b>) should equal the material thickness – no threads in contact with the bearing surface.`,
+      `A bolt with a slightly longer grip length may be used if washers are placed under the nut or bolt head. A <b>maximum of three washers</b> may be used on a bolt-nut assembly, with <b>not more than two</b> under the nut or bolt head (ideally one under each).`,
+      `If the edge of the bolt head contacts a radius (fillet), use a washer bevelled to fit the radius. If there is a radius at the shank under the head, use suitable washers to give adequate bearing area.`,
+      `After the nut is secured, a <b>minimum of one thread</b> must be exposed.`],
+     tip:`Grip length = material thickness. At least one thread must show after the nut is tight.`},
+    {id:'2.1.02', title:`Screws`, pts:[
+      `Screws are used on the same general principle as bolts, but they are applied differently.`,
+      `Screws differ from bolts in these ways:`,
+      `– Lower material strength`,
+      `– Looser thread fit`,
+      `– Threaded up to the head`,
+      `– Head formed to be used with screwdrivers`,
+      `– Pass through a clear hole in one part and engage a threaded hole in the other part`]},
+    {id:'2.1.03', title:`Nuts and Anchor Nuts`, pts:[
+      `Common aircraft structural nuts: castle (castellated), castle shear, plain, sheet spring and wing nuts.`],
+     groups:[
+      {h:`Plain nut`, pts:[
+        `Limited use on aircraft structures. Needs an auxiliary locking device such as a check nut or lock washer.`,
+        `Light hex nuts with coarse threads are used in miscellaneous applications and must be locked by an auxiliary device.`,
+        `A <b>check nut</b> is a locking device for plain nuts, screws and threaded rod ends. It must not be used in tension or shear.`]},
+      {h:`Castle (castellated) nut`, pts:[
+        `Used with <b>drilled shank bolts</b>. Designed to take a cotter (split) pin or lockwire for safetying.`,
+        `May be used in tension and on bolts which turn.`]},
+      {h:`Sheet spring nut`, pts:[
+        `Limited use. Used with sheet-metal self-tapping screws in non-structural locations.`,
+        `Used to support line clamps, conduit clamps, electrical equipment and access panels.`]},
+      {h:`Wing nut`, pts:[
+        `Limited applications, e.g. securing hose clamps and battery connections, where the tightness is ordinarily obtained by fingers or hand tools (pliers).`]},
+      {h:`Anchor nuts (nut plates)`, pts:[
+        `Anchor-type self-locking nuts are riveted on the inner surface, so bolts can be inserted from outside without holding the nut during tightening.`,
+        `Single anchor or double anchor type; fixed or floating in a cage. Single anchor nuts have adjacent rivet holes; double anchor nuts have a rivet hole on either side of the nut.`]}]},
+    {id:'2.1.04', title:`Self-Locking Nuts`, pts:[
+      `Acceptable on certificated aircraft, subject to the manufacturer's recommended practices. They give tight connections that will not shake loose under severe vibration.`,
+      `Two types: <b>all-metal</b> and <b>fibre or nylon lock</b>.`,
+      `All-metal: threads in the locking insert, or a saw-cut insert with a pinched-in thread in the locking section.`,
+      `Fibre type: an unthreaded fibre locking insert is held in the nut. The fibre is smaller in diameter than the nut, so the bolt taps into the insert, producing the locking action.`,
+      `Must <b>not</b> be used at joints where the nut or bolt is subject to rotation.`,
+      `When reusing fibre-type nuts, check the fibre has not lost its locking friction or become brittle.`,
+      `Bolts of 5/16 diameter and above with cotter pin holes may be used with self-locking nuts only if free from burrs around the holes. Bolts with damaged threads and rough ends are not acceptable.`,
+      `Do not tap the fibre insert.`,
+      `Types shown in the course notes: Nyloc, low-profile Nyloc, metal lock nut, Oddie, Philidas and Aerotight.`],
+     warn:`Do not reuse a locknut if it can be run up finger tight.`},
+    {id:'2.1.05', title:`Washers`, pts:[
+      `Washers give a bearing surface for nuts and act as spacers or shims to obtain the proper grip length. They also adjust the position of castellated nuts to the drilled cotter pin hole, and apply tension between a nut and the surface to prevent the nut vibrating loose.`,
+      `The three most common types in airframe repair: flat (plain) washer, lock washer and special washer.`],
+     groups:[
+      {h:`Flat washers`, pts:[
+        `Give a smooth surface between a nut and the material being clamped. Made of cadmium-plated steel, commercial brass, corrosion-resistant steel and 2024 aluminium alloy. Sizes range from a No. 2 machine screw to a 1-inch bolt.`,
+        `<b>Light series</b> washer – half the thickness of a regular washer, identified by the letter "L" (e.g. AN960L). Use one when the castellations of an AN310 nut do not line up with the cotter pin hole at the correct torque.`,
+        `<b>Large area</b> washers (AN970, cadmium-plated steel, inside diameters 3/16 to 1/2 inch) spread the fastener load on wood or composite structures.`]},
+      {h:`Lock washers`, pts:[
+        `Used between the nut and joint surface when self-locking nuts or cotter pins are not convenient, and the joint is not structurally critical. The spring action creates friction between the bolt and nut threads.`,
+        `Two types: the common <b>AN935 split lock washer</b> (No. 4 machine screw to 1/2 inch bolt) and the thinner <b>AN936 shakeproof lock washer</b> (internal or external teeth).`]},
+      {h:`Spring washers`, pts:[
+        `A single coil of square-section spring with sharp corners, or a double coil of flat spring.`,
+        `<b>A flat washer should always be used with a spring washer</b>, so the spring washer does not damage the component surface.`,
+        `May be re-used if it is still springy and keeps its sharp corners.`]},
+      {h:`Shakeproof washers`, pts:[
+        `Saw-tooth serrations let the nut ride over them when fastening, but bite into the nut when it begins to loosen.`]},
+      {h:`Tab washers`, pts:[
+        `Thin metal washers with two or more tabs: one tab is bent over the job (or into a hole), another is bent against a face of the nut.`,
+        `Can only be used <b>once</b>. It is not permissible to straighten the tabs and re-use the washer.`]}]},
+    {id:'2.1.06', title:`Locking Devices`, pts:[
+      `Screw-type fasteners tend to unscrew under vibration and varying stresses, so locking devices are used.`,
+      `Types: split pins, circlips, spring washers, tab washers, shakeproof washers, locking plates, lock nuts, liquid thread sealant, varnish, adhesives, quick-release fasteners and locking wire.`],
+     groups:[
+      {h:`Split pins (cotter pins)`, pts:[
+        `Made of mild steel or alloy steel. They pass through holes in drilled shank bolts to secure castle nuts.`,
+        `Must be a good fit in both the hole and the slot. Secured by bending the legs.`,
+        `After removal, a split pin must be discarded and <b>never re-used</b>. Fit a new pin.`]},
+      {h:`Lock nut (check nut or jam nut)`, pts:[
+        `A standard hexagonal nut, usually the thin type, screwed tightly against a plain nut after the plain nut has been tightened.`]},
+      {h:`Liquid thread sealant`, pts:[
+        `A liquid plastic that hardens between metal surfaces to form a tough plastic that grips. Treated nuts, bolts and screws resist vibration, yet can be removed with ordinary tools.`,
+        `Also seals threaded joints against fluid pressure and corrosion.`]},
+      {h:`Varnish`, pts:[
+        `Shellac varnish can make small nuts and screws shakeproof. It is applied to the nut and exposed thread, and sets hard on drying.`,
+        `Apply heat to melt the varnish before trying to unscrew a treated component.`]}]},
+    {id:'2.1.07', title:`Wire Locking`, pts:[
+      `Nuts, bolts and screws for locking wire are supplied drilled. Hexagonal heads usually have a hole at each corner; round heads have a single hole across the diameter.`,
+      `After tightening, the wire is passed through the hole and secured to companion bolts or a nearby point. It must be <b>taut</b> and positioned so it prevents the nut or bolt from unscrewing.`,
+      `The wire may be a single or double twist. The <b>double twist</b> method is normally preferred.`,
+      `If locking wire is broken or tampered with, re-lock using new wire.`,
+      `In the double twist method, the strand leaving the hole passes over the wire looped around the nut or bolt, so the loop is pressed down.`,
+      `After the last nut or bolt, twist the wire into a <b>pigtail 3 to 5 twists long</b> before cutting. Bend the pigtail <b>inwards</b> around the nut or bolt to avoid injury.`,
+      `Tools: pliers, wire twister and wire cutter.`,
+      `Use non-corrodible steel wire of suitable gauge, e.g. 22 SWG, 32 SWG or 40 SWG. Use only new, unkinked wire.`,
+      `Route the wire so it opposes any tendency of the locked parts to unscrew. For right-hand threads it is routed in a "reversed S" direction; for left-hand threads it is routed the opposite way.`],
+     groups:[
+      {h:`Important steps`, pts:[
+        `Check whether the hardware has a <b>right-hand or left-hand thread</b>.`,
+        `Use the correct gauge of wire.`,
+        `Use only new wire – locking wire must never be re-used.`,
+        `Make sure the loosening tendency of either part is countered by the tightening of the other part.`,
+        `A tightened wire should be taut with approximately <b>8 to 10 twists per inch</b>.`,
+        `Cut surplus wire and bend it so it cannot catch. Dispose of the cut wire in the <b>F.O.D. bins</b> provided.`]}],
+     warn:`Locking wire must never be re-used.`},
+    {id:'2.1.08', title:`Sealing Compounds – Types, Mixing and Curing`, pts:[
+      `Sealing compounds seal areas of the aircraft to withstand pressurisation, prevent fuel leakage, keep fumes out of certain areas, or prevent corrosion by sealing against the weather.`,
+      `Most sealants have two or more ingredients mixed to give the required strength, flexibility and adherence. Some are ready to use as packaged; others need mixing.`,
+      `<b>One-part sealant</b> – supplied ready for use. A thinner recommended by the manufacturer may change the consistency.`,
+      `<b>Two-part sealant</b> – packed separately to prevent curing before use: a base compound and an accelerator. Generally mixed in equal portions by weight, or as the manufacturer recommends.`,
+      `Weigh sealant carefully on a balance. Stir the base and accelerator before weighing. Discard accelerator that is dried out or lumpy. Some kits come pre-weighed.`,
+      `Mix thoroughly but carefully to avoid air entrapment. A trial on a piece of glass can show whether it is well mixed.`,
+      `Working life of mixed sealant is typically half an hour to four hours, depending on class. Apply it as soon as possible, or store it refrigerated.`,
+      `Unmixed sealant stored under refrigeration must be conditioned to ambient temperature before mixing, to prevent moisture condensation.`,
+      `<b>Curing:</b> the rate varies with temperature and humidity. Below 60°F curing is extremely slow; above 70°F it is typically faster. The ideal is <b>77°F with 50% relative humidity</b>.`,
+      `Heat (infrared lamps or heated air) can speed curing, but the temperature must not exceed <b>120°F</b> (manufacturer dependent).`,
+      `Sealant must be cured to a <b>tack-free</b> condition before any top coating is applied. Tack-free means a sheet of plastic pressed onto the sealant no longer adheres.`,
+      `Types: pressure sealant (pressurised areas), weather sealant (exterior surfaces), fuel cell sealant (pressurised fuel tanks) and temperature-resistant sealant (high-temperature areas).`],
+     tables:[{cap:`Designation of sealants (classes)`, head:[`Class`,`Description and use`], rows:[
+       [`A`,`Low viscosity (watery) – application by brushing`],
+       [`B`,`Heavy thixotropic (pasty) – application by sealant gun or spatula`],
+       [`C`,`Heavy thixotropic with a long squeeze-out time`],
+       [`D`,`Extra-heavy paste – hole-filling applications`],
+       [`E`,`Low viscosity – spray application`]]}],
+     groups:[
+      {h:`Numbers and terms`, pts:[
+        `The number after class A, B or D (e.g. 1/2, 2) is the <b>minimum time in hours</b> the sealant stays applicable. For class C, numbers such as 20–48 show the minimum squeeze-out life.`,
+        `<b>Application time</b> – maximum time between mixing (or thawing) and completing application to the structure.`,
+        `<b>Squeeze-out life</b> – maximum time between mixing (or thawing) and final fastening of the faying surfaces.`,
+        `<b>Tack-free time</b> – maximum time until the sealant surface no longer sticks to polyethylene film or a dry knuckle.`,
+        `<b>Cure time</b> – maximum time until the sealant is fully hard (Shore A durometer hardness of 30).`]}]},
+    {id:'2.1.09', title:`Sealant Application Procedure`, pts:[
+      `<b>Removal</b> – to remove damaged or deteriorated sealant, use a <b>plastic scraper</b> (or a locally made plastic tool). Do not use metal scrapers or knives – they scratch and cut the structure.`,
+      `<b>Cleaning</b> – clean the area of all debris and oil with an approved solvent and a clean cheesecloth or non-woven cloth. Start at the top and work downward. Dry the surfaces immediately with a clean cloth. <b>Do not touch the area with fingers</b> – skin oil leaves a film the sealant will not stick to.`,
+      `<b>Masking</b> – mask adjacent areas with the approved type of tape. Apply the tape about 1/8 to 1/4 inch from the edge of the seam.`,
+      `<b>Adhesion promoters</b> – to improve adhesion, wipe the cleaned surface with an adhesion-promoting solution, then let it dry by evaporation, untouched, for 30 minutes to 1 hour before applying the sealant.`,
+      `<b>Application</b> – there are two basic methods: the brush or spatula technique, and the spray gun method. The method depends on the application, e.g. fillet sealing or injection sealing.`,
+      `Apply the sealant between the tapes. Thick sealants can be applied with a non-metallic spatula or plastic scraper. Avoid trapping air, and work the sealant into recesses with the edge of the scraper.`,
+      `Sealant applied with a brush is applied and smoothed until the required thickness is reached.`,
+      `Remove the masking tape after applying the sealant and <b>before it begins to set</b>.`]},
+    {id:'2.1.10', title:`O-Rings and Backup Rings`, pts:[
+      `The O-ring is the most commonly used two-way seal. It may be used as a gasket or a packing, and fits into a groove in one of the surfaces being sealed.`,
+      `The groove must be deep enough that the distance from the groove bottom to the other mating surface is <b>a little less than the width of the O-ring</b>. This gives the squeeze (pinch) needed to seal at zero pressure. With no pinch, the O-ring cannot seal.`,
+      `With a correct fit, pressure moves the ring to the side of the groove away from the pressure, where it wedges tightly.`,
+      `The mouth of the cylinder must be <b>chamfered</b> so the pinch is applied gradually as the piston enters. With no chamfer, the O-ring may be damaged.`],
+     groups:[
+      {h:`Backup rings`, pts:[
+        `A suitable O-ring can withstand up to about <b>1,500 psi</b> without significant distortion. At higher pressure it may extrude into the clearance gap and the seal fails.`,
+        `To prevent this, an anti-extrusion (backup) ring is fitted alongside the O-ring.`,
+        `Backup rings are most commonly leather (legacy applications) or PTFE.`,
+        `Leather: fit with the smooth (hair) side facing the O-ring, and soften by soaking in the system fluid first.`,
+        `PTFE: scarf-cut or spiral-cut for installation without excess deformation. Take care to orient the scarf joints correctly, away from the pressure side.`]},
+      {h:`Installing O-rings`, pts:[
+        `Use extreme care so the ring is not nicked or damaged by sharp thread edges or by the tool.`,
+        `Special tools exist for installing and removing O-rings. If none can be bought, one can be made of brass and polished so there are no sharp edges.`]}],
+     tip:`No pinch, no seal. No chamfer, a damaged ring.`}
+   ]},
+  {id:'AV.02.02', title:`Aircraft Electrical Wiring Loom`,
+   lo:`Raise awareness of wiring loom locations and the damage that may occur, and carry out wire loom inspections safely and to the correct inspection level. (This enhances existing inspections; it does not replace them.)`,
+   topics:[
+    {id:'2.2.01', title:`Precautions and Defects`, groups:[
+      {h:`Before the inspection`, pts:[
+        `Make sure aircraft power is cut off or removed.`,
+        `Wear Personal Protective Equipment (PPE).`,
+        `Remove panels or components as required by the task.`,
+        `Bring a torch if the area is dark or not illuminated.`]},
+      {h:`During the inspection`, pts:[
+        `Use a ladder to reach panels when necessary.`,
+        `Look out for slippery surfaces inside the wheel well, e.g. hydraulic fluid or moisture. Dry the surface with rags before stepping on it.`,
+        `Be careful not to disturb the wire loom.`,
+        `Note any wire loom that has defects.`]},
+      {h:`Defects to look for in a wire loom (harness)`, pts:[
+        `Damage`,`Contamination`,`Loose connection`,`Chaffing`,`Burnt cables/wires`,`Cut cables/wires`,`Kinked cables/wires`,`Insufficient clearance`,`Decolourisation`]},
+      {h:`After the inspection`, pts:[
+        `Make sure there is no Foreign Object Debris (FOD) in the area.`,
+        `Close up the panels or install the components back.`]}]},
+    {id:'2.2.02', title:`Types of Inspection and Criteria`, pts:[
+      `Follow the requirements in the Aircraft Maintenance Manual (AMM), which may vary with aircraft type and manufacturer.`,
+      `There are three levels of inspection: <b>General Visual Inspection (GVI)</b>, <b>Detailed Inspection (DET)</b> and <b>Special Detailed Inspection (SDI)</b>.`],
+     groups:[
+      {h:`General Visual Inspection (GVI)`, pts:[
+        `Expected to identify degradation from wear and tear, vibration, moisture, contamination, excessive heat and ageing.`,
+        `A broad, overall check of an area, installation or assembly, to detect obvious damage, failures or irregularities.`,
+        `Done within arm's length or normal viewing distance. No disassembly – only exposed surfaces are inspected.`,
+        `Simple aids may be used (e.g. flashlight, mirror).`]},
+      {h:`Detailed Inspection (DET)`, pts:[
+        `An intensive examination of a specific item or area, to find subtle damage not easily seen in a GVI.`,
+        `Needs good access, often with panels or doors opened. The surface may need cleaning first.`,
+        `Uses supplemental lighting and aids (e.g. magnifying glass); may include tactile checks (feeling for looseness, play, etc.).`]},
+      {h:`Special Detailed Inspection (SDI)`, pts:[
+        `A highly intensive inspection to locate hidden or internal defects, using specialised techniques and equipment.`,
+        `Commonly uses Non-Destructive Testing (NDT) methods such as eddy current, ultrasonic, dye penetrant, X-ray and borescope.`,
+        `Often needs significant access and possible partial disassembly. Typically used for critical structure or fatigue- or damage-prone areas.`]}]},
+    {id:'2.2.03', title:`Wire Looms and Inspection of Wire Bundles`, pts:[
+      `Grouping individual wires and cables into bundles forms a loom (a harness, in aviation terms). A loom should:`,
+      `– be tied or strapped together to form a secure assembly`,
+      `– be installed and maintained for maximum integrity`,
+      `– be formed without twisting or overlapping the cables/wires`,
+      `– be tied with waxed string, lacing cord or nylon straps`,
+      `– have ties at regular, equally spaced intervals`,
+      `– be secured to the airframe with clamps`],
+     groups:[
+      {h:`Inspection of wire bundles`, pts:[
+        `Check the clamping points. Wire bundles can be damaged by a damaged clamp or by improper installation.`,
+        `Check the general condition of the bundle, and look for ageing installations.`,
+        `Look for chemical contamination and damage caused by heat.`,
+        `More inspection information is in the Standard Wiring Practices Manual (SWPM) or Electrical Standard Practices Manual (ESPM).`,
+        `The course notes refer to the Aircraft Electrical Wiring Interconnection Systems Training Program (FAA AC 120-94).`]}]}
+   ]},
+  {id:'AV.02.03', title:`Cable Management and Applications`,
+   lo:`Apply correct cable routing, bundling and management practices to protect aircraft wiring from mechanical damage, heat and electromagnetic interference.`,
+   topics:[
+    {id:'2.3.01', title:`Wire Groups, Bundles and Routing`, pts:[
+      `Wires are grouped and tied in bundles for neat, efficient routing. <b>No one bundle should carry wires from circuits that would disable both a main and a back-up system</b> if the bundle were damaged.`,
+      `Wires not protected by a circuit breaker, and ignition system wires, are not usually bundled with other wires.`,
+      `Route bundles so they do not interfere with controls or moving components, and where they cannot be damaged by people entering or leaving the aircraft, or by baggage or cargo.`,
+      `It is better to route wiring along the <b>overhead or side walls</b> than in the bottom of the fuselage or the bilges, where leaking fluids can reach it.`,
+      `Wiring routed parallel to oxygen or liquid lines should be above the fluid line and must not be supported from it.`,
+      `Wiring should be separated from any control cable by at least <b>three inches</b>.`,
+      `Secure bundles with <b>padded clamps</b>, close enough together that the bundle will not sag or vibrate. The bundle should deflect only about <b>half an inch</b> with normal hand pressure between supports.`,
+      `The last support should leave enough slack for the connector to be easily connected when the component is replaced.`,
+      `Harsh environments need suitable protection. The engine nacelle is a high-temperature area, so only wire that withstands high temperature is used (silver-coated copper with silicone insulation).`,
+      `In areas exposed to the environment, such as wheel wells, use wire with good abrasion resistance and low moisture absorption, routed to reduce damage from foreign object abrasion.`]},
+    {id:'2.3.02', title:`Cable Protection, Drainage and Support`, groups:[
+      {h:`Cable protection and environment`, pts:[
+        `Reduce the risk of mechanical damage and of damage by fluids or vapours. Where possible, route cables to avoid such risks; otherwise provide protection.`,
+        `Cables must be installed or protected so heat sources (plus heat generated in the cable under load) do not take them above their maximum permissible continuous temperature.`,
+        `Cables must not be bent so sharply that damage or deterioration is likely.`,
+        `The ends of conduits, tubes and ducts carrying cables must be prepared or bushed with insulating material at the points of entry.`,
+        `Aircraft cables often suffer extreme and rapid changes in temperature.`]},
+      {h:`Cabin drainage`, pts:[
+        `Conduits, tubes or ducts must be installed so moisture drains to approved aircraft drain points (per the AMM). The cables used in them must withstand any moisture that still gets in.`]},
+      {h:`Cable support – take particular care:`, pts:[
+        `Next to cable terminations.`,
+        `Where relative movement is likely between adjacent parts of the structure.`,
+        `Where cables are close to moving parts.`,
+        `At bends, especially where several small cables run together to form a heavier group.`]},
+      {h:`Support at terminal fittings`, pts:[
+        `Guard against cable movement (vibration or otherwise), which can lead to fatigue fracture of the conductor or terminal fitting.`,
+        `Secure cables as near as possible to the terminal fitting. Where practicable, the distance from the terminal to the nearest support should <b>not exceed six inches</b> (measured along the cable).`,
+        `Tie-wraps are far more effective when correctly selected and installed. <b>'P' clamps</b> are invaluable for securing cable looms. A tie-wrap tensioning tool is used to tension tie-wraps.`]}]},
+    {id:'2.3.03', title:`Cable Clamps, Loop Clamps and Standoffs`, pts:[
+      `Cable clamps are designed for a specific situation. Cable troughs and conduits are other ways to enclose and protect looms, particularly large ones. When using conduits, drainage holes must be provided at low points to relieve condensation.`],
+     groups:[
+      {h:`Loop clamps`, pts:[
+        `Support cable bundles and prevent contact with adjacent structures.`,
+        `Made of nylon, aluminium alloy or stainless steel, in sizes from 0.25" to 1.625". Metal loop clamps have a protective layer of insulating material to prevent damage to the cables.`,
+        `Always replace with the same part number as originally installed (options only where the manual allows).`,
+        `Use only the smallest loop clamp that holds the bundle secure, allows no abrasive movement and does not crush or pinch the cable.`,
+        `Do not let cables cross each other under loop clamps (except multiple-conductor twisted cables) – the cables can be damaged.`,
+        `If a loop clamp cannot grip properly, increase the size of the bundle with <b>filler rods or plugs</b> ("rubber nails"), a length of unshrunk heat shrink, or approved insulation tape.`]},
+      {h:`Standoff supports`, pts:[
+        `Raise the loop clamp or 'P' clip away from adjacent structure. Available in a variety of heights.`,
+        `When plastic or nylon loop clamps are used, washers are normally needed to spread the load around the mounting hole.`]},
+      {h:`Prevention of chafing`, pts:[
+        `Where a cable cannot be kept away from surfaces that chafe it, use protective strapping. A common method is <b>'SP.WRAP'</b> (a helical plastic tape).`]}]},
+    {id:'2.3.04', title:`Bend Radius, Looms and Ties`, pts:[
+      `Cable droop between supports should not be more than <b>0.5"</b> with light pressure at the mid-point between clamps.`,
+      `The minimum bend radius of a bundle is <b>five times</b> its outside diameter. For a coaxial cable it is <b>twelve times</b> its outside diameter.`,
+      `Cables must be completely insulated from any metal clamps.`,
+      `A loom (harness) is a group of cables tied at regular intervals to form a semi-rigid assembly. It carries a cable bundle number and is generally specific to an aircraft system. The path it follows is the loom routing.`,
+      `General requirements for forming a cable bundle:`,
+      `– individual cables lie parallel wherever possible`,
+      `– leave enough spare cable at the terminal ends for one remake`,
+      `– breakouts must not cross over the main loom or harness body`,
+      `– secure the loom with individual ties at regular intervals`,
+      `– follow the relevant technical publications and drawings strictly`,
+      `– support breakouts on both sides with cable ties`,
+      `Form the loom with <b>finger pressure only</b>; make bends or branches without creasing the insulation.`,
+      `Ways of securing cables together: nylon or dacron lacing cord, waxed string, or loom strapping with tie wraps (an approved torque-loaded strap gun is available for loom strapping).`,
+      `<b>Tying looming cord:</b> 1) form a clove hitch around the loom; 2) finish with a thumb knot over the hitch; 3) in high vibration areas finish with a reef knot over the hitch.`]},
+    {id:'2.3.05', title:`Lacing, High Vibration Areas and Breakouts`, pts:[
+      `Factory wire bundles are tied every two to three inches with waxed linen or nylon cord, using two half-hitches secured with a square knot.`,
+      `Single or double lacing is approved and faster than spot ties, but less neat – and if the lacing cord breaks, a large part of the bundle is left without ties.`,
+      `A Tyrap® is a nylon strap that locks itself in place; the loose end is then cut off.`,
+      `<b>High vibration areas</b> include the wing, engine, engine struts, wheel well, landing gear, empennage and air conditioning bay. Wiring there needs special attention to routing, lacing and tying, and extra abrasion protection.`,
+      `Refer to the AMM for the definition of high vibration areas and the tie spacing required. Tie spacing: <b>2 inches</b> in the engine and pylon areas; <b>6 to 8 inches</b> in other high vibration areas; up to <b>3 feet</b> outside the vibration zone.`,
+      `<b>Plastic cable ties (tie wraps) are not approved in high vibration areas.</b> Use specially knotted string-type lacing cord instead.`,
+      `<b>Loom assembly checks:</b> during and after looming, check each cable and terminal for continuity, point to point, against the wiring diagram. Other checks (e.g. insulation test, functional check) are given on the Job Card or in the maintenance manual.`,
+      `<b>Breakouts:</b> a cable bundle breakout must curve smoothly from the bundle in the same plane as the parent bundle centreline, and must not lie across any cables (vibration could chafe them).`,
+      `Tie the loom <b>no more than 1 inch either side</b> of the breakout, to give full support to the loom and breakout.`],
+     warn:`Plastic cable ties are not approved in high vibration areas.`},
+    {id:'2.3.06', title:`Installation of Cable Bundles`, pts:[
+      `This is a general description. Always use the maintenance manual of the aircraft you are working on.`,
+      `Fix cable bundles to the structure with cable clamps, without extra protection. (Gas and fluid lines are not part of the structure.)`,
+      `Use conduits only as protection for cable bundles.`,
+      `Install and protect bundles so they are accessible for inspection and maintenance, and so they cannot be damaged by touching, chafing, hammering, sliding, kinking or high ambient temperatures.`,
+      `Bundles, and their fastening and protection, must resist the conditions and substances in their surroundings.`,
+      `Assemble cables into bundles with bundle ties or bundle lacing tape. Keep enough space between bundles and surrounding parts.`],
+     tables:[{cap:`Minimum clearances for cable bundles`, head:[`From`,`Minimum clearance`], rows:[
+       [`Sharp edges (to prevent chafing)`,`1 cm (0.4 inch)`],
+       [`Lines carrying fuel or oxygen`,`15 cm (6 inches)`],
+       [`Control cables`,`7.5 cm (3 inches)`],
+       [`Water lines, pitot-static lines, etc.`,`13 mm (0.5 inch) – may be less if mechanical support prevents contact`],
+       [`Insulated bleed-air ducts`,`5 cm (2 inches) – with mechanical support to prevent contact`]]}]},
+    {id:'2.3.07', title:`Cable Clamps and Conduit`, groups:[
+      {h:`Cable clamps`, pts:[
+        `Metal cable clamps must have a <b>flexible rubber cushion</b>.`,
+        `Plastic cable clamps may only be used <b>inside the pressure cabin</b> where the clamp load is minimal, e.g. cable trays, panels and Electrical Power Centre (EPC) areas.`,
+        `Link the ends of the rubber cushion together, so the metal of the clamp cannot damage the cables.`,
+        `Put the mounting bolt on top of the clamp (orientation per the AMM).`,
+        `After mounting, the clamp must fully enclose the bundle so it cannot slide. The bundle's maximum outer diameter must not exceed the clamp's inner diameter.`,
+        `Mount cables at the correct angles. Lay them parallel and tightly together inside the clamp.`,
+        `Use the correct distance between clamps – inside the pressure cabin it can vary from 10 to 30 cm (4–12 inches), depending on the routing, thickness and stiffness of the bundle.`]},
+      {h:`Conduit (metallic and PVC)`, pts:[
+        `Conduit must be installed so it cannot be used as a hand hold or a footrest.`,
+        `Plastic conduit may be used where the AMM approves it. Its inner diameter must be <b>25% larger</b> than the maximum outer diameter of the bundle.`,
+        `Plastic conduit ends must have adapters. The end of a metallic conduit must be flared and smooth.`]},
+      {h:`Conduit drainage`, pts:[
+        `Make a <b>1/8-inch diameter drainage hole</b> at the lowest point of the tubing. This stops condensed moisture running along the cables into the electrical apparatus.`,
+        `If this is not possible, the cable should have a downward loop immediately after leaving the apparatus.`]}]},
+    {id:'2.3.08', title:`Particular Recommendations and Reinstallation`, groups:[
+      {h:`Particular recommendations`, pts:[
+        `If an EWIS failure occurs, routing and separation help limit the hazardous effects. They must be kept as in the aircraft's basic design for the life of the aircraft.`,
+        `Keep wiring constantly clean. When doing maintenance, repairs or modifications, keep wiring, components and the work area as clean as possible: cover wiring and components with plastic sheeting or cloths, and regularly remove shavings and other contamination. If there is contamination, refer to ESPM Chapter 20-55-00 (Cleaning).`,
+        `<b>Strictly prohibited:</b> pulling cables or harnesses while ties are tightened; placing or hanging objects or tools on cables or harnesses; stepping or sitting on harnesses.`,
+        `Use the components listed in the applicable manual, or approved substitutes. EWIS modifications must meet the same standards as the original design.`,
+        `Take care when using cutting or abrasive tools, corrosive products or heating devices in a wiring area.`,
+        `Protect all disconnected wiring ends.`]},
+      {h:`Installation, reinstallation and reconnection`, pts:[
+        `Carry harnesses – <b>do not drag them</b>.`,
+        `Protect edges and through-holes with foam or non-abrasive fittings, and avoid contact between harnesses and sharp edges.`,
+        `Before installing a harness, check that: the installation and routing areas are clean; the harness and insulation are in good condition; through-holes in the structure are protected; raceways are clipped and tied (if applicable).`,
+        `The head of a cable tie must never touch an adjacent harness.`]}]}
+   ]},
+  {id:'AV.02.04', title:`Cleaning Components and Wire Harness`,
+   lo:`Understand why cleaning aircraft components and wire harnesses prevents contamination-related degradation and electrical malfunction.`,
+   topics:[
+    {id:'2.4.01', title:`General Cleaning and Contamination`, pts:[
+      `General cleaning of an electrical installation means cleaning away contamination, either internal or external.`,
+      `<b>Internal contamination</b> comes from materials used in the aircraft systems, e.g. hydraulic fluid and fuel.`,
+      `<b>External contamination</b> comes from outside sources, e.g. beverages, miscellaneous liquids carried on the aircraft, and metal shavings.`,
+      `Following safety practices during cleaning is mandatory.`,
+      `<b>Sequence of actions:</b> 1) stop the contamination source; 2) keep the contaminated area to a minimum; 3) apply the correct cleaning procedure.`,
+      `<b>Liquid contamination:</b> stop the source, make a sealed barrier, and remove the liquid with a vacuum cleaner for liquids.`,
+      `<b>Powder, granular or dust contamination:</b> make sure there is no draught (wind), then remove it with a vacuum cleaner and a soft brush.`,
+      `For external contamination, estimate the risk of deterioration of the electrical item – some agents can damage the polymers used in electrical items.`]},
+    {id:'2.4.02', title:`Internal and External Contamination`, groups:[
+      {h:`Internal contamination`, pts:[
+        `Make sure the contamination agent is fully removed, especially at the low points of the conduit.`,
+        `If there is a drain hole, put it at the lowest point and make sure it is not blocked.`,
+        `If there is no drain: move the conduit on the harness to put one end at the lowest point; or make a drain hole at the lowest point; or remove the conduit so the agent can flow out, clean the bundle and install a new conduit.`]},
+      {h:`External contamination`, pts:[
+        `Use a vacuum cleaner or a cloth to remove the contamination.`,
+        `If necessary, finish with a cloth made moist with solvent, then let it dry.`]}]},
+    {id:'2.4.03', title:`Typical Cleaning Method and Recommendations`, pts:[
+      `Always start cleaning from the <b>periphery to the centre</b>, or from <b>top to bottom</b>, of the area.`,
+      `A cloth must be <b>clean, dry and lint-free</b>.`,
+      `When using a vacuum cleaner, make sure the <b>filter is in position</b> and its <b>outlet is out of the aircraft</b>.`,
+      `Always use a small pail in the aircraft, and put the cleaning agent on a cloth.`,
+      `An <b>annual cleaning</b> of electrical equipment is recommended, to remove dust, dirt and grime. Make sure the lighting is good.`,
+      `To keep an area clean, check that the sealed band of the floor panels is in good shape.`],
+     tip:`Cleaning is a very important operation because you can discover damage in progress.`}
+   ]},
+  {id:'AV.02.05', title:`Cleaning Agents for Components`,
+   lo:`Recognise the appropriate cleaning agents for aircraft components, and how they remove contamination without damaging materials.`,
+   topics:[
+    {id:'2.5.01', title:`Solvent Safety`, pts:[
+      `Use solvents and cleaning agents, sealants and other special materials <b>only with a good flow of air</b> through the work area.`,
+      `These materials are <b>poisonous, flammable and skin irritants</b>. Obey the manufacturer's instructions and wear protective clothing.`,
+      `Do not get them in your mouth. Do not smoke. Do not breathe the gas. Get medical help if skin or eyes become irritated.`,
+      `Do not take more solvent than the task needs.`,
+      `Out of the aircraft, transfer only the quantity needed from the original container into small cans (<b>less than 1/2 litre</b>).`,
+      `<b>Never put the cloth in the liquid – always put the liquid on the cloth.</b>`],
+     warn:`Solvents are poisonous, flammable and skin irritants. Use them only with a good flow of air.`},
+    {id:'2.5.02', title:`Types of Solvent`, pts:[
+      `Use these materials only for <b>natural</b> contamination.`,
+      `If the contamination is <b>accidental</b> and you do not know the material that caused it, you must <b>not</b> use solvents.`],
+     tables:[{cap:`Natural contamination and recommended cleaning material`, head:[`Contamination`,`Recommended cleaning material`], rows:[
+       [`Aircraft hydraulic fluid; fuel and oil/grease; de-icing fluids; anti-corrosion material; dust`,`Isopropyl alcohol (Material No. 11-010) or equivalent (refer to local regulations)`],
+       [`Accidental contamination`,`Treated case by case, depending on the chemical nature of the material`]]}]},
+    {id:'2.5.03', title:`Cleaning a Contaminated Bundle`, groups:[
+      {h:`General`, pts:[
+        `Use suction to remove particles, or a sponge to remove liquids, from the surface of the bundles.`,
+        `Locally remove the ties in the contaminated area (approximately 300 mm).`,
+        `Decide whether the contamination is on the surface or deeper (has gone into the bundle).`]},
+      {h:`Surface contamination`, pts:[
+        `Do not remove the cable ties. Clean the bundles with a dry cloth, or a cloth moist with solvent.`,
+        `Install new cable ties in the cleaned area, then remove the old ties and clean their location.`,
+        `When the ties hold the bundle on supports, <b>do not remove all the ties at the same time</b>. Replace ties support by support, with a new tie at the same location. Clean the support, or replace it if necessary.`]},
+      {h:`Deep contamination`, pts:[
+        `Work on <b>one bundle only at a time</b>, on a small length. Remove the support ties first, then the others.`,
+        `Clean the cables one by one on the prepared length.`,
+        `Install cable ties at a maximum pitch of <b>150 mm</b> (100 mm on the last 500 mm).`,
+        `Install the bundle at its original location, except at the two ends of the cleaned length – this makes an overlap when you clean the next section.`,
+        `Make new identification if necessary.`]}]},
+    {id:'2.5.04', title:`Types of Contamination and Safety Checks`, pts:[
+      `There are two types of contamination: <b>surface</b> and <b>deep</b>. Know which type you have before starting the cleaning procedure.`,
+      `To find out: remove one item from each family of items in the contaminated area, clean its surface, and examine it.`,
+      `<b>Surface contamination</b> – the agent does not go into the item.`,
+      `<b>Deep contamination</b> – the agent goes into the item. In this case it is strongly recommended to <b>replace the item</b>.`,
+      `If there is a risk of new contamination, a non-sealed item can be replaced by a sealed item.`,
+      `<b>Safety:</b> if you disconnect and reconnect an electrical line, do a <b>continuity test and an insulation test</b> to make sure the circuit works correctly. Make sure all cleaned areas are <b>dry</b> before energising the circuits.`]}
+   ]},
+  {id:'AV.02.06', title:`Degreasing Agents for Components`,
+   lo:`Understand how degreasing agents remove oils and grease from aircraft components while keeping the materials compatible.`,
+   topics:[
+    {id:'2.6.01', title:`Degreasing Agents`, pts:[
+      `Three common types of degreasing agent are used for aircraft component cleaning:`],
+     tables:[{cap:`Degreasing agents`, head:[`S/N`,`Agent`,`Uses`], rows:[
+       [`1`,`Calla 301A`,`All-purpose, heavy-duty cleaner and degreasing compound. Removes grease, oils, carbon and hydraulic fluid.`],
+       [`2`,`LPS`,`Multi-purpose, water-based, heavy-duty industrial cleaner degreaser. Can be used ready-to-use or diluted. Inhibits flash rusting. Safe on all metals except magnesium.`],
+       [`3`,`TT-I-735`,`Isopropyl alcohol (isopropanol, 2-propanol) – a colourless, flammable chemical with a strong odour.`]]}],
+     groups:[
+      {h:`Warnings (for all three agents)`, pts:[
+        `Do not use near open flame, sparks or heat.`,
+        `Do not use synthetic cloths for wiping with the solvent.`,
+        `Do not smoke, eat or drink when using solvent.`,
+        `Avoid breathing the vapour. Use only in well-ventilated areas.`,
+        `Ground metal containers holding solvent, to prevent sparking and fires.`,
+        `Avoid prolonged breathing of vapour and skin contact – they can cause dermatitis, an irritated nose and throat, and dizziness.`]}]},
+    {id:'2.6.02', title:`Protection and First Aid`, groups:[
+      {h:`Protection`, pts:[
+        `Wear gloves and goggles. A face shield and protective clothing are required when splashing is possible or expected.`,
+        `A <b>half-mask respirator with an organic vapour cartridge</b> is required in poorly ventilated areas.`]},
+      {h:`If something goes wrong`, pts:[
+        `<b>Eye contact:</b> flush immediately with a large amount of water for <b>15 minutes</b> and seek medical attention.`,
+        `<b>Skin contact:</b> wash with soap and water; remove contaminated clothing and shoes.`,
+        `<b>Ingestion:</b> give water to drink and seek medical attention. Do not induce vomiting.`,
+        `<b>Inhalation:</b> remove the person from the area to fresh air.`]}]}
+   ]},
+  {id:'AV.02.07', title:`Protection for Wire and Components`,
+   lo:`Identify and apply suitable wire and component protection methods – sleeving, insulation, shielding, fuses and circuit breakers – to safeguard EWIS against abrasion, heat and EMI.`,
+   topics:[
+    {id:'2.7.01', title:`Wire Protection, Insulation and Sleeving`, pts:[
+      `An <b>Electrical Wiring Interconnection System (EWIS)</b> is any wire, wiring device, or combination of these, including termination devices, installed in any area of the aircraft to transmit electrical energy between two or more intended termination points.`,
+      `Wire harness protection comes in many materials, sizes and colours. In aerospace, sleeving and shielding protect against abrasion, radiant and convection heat, and Electromagnetic Interference (EMI).`,
+      `<b>Electrical insulation:</b> multi-layered sleeves give excellent electrical insulation and high-performance EMI shielding of wire and cable bundles, regardless of the diameter.`,
+      `<b>Expandable sleeving:</b> designed to protect, bundle and manage wire and cable. Easy to install, highly flexible and expandable; each size covers a wide range of diameters.`,
+      `<b>Thermal protection:</b> thermal management sleeves operate at high temperatures and give superior fire resistance. They are difficult to ignite and self-extinguish promptly.`,
+      `<b>Wrapable sleeving:</b> self-wrapping sleeves that can be installed, modified and removed on existing bundles without reworking or disconnecting components. Several wrapable designs give excellent EMI protection.`]},
+    {id:'2.7.02', title:`Component (Circuit) Protection and Fuses`, pts:[
+      `Component protection on an aircraft is circuit protection. The current-carrying capacity of a wire is set by its length and cross-sectional area; heat dissipation is set by I²R losses. Wire size is chosen to carry the current safely.`,
+      `Abrasion can expose the conductor and create a low-resistance path to the airframe and/or an adjacent conductor.`,
+      `Faulty equipment, low-resistance paths or overloading from additional circuits raise the current. Heat builds up, leading to fumes, smoke and ultimately fire.`,
+      `The devices used are the <b>fuse</b> and the <b>circuit breaker</b>.`],
+     groups:[
+      {h:`Fuses`, pts:[
+        `A fuse is a link of wire connected in series with the circuit. Its current-carrying capacity is predetermined – it heats and melts when this is exceeded, interrupting and isolating the circuit.`,
+        `In a cartridge fuse the wire is inside a glass or ceramic casing, so hot metal particles cannot escape and cause secondary damage. End caps connect it to the circuit wiring. Fuse holders have terminals and a panel clamp-nut.`,
+        `Fuse holder indicating caps: 115 VAC is domed; 26 VAC is flat; 26 VDC is flat and white.`,
+        `A fuse has a rating (the maximum current it can carry without melting) and a minimum fusing current, which is affected by ageing if it is run at the minimum rating for long periods. Ambient temperature affects its current rating and response time.`,
+        `Fuses must be located <b>close to the power source</b> to keep unprotected wire short, yet be accessible to the flight crew for replacement.`,
+        `Spare fuses must be carried. The typical requirement is <b>50% of each rating</b>. Example: four 10 A and five 15 A fuses fitted → two 10 A and three 15 A spares.`]}]},
+    {id:'2.7.03', title:`Circuit Breakers`, pts:[
+      `A circuit breaker is an electromechanical device that interrupts and isolates a circuit when the current is excessive.`,
+      `It can trip for two reasons: a simple <b>overload</b>, or a <b>short circuit</b> (ground fault).`,
+      `Unlike a fuse, a circuit breaker <b>can be reset</b> (once the fault condition has cleared).`,
+      `External features: shakeproof washer, mounting nut, push-pull button, white marker band and housing terminal.`,
+      `Some have a large collar grip to identify specific systems. They can be locked open if required, e.g. if the system is installed but not certified for operation.`,
+      `Like fuses, circuit breakers are located as close as possible to the power source and are often arranged on panels in groups.`,
+      `They can also isolate circuits, e.g. during maintenance. Some have removable collars for identification. The current rating is engraved on the end of the button.`,
+      `Configurations: <b>automatic reset</b>, <b>automatic trip / push to reset</b>, <b>switch types</b> and <b>trip free</b>.`]}
+   ]}
+];
+
+const SEPS = [
+  [`Fuel or oxygen lines`,`15 cm (6 inches) minimum`],
+  [`Control cables`,`7.5 cm (3 inches) minimum`],
+  [`Water lines, pitot-static lines, etc.`,`13 mm (0.5 inch) minimum – may be less if mechanical support prevents contact`],
+  [`Insulated bleed-air ducts`,`5 cm (2 inches) minimum, with mechanical support to prevent contact`],
+  [`Sharp edges`,`1 cm (0.4 inch) minimum clearance, to prevent chafing`],
+  [`Terminal fitting to nearest support`,`6 inches maximum, measured along the cable (where practicable)`],
+  [`Cable droop between supports`,`0.5 inch maximum, with light pressure at the mid-point`],
+  [`Tie spacing – engine and pylon areas`,`2 inches`],
+  [`Tie spacing – other high vibration areas`,`6 to 8 inches`],
+  [`Tie spacing – outside the vibration zone`,`Up to 3 feet`],
+  [`Clamp spacing inside the pressure cabin`,`10 to 30 cm (4 to 12 inches), depending on routing, thickness and stiffness`],
+  [`Ties either side of a breakout`,`No more than 1 inch`],
+  [`Conduit drain hole`,`1/8-inch diameter, at the lowest point`],
+  [`Plastic conduit inner diameter`,`25% larger than the maximum outer diameter of the bundle`]
+];
+
+const QUESTIONS = {
+ 'AV.02.01':[
+  {q:`Which type of joint is used for parts that need frequent removal without damage to the parts or fasteners?`,o:[`Semi-permanent joint (bolts, nuts, screws)`,`Permanent joint (rivets, welding, bonding)`,`A joint made by cutting and re-forming`,`A joint that is dismantled only once`],a:0,e:`Semi-permanent joints (bolts, nuts and screws) allow frequent removal without damage. Permanent joints (rivets, welding) may be damaged on removal.`},
+  {q:`Bolts are usually used in shear. How long should the smooth shank (grip length) be?`,o:[`Equal to the material thickness`,`Twice the material thickness`,`Short, so the threads grip the material`,`As long as the whole bolt`],a:0,e:`The grip length should equal the material thickness, so no threads are in contact with the bearing surface.`},
+  {q:`What is the maximum number of washers allowed on one bolt-nut assembly?`,o:[`Three, with not more than two on one side`,`Two, with only one on each side of the joint`,`Four, with two on each side of the joint`,`One, fitted under the nut only`],a:0,e:`A maximum of three washers, with not more than two under the nut or bolt head.`},
+  {q:`After the nut is secured on a bolt, how much thread must be exposed?`,o:[`A minimum of one thread`,`No thread at all`,`Exactly half a thread`,`At least five threads`],a:0,e:`At least one thread must be exposed after the nut is secured.`},
+  {q:`Which nut is used with drilled shank bolts and is safetied with a split pin or lockwire?`,o:[`Castle (castellated) nut`,`Plain nut`,`Wing nut`,`Sheet spring nut`],a:0,e:`Castle nuts are used with drilled shank bolts and take a cotter (split) pin or lockwire.`},
+  {q:`A check nut must NOT be used…`,o:[`In tension or shear`,`On threaded rod ends`,`Against a plain nut`,`On screws`],a:0,e:`A check nut locks plain nuts, screws and threaded rod ends, but must not be used in tension or shear.`},
+  {q:`When must a self-locking nut NOT be reused?`,o:[`If it can be run up finger tight`,`If it was used on an earlier job`,`If it is of all-metal construction`,`If the bolt has a cotter pin hole`],a:0,e:`Do not reuse a locknut if it can be run up finger tight.`},
+  {q:`Which washer must always be used together with a spring washer?`,o:[`A flat washer`,`A second spring washer`,`A tab washer`,`No other washer`],a:0,e:`A flat washer protects the component surface from the spring washer.`},
+  {q:`Which washer may only be used once, with its tabs never straightened for re-use?`,o:[`Tab washer`,`Spring washer`,`Plain flat washer`,`Large area washer`],a:0,e:`Tab washers can only be used once.`},
+  {q:`What must be done with a split pin (cotter pin) after it is removed?`,o:[`Discard it and fit a new one`,`Re-use it once only`,`Straighten the legs and re-use it`,`Re-use it if the legs are undamaged`],a:0,e:`A split pin must be discarded after removal and never re-used.`},
+  {q:`A thin hexagonal nut screwed tightly against a plain nut is called a…`,o:[`Lock nut (check nut or jam nut)`,`Castle nut`,`Wing nut`,`Anchor nut`],a:0,e:`A lock nut (check nut or jam nut) is tightened against the plain nut.`},
+  {q:`Approximately how many twists per inch should a tightened locking wire have?`,o:[`8 to 10`,`2 to 3`,`15 to 20`,`25 to 30`],a:0,e:`A tightened wire should be taut with approximately 8 to 10 twists per inch.`},
+  {q:`Which statement about locking wire is correct?`,o:[`It must never be re-used`,`It may be re-used once if it is straight`,`It may be re-used on non-critical bolts`,`It may be re-used if the pigtail is intact`],a:0,e:`Locking wire must never be re-used. Use only new, unkinked wire.`},
+  {q:`How long should the pigtail be at the end of a locking wire run, and where should it point?`,o:[`3 to 5 twists, bent inwards around the nut or bolt`,`1 to 2 twists, bent outwards for easy removal later`,`8 to 10 twists, left standing upright for inspection`,`No pigtail at all, with the wire cut off flush`],a:0,e:`Twist a pigtail 3 to 5 twists long and bend it inwards to avoid injury.`},
+  {q:`Where should surplus cut locking wire be disposed of?`,o:[`In the F.O.D. bins provided`,`In the nearest general waste bin`,`Inside the aircraft panel`,`On the hangar floor, to sweep later`],a:0,e:`Cut wire goes in the F.O.D. bins provided.`},
+  {q:`What gives an O-ring the "pinch" it needs to seal at zero pressure?`,o:[`A groove slightly shallower than the ring width`,`A groove much deeper than the width of the ring`,`A sharp, square edge at the mouth of the cylinder`,`A thick coat of grease in the groove`],a:0,e:`The distance from the groove bottom to the mating surface is a little less than the O-ring width. With no pinch, the O-ring cannot seal.`},
+  {q:`An O-ring of suitable size and material can withstand up to about…`,o:[`1,500 psi, above which a backup ring is used`,`15 psi, above which a backup ring is used`,`150 psi, above which a backup ring is used`,`15,000 psi, above which a backup ring is used`],a:0,e:`Above about 1,500 psi the O-ring may extrude into the clearance gap, so an anti-extrusion (backup) ring is fitted.`},
+  {q:`Which is the ideal condition for curing most sealants?`,o:[`77°F (25°C) with 50% relative humidity`,`50°F (10°C) with 20% relative humidity`,`100°F (38°C) with 90% relative humidity`,`120°F (49°C) with 0% relative humidity`],a:0,e:`The ideal is 77°F with 50% relative humidity. Below 60°F curing is extremely slow.`},
+  {q:`Which tool should be used to remove damaged or deteriorated sealant?`,o:[`A plastic scraper`,`A metal scraper`,`A sharp knife`,`A wire brush`],a:0,e:`Use a plastic scraper. Metal scrapers and knives scratch and cut the structure.`},
+  {q:`Which sealant class is low viscosity (watery) and suitable for brushing?`,o:[`Class A`,`Class B`,`Class D`,`Class E`],a:0,e:`Class A is low viscosity for brushing. Class B is pasty (gun or spatula), D is extra-heavy for hole filling, E is low viscosity for spraying.`},
+  {q:`How are two-part sealants generally mixed?`,o:[`Equal portions by weight, or as the manufacturer says`,`Equal portions by eye, using a clean spatula only`,`Two parts of accelerator to one part of base`,`Any ratio at all, as long as it is stirred well`],a:0,e:`Generally equal portions by weight of base and accelerator, or as the manufacturer recommends, weighed carefully on a balance.`}
+ ],
+ 'AV.02.02':[
+  {q:`Before a wire loom inspection, what must be ensured about aircraft power?`,o:[`It is cut off or removed`,`It is left on to test the circuits`,`Only the cabin lights are on`,`It is on, with circuit breakers open`],a:0,e:`Ensure the aircraft power is cut off or removed before the inspection.`},
+  {q:`Which of these is a defect to look for in a wire loom (harness)?`,o:[`Chaffing`,`Equally spaced ties`,`Clamps that enclose the bundle`,`Sufficient clearance`],a:0,e:`Defects include damage, contamination, loose connection, chaffing, burnt, cut or kinked wires, insufficient clearance and decolourisation.`},
+  {q:`Which are the three levels of inspection?`,o:[`GVI, DET and SDI`,`GVI, SDI and NDT`,`DET, NDT and PPE`,`GVI, AMM and DET`],a:0,e:`General Visual Inspection (GVI), Detailed Inspection (DET) and Special Detailed Inspection (SDI).`},
+  {q:`Which inspection is a broad check from arm's length, with no disassembly?`,o:[`General Visual Inspection (GVI)`,`Detailed Inspection (DET)`,`Special Detailed Inspection (SDI)`,`Non-destructive testing`],a:0,e:`A GVI checks exposed surfaces within arm's length for obvious damage or irregularities.`},
+  {q:`Which inspection commonly uses NDT methods such as eddy current or ultrasonic?`,o:[`Special Detailed Inspection (SDI)`,`General Visual Inspection (GVI) at arm's length`,`Detailed Inspection (DET) with a magnifying glass`,`A walk-around check by the supervisor`],a:0,e:`An SDI looks for hidden or internal defects, commonly with NDT methods.`},
+  {q:`Which hazard should you watch for inside the wheel well during a wire loom inspection?`,o:[`Slippery surfaces from hydraulic fluid or moisture`,`Loose carpets and seat covers on the floor`,`Sudden changes in cabin pressure inside the well`,`Very hot air blowing from the cabin vents`],a:0,e:`Look out for slippery surfaces and dry them with rags before stepping on them.`},
+  {q:`What must be done after the inspection?`,o:[`Check for FOD, then close panels or refit components`,`Leave all panels open for the next shift to check`,`Blow the area dry with compressed shop air`,`Remove the clamps so they are ready next time`],a:0,e:`Make sure there is no Foreign Object Debris (FOD), then close up the panels or install components back.`},
+  {q:`Where can more wire bundle inspection information be found?`,o:[`SWPM or ESPM`,`The aircraft logbook`,`The tool control register`,`A supplier catalogue`],a:0,e:`More information is in the Standard Wiring Practices Manual (SWPM) or Electrical Standard Practices Manual (ESPM).`},
+  {q:`What is the purpose of a Detailed Inspection (DET)?`,o:[`To find subtle damage not easily seen in a GVI`,`To find only obvious damage from far away`,`To replace every clamp in the work area`,`To test continuity of every wire in the loom`],a:0,e:`A DET is an intensive examination of a specific item or area to detect subtle damage.`}
+ ],
+ 'AV.02.03':[
+  {q:`Why should no single bundle carry wires from both a main and a back-up system?`,o:[`Damage to the bundle could disable both systems`,`The bundle would be too heavy to lift into place`,`The two sets of wires would overheat each other`,`The bundle would be harder to label and identify`],a:0,e:`If the bundle were damaged, both the main and back-up systems could be disabled.`},
+  {q:`Where is it better to route wiring in an aircraft?`,o:[`Along the overhead or side walls`,`In the bottom of the fuselage, below the floor`,`Down in the bilges, where it stays out of the way`,`Under the cargo floor, away from the cabin`],a:0,e:`Overhead or side walls are better, because wires in low areas can be damaged by leaking fluids.`},
+  {q:`What is the minimum separation between wiring and a control cable?`,o:[`3 inches (7.5 cm)`,`0.5 inch (13 mm)`,`1 inch (2.5 cm)`,`6 inches (15 cm)`],a:0,e:`Wiring must be separated from control cables by at least three inches (7.5 cm).`},
+  {q:`How far should a correctly tensioned bundle deflect between supports under normal hand pressure?`,o:[`About half an inch`,`About three inches`,`Not at all`,`About two feet`],a:0,e:`The bundle should deflect only about half an inch between supports.`},
+  {q:`Where practicable, what is the maximum distance from a terminal fitting to the nearest cable support?`,o:[`Six inches, measured along the cable`,`Twelve inches, measured along the cable`,`Two feet, measured along the cable`,`One metre, measured along the cable`],a:0,e:`The distance should not exceed six inches, measured along the cable.`},
+  {q:`What is the minimum bend radius of a cable bundle?`,o:[`5 times its outside diameter`,`12 times its outside diameter`,`2 times its outside diameter`,`Equal to its outside diameter`],a:0,e:`A bundle: five times its outside diameter. A coaxial cable: twelve times.`},
+  {q:`What is the minimum bend radius of a coaxial cable?`,o:[`12 times its outside diameter`,`5 times its outside diameter`,`3 times its outside diameter`,`20 times its outside diameter`],a:0,e:`A coaxial cable needs a minimum bend radius of twelve times its outside diameter.`},
+  {q:`How is looming cord finished off in a high vibration area?`,o:[`Clove hitch, thumb knot, then a reef knot over the hitch`,`A single overhand knot, pulled tight by hand`,`A plastic cable tie fitted over the cord ends`,`Two half-hitches, left with no finishing knot`],a:0,e:`Form a clove hitch, finish with a thumb knot, and in high vibration areas add a reef knot over the hitch.`},
+  {q:`Plastic cable ties (tie wraps) are…`,o:[`Not approved in high vibration areas`,`Preferred in engine and pylon areas`,`Required in wheel wells`,`Approved everywhere without limit`],a:0,e:`Plastic cable ties are not approved for use in high vibration areas.`},
+  {q:`What is the tie spacing for looms in the engine and pylon areas?`,o:[`2 inches`,`6 to 8 inches`,`3 feet`,`12 inches`],a:0,e:`Engine and pylon areas: 2 inches. Other high vibration areas: 6 to 8 inches. Outside the vibration zone: up to 3 feet.`},
+  {q:`How close to a cable breakout should the loom be tied, on either side?`,o:[`No more than 1 inch`,`No more than 6 inches`,`No more than 3 feet`,`At least 10 inches`],a:0,e:`Tie the loom no more than 1 inch either side of the breakout.`},
+  {q:`Cable bundles must be kept at least how far from lines carrying fuel or oxygen?`,o:[`15 cm (6 inches)`,`5 cm (2 inches)`,`13 mm (0.5 inch)`,`1 cm (0.4 inch)`],a:0,e:`At least 15 cm (6 inches) from fuel or oxygen lines.`},
+  {q:`Metal cable clamps must have…`,o:[`A flexible rubber cushion`,`A bare metal lining to give good grounding`,`A plastic ratchet strap to hold the bundle`,`No lining, so the clamp grips the cables firmly`],a:0,e:`Metal cable clamps must have a flexible rubber cushion.`},
+  {q:`How large must the inner diameter of plastic conduit be?`,o:[`25% larger than the bundle`,`Equal to the bundle`,`5% larger than the bundle`,`Twice the bundle`],a:0,e:`The inner diameter must be 25% larger than the maximum outer diameter of the bundle.`},
+  {q:`How should a harness be moved during installation?`,o:[`Carried, not dragged`,`Pulled by the connector end`,`Dragged on a protective sheet`,`Hung from adjacent cables`],a:0,e:`Harnesses must be carried and not dragged.`},
+  {q:`Which of these is strictly prohibited on wiring?`,o:[`Hanging tools or objects on cables or harnesses`,`Protecting disconnected wire ends with caps`,`Covering wiring with plastic sheeting while working`,`Regularly removing shavings from the work area`],a:0,e:`Do not hang objects or tools on cables or harnesses, pull cables while ties are tightened, or step or sit on harnesses.`}
+ ],
+ 'AV.02.04':[
+  {q:`What is the correct order of cleaning actions?`,o:[`Stop the source, keep the area small, apply the correct procedure`,`Apply any solvent first, then stop the source, then clean up`,`Clean the whole aircraft first, then look for the source`,`Apply the procedure, stop the source, then widen the area`],a:0,e:`1) Stop the contamination source; 2) keep the contaminated area to a minimum; 3) apply the correct cleaning procedure.`},
+  {q:`Which is an example of INTERNAL contamination?`,o:[`Hydraulic fluid or fuel from aircraft systems`,`Spilled drinks and other beverages in the cabin`,`Metal shavings left behind after a repair task`,`Liquids that were carried on board the aircraft`],a:0,e:`Internal contamination comes from materials used in the aircraft systems, e.g. hydraulic fluid and fuel.`},
+  {q:`Which is an example of EXTERNAL contamination?`,o:[`Spilled beverages or metal shavings`,`Hydraulic fluid leaking from a system line`,`Fuel seeping from the aircraft fuel system`,`Oil escaping from an engine lubrication system`],a:0,e:`External contamination comes from outside sources, e.g. beverages, liquids carried on the aircraft and metal shavings.`},
+  {q:`How should powder, granular or dust contamination be removed?`,o:[`With no draught, using a vacuum cleaner and a soft brush`,`By blowing it away with a jet of compressed air`,`By wiping it with a wet sponge and leaving it`,`By washing it down with water and a hose`],a:0,e:`Make sure there is no draught, then use a vacuum cleaner and a soft brush.`},
+  {q:`Where should cleaning start?`,o:[`Periphery to centre, or top to bottom`,`From the centre outwards, or from bottom to top`,`From the lowest point of the area, then upwards`,`Wherever the dirt is first seen, in any order`],a:0,e:`Always start from the periphery to the centre, or from top to bottom.`},
+  {q:`What must be true of a cleaning cloth?`,o:[`Clean, dry and lint-free`,`Soaked in solvent in advance`,`Slightly damp and fibrous`,`Made of synthetic fibres`],a:0,e:`A cloth must be clean, dry and lint-free.`},
+  {q:`A conduit has no drain hole. Which action is acceptable?`,o:[`Make a drain hole at the lowest point`,`Seal both ends of the conduit to keep dirt out`,`Leave the contamination inside the conduit`,`Put a new drain hole at the highest point`],a:0,e:`Make a drain hole at the lowest point, move the conduit so one end is lowest, or remove it, clean the bundle and fit a new conduit.`},
+  {q:`Why is cleaning described as a very important operation?`,o:[`You can discover damage in progress`,`It makes the aircraft look much better`,`It replaces the need for any later inspection`,`It removes the need to lubricate the wiring`],a:0,e:`Cleaning lets you discover damage that is developing.`}
+ ],
+ 'AV.02.05':[
+  {q:`Which cleaning material is recommended for natural contamination such as hydraulic fluid, fuel, oil/grease and dust?`,o:[`Isopropyl alcohol (Material No. 11-010) or equivalent`,`Methylated spirit from the general workshop store`,`Any solvent that happens to be in the store`,`Acetone, applied directly to the wire bundle`],a:0,e:`Isopropyl alcohol (Material No. 11-010) or equivalent, per local regulations.`},
+  {q:`The contamination is accidental and you do not know the material. What must you do?`,o:[`Do not use solvents`,`Use isopropyl alcohol anyway`,`Use the strongest solvent available`,`Use water and a stiff brush`],a:0,e:`If the material is unknown, you must not use solvents. Accidental contamination is treated case by case.`},
+  {q:`How should solvent be applied to a cloth?`,o:[`Put the liquid on the cloth – never the cloth in the liquid`,`Soak the cloth fully in the solvent container first`,`Pour the solvent directly onto the harness`,`Spray the solvent straight onto the wiring`],a:0,e:`Never put the cloth in the liquid; always put the liquid on the cloth.`},
+  {q:`Out of the aircraft, solvent should be transferred only into cans of what size?`,o:[`Less than 1/2 litre`,`About 5 litres`,`About 1 litre`,`About 20 litres`],a:0,e:`Transfer only the needed quantity into small cans of less than 1/2 litre.`},
+  {q:`Solvents, cleaning agents and sealants are…`,o:[`Poisonous, flammable and skin irritants`,`Harmless if they are used inside the hangar`,`Safe to use without any protective clothing`,`Non-flammable, but corrosive to the skin`],a:0,e:`They are poisonous, flammable and skin irritants. Use only with good airflow and protective clothing.`},
+  {q:`What does "deep contamination" mean?`,o:[`The agent goes into the item – replace the item`,`The agent stays on the surface – just wipe it off`,`The agent has dried hard – leave it in place`,`The agent is only on the outside of the conduit`],a:0,e:`With deep contamination the agent goes into the item, and replacing the item is strongly recommended.`},
+  {q:`After deep contamination cleaning, what is the maximum pitch of the new cable ties?`,o:[`150 mm (100 mm on the last 500 mm)`,`300 mm everywhere`,`500 mm everywhere`,`50 mm everywhere`],a:0,e:`Maximum pitch 150 mm; 100 mm on the last 500 mm.`},
+  {q:`You disconnected and reconnected an electrical line in a cleaned area. What must you do?`,o:[`Do continuity and insulation tests; make sure it is dry`,`Energise the circuit straight away to test it`,`Make a visual check of the connector only`,`Do an insulation test while the area is still wet`],a:0,e:`Do a continuity test and an insulation test, and make sure the area is dry before energising.`},
+  {q:`With deep contamination, how many bundles should you work on at one time?`,o:[`One bundle only, on a small length`,`All the bundles in the area, together`,`Two bundles side by side, to save time`,`A whole loom, from one end to the other`],a:0,e:`Work on one bundle only at a time, on a small length.`}
+ ],
+ 'AV.02.06':[
+  {q:`Which three degreasing agents are listed in the course notes?`,o:[`Calla 301A, LPS and TT-I-735`,`Calla 301A, WD and TT-I-735`,`LPS, Calla 101 and TT-I-253`,`LPS, TT-I-735 and thread sealant`],a:0,e:`Calla 301A, LPS and TT-I-735.`},
+  {q:`Which degreaser is water-based and safe on all metals except magnesium?`,o:[`LPS`,`Calla 301A`,`TT-I-735`,`None of them`],a:0,e:`LPS is a water-based heavy-duty cleaner degreaser, safe on all metals except magnesium.`},
+  {q:`What is TT-I-735?`,o:[`Isopropyl alcohol`,`A water-based cleaner`,`A heavy-duty carbon remover`,`A thread sealant`],a:0,e:`TT-I-735 is isopropyl alcohol (isopropanol, 2-propanol).`},
+  {q:`Which cloth should NOT be used for wiping with these solvents?`,o:[`Synthetic cloth`,`Clean cotton cloth`,`Lint-free cloth`,`Clean cheesecloth`],a:0,e:`Do not use synthetic cloths for wiping with the solvent.`},
+  {q:`A degreasing agent gets in your eye. What must you do first?`,o:[`Flush with a large amount of water for 15 minutes`,`Rub the eye gently with a clean dry cloth`,`Wait a while to see if it clears by itself`,`Put in eye drops once every hour for a day`],a:0,e:`Flush immediately with a large amount of water for 15 minutes, then seek medical attention.`},
+  {q:`Which respirator is required in poorly ventilated areas?`,o:[`Half-mask with an organic vapour cartridge`,`A simple paper dust mask`,`No respirator – goggles alone are enough`,`A full-face oxygen mask from the aircraft`],a:0,e:`A half-mask respirator with an organic vapour cartridge.`},
+  {q:`Metal containers holding solvent must be…`,o:[`Grounded to prevent sparking and fires`,`Left open to let the vapour escape`,`Stored close to a heat source to stay warm`,`Placed on a plastic tray on the floor`],a:0,e:`Metal containers must be grounded to prevent sparking and fires.`}
+ ],
+ 'AV.02.07':[
+  {q:`What is an EWIS?`,o:[`Wires and wiring devices that carry electrical energy between points`,`Only the aircraft battery cables and their connectors`,`Only the wiring behind the cockpit instrument panel`,`Only the wiring that is protected by a fuse`],a:0,e:`Any wire, wiring device or combination, including termination devices, that transmits electrical energy between two or more intended termination points.`},
+  {q:`What are expandable sleeves designed to do?`,o:[`Protect, bundle and manage wire and cable`,`Replace the insulation on each individual wire`,`Measure the current flowing in a cable`,`Seal threaded joints against fluid pressure`],a:0,e:`Expandable sleeving protects, bundles and manages wire and cable. It is flexible and each size covers a wide range of diameters.`},
+  {q:`What is a key advantage of wrapable sleeving?`,o:[`It can be fitted or removed without disconnecting components`,`It must be fitted before the connectors are installed`,`It cannot be taken off once it has been fitted`,`It can only be used on single wires, not bundles`],a:0,e:`Self-wrapping sleeves can be installed, modified and removed without reworking or disconnecting components.`},
+  {q:`Thermal protection sleeves are designed to…`,o:[`Resist ignition and self-extinguish at high temperature`,`Melt away at high temperature to show a fault`,`Burn slowly so that a fault can be seen`,`Cool the wire by using a liquid inside the sleeve`],a:0,e:`They operate at high temperatures, are difficult to ignite and self-extinguish promptly.`},
+  {q:`How does a fuse protect a circuit?`,o:[`Its wire link melts when the current is exceeded`,`It resets itself after the fault has cleared`,`It increases the current when a fault occurs`,`It filters electrical noise out of the circuit`],a:0,e:`A fuse is a wire link in series that melts when its predetermined current is exceeded, isolating the circuit.`},
+  {q:`What is a key difference between a circuit breaker and a fuse?`,o:[`A circuit breaker can be reset once the fault clears`,`A circuit breaker must be replaced every time it trips`,`A fuse can be reset by hand after it melts`,`A circuit breaker cannot be used to isolate a circuit`],a:0,e:`Unlike a fuse, a circuit breaker can be reset once the fault condition has cleared.`},
+  {q:`A circuit breaker can trip because of…`,o:[`A simple overload or a short circuit (ground fault)`,`Low levels of vibration in the airframe`,`A change in cabin pressure during climb`,`Moisture on the outside of the housing only`],a:0,e:`A circuit breaker trips on a simple overload or a short circuit (ground fault).`},
+  {q:`An aircraft has four 10 A and five 15 A fuses. How many spares are typically carried?`,o:[`Two 10 A and three 15 A`,`Four 10 A and five 15 A`,`One 10 A and two 15 A`,`Two 10 A and two 15 A`],a:0,e:`The typical requirement is 50% of each rating: two 10 A and three 15 A.`},
+  {q:`Where should fuses and circuit breakers be located?`,o:[`As close as possible to the power source`,`As far as possible from the power source`,`Right next to the load they protect`,`Anywhere that is convenient for the installer`],a:0,e:`Close to the power source, to keep unprotected wire short.`},
+  {q:`Which of these is a circuit breaker configuration?`,o:[`Trip free`,`Time delay lock`,`Manual open only`,`Thermal fuse`],a:0,e:`Configurations: automatic reset, automatic trip / push to reset, switch types and trip free.`},
+  {q:`What does a 26 VDC fuse holder indicating cap look like?`,o:[`Flat and white`,`Domed`,`Flat (not white)`,`Domed and white`],a:0,e:`115 VAC caps are domed; 26 VAC caps are flat; 26 VDC caps are flat and white.`}
+ ]
+};
+const FINAL_COUNT = 20;
+const KNOWLEDGE_CHECK = [
+ {q:`Q1: What is the purpose of wire locking and O-ring installation when securing aircraft components?`, a:`Wire locking keeps nuts, bolts and screws from unscrewing – the wire is new, taut and routed to oppose loosening. A correctly installed O-ring (with the right pinch, in an undamaged groove) seals against leakage. Together they prevent loosening, leakage or failure.`},
+ {q:`Q2: What is an Electrical Wiring Interconnection System (EWIS), and why are wiring looms used in aircraft installations?`, a:`An EWIS is any wire, wiring device or combination of these, including termination devices, that transmits electrical energy between two or more termination points. A loom groups wires into bundles tied at regular intervals into a semi-rigid assembly, so routing is neat, secure and easy to clamp and protect.`},
+ {q:`Q3: Why is proper cable routing and management important for maintaining aircraft EWIS integrity?`, a:`Correct routing, separation, support and clamping protect cables from chafing, heat, fluids and damage. If an EWIS failure occurs, routing and separation limit the hazardous effects – and they must be kept as in the basic design for the life of the aircraft.`},
+ {q:`Q4: Why is cleaning of aircraft components and wire harnesses necessary in EWIS maintenance?`, a:`Contamination (internal such as hydraulic fluid and fuel, or external such as beverages and metal shavings) can degrade insulation and polymers and cause electrical malfunction. Cleaning also lets you discover damage in progress.`},
+ {q:`Q5: What factors must be considered when selecting cleaning agents for aircraft components?`, a:`Whether the contamination is natural or accidental (if unknown, do not use solvents); the recommended material (e.g. isopropyl alcohol, Material No. 11-010); the risk of damage to polymers and materials; and safety – ventilation, fire risk, protective clothing.`},
+ {q:`Q6: What is the purpose of using degreasing agents on aircraft components?`, a:`To remove oils, grease, carbon and hydraulic fluid while keeping the material compatible – e.g. LPS is safe on all metals except magnesium. Always follow the warnings: no flames, no synthetic cloths, good ventilation, correct PPE.`},
+ {q:`Q7: What types of protection are applied to aircraft wires and components to prevent mechanical, thermal, or electromagnetic damage?`, a:`Wires: sleeving (expandable and wrapable), multi-layer insulation and EMI shielding, and thermal protection sleeves. Components and circuits: fuses and circuit breakers.`}
+];
+const SUMMARY = [
+  `Covers core EWIS principles and definitions.`,
+  `Introduces fastening, wire locking and O-ring installation relevant to wiring systems.`,
+  `Explains wiring looms and cable management to prevent wear, damage and interference.`,
+  `Emphasises cleaning, degreasing and contamination control of components and wire harnesses.`,
+  `Identifies protective methods such as sleeving, insulation and shielding for EWIS.`,
+  `Reinforces safe, reliable and airworthy aircraft electrical installations.`
+];
+
+/* ================= STATE ================= */
+const KEY='av02_tracker_v1';
+let mem=null;
+function blank(){return {name:'',topics:{},quiz:{},started:Date.now()};}
+function load(){
+  try{const s=localStorage.getItem(KEY); if(s) return Object.assign(blank(),JSON.parse(s));}catch(e){}
+  return blank();
+}
+let S=load();
+function save(){ mem=S; try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} }
+let toastTimer=null;
+function toast(m,ms){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),ms||2200);}
+
+/* ================= HELPERS ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function secTopicsDone(sec){return sec.topics.filter(t=>S.topics[t.id]).length;}
+function quizPassed(id){return !!(S.quiz[id]&&S.quiz[id].passed);}
+function secDone(sec){return secTopicsDone(sec)===sec.topics.length && quizPassed(sec.id);}
+function totals(){
+  let done=0,total=0;
+  SECTIONS.forEach(s=>{done+=secTopicsDone(s);total+=s.topics.length;total+=1;if(quizPassed(s.id))done++;});
+  total+=1; if(quizPassed('FINAL'))done++;
+  return {done,total,pct:Math.round(done/total*100)};
+}
+function allDone(){return SECTIONS.every(secDone)&&quizPassed('FINAL');}
+function statusPill(q){
+  if(!q) return '<span class="pill todo">Not attempted</span>';
+  return q.passed?`<span class="pill ok">Passed · best ${q.best}%</span>`:`<span class="pill warn">Best ${q.best}% · retry</span>`;
+}
+
+/* ================= NAV ================= */
+let view='home';
+const TABS=[['home','Dashboard'],['learn','Learn'],['quiz','Quiz'],['tools','Tools'],['report','Progress Report']];
+function renderNav(){
+  $('#nav').innerHTML=TABS.map(t=>`<button class="${view===t[0]?'on':''}" data-v="${t[0]}">${t[1]}</button>`).join('');
+  $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+}
+function go(v,opt){view=v;quizState=null;renderNav();render(opt);window.scrollTo({top:0});}
+function render(opt){
+  ({home:renderHome,learn:renderLearn,quiz:renderQuizMenu,tools:renderTools,report:renderReport})[view](opt);
+}
+
+/* ================= HOME ================= */
+function renderHome(){
+  const t=totals();
+  const C=2*Math.PI*62, off=C*(1-t.pct/100);
+  $('#app').innerHTML=`
+  <div class="card hero">
+    <div class="ring"><svg width="150" height="150"><circle cx="75" cy="75" r="62" fill="none" stroke="#e6ecf4" stroke-width="14"/><circle cx="75" cy="75" r="62" fill="none" stroke="${t.pct===100?'#1b8a4b':'#d6001c'}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}"/></svg>
+      <div class="num"><b>${t.pct}%</b><span>${t.done} of ${t.total} done</span></div></div>
+    <div style="flex:1;min-width:240px">
+      <h2>${S.name?'Welcome, '+esc(S.name):'Welcome, trainee'}</h2>
+      <p class="lead" style="margin-bottom:12px">Complete every topic, pass each section quiz (${PASS_MARK}%), then pass the Final Assessment to finish AV.02.</p>
+      ${S.name?'':`<label class="nm" for="nm">Enter your name to personalise your report</label><div style="display:flex;gap:8px;flex-wrap:wrap"><input id="nm" type="text" placeholder="Your full name"><button class="btn ghost" id="savenm">Save name</button></div>`}
+    </div>
+  </div>
+  <h2 style="margin-top:22px">Module checklist</h2>
+  <p class="lead">Tick topics in the Learn tab as you finish them. Quizzes record automatically.</p>
+  <div class="grid g3">${SECTIONS.map(s=>{
+    const d=secTopicsDone(s),n=s.topics.length;
+    return `<div class="card"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3>${s.id}</h3>${secDone(s)?'<span class="pill ok">Complete</span>':'<span class="pill todo">In progress</span>'}</div>
+      <div style="font-weight:600;margin-bottom:10px">${s.title}</div>
+      <div class="small">Topics ${d}/${n}</div><div class="bar"><span style="width:${d/n*100}%"></span></div>
+      <div style="margin:10px 0 12px" class="small">Quiz: ${statusPill(S.quiz[s.id])}</div>
+      <button class="btn sm ghost" data-learn="${s.id}">Learn</button> <button class="btn sm" data-quiz="${s.id}">Quiz</button></div>`;}).join('')}
+  </div>
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <div><h3>Final Assessment</h3><div class="small">${FINAL_COUNT} random questions from all seven sections · pass mark ${PASS_MARK}%</div><div style="margin-top:6px">${statusPill(S.quiz.FINAL)}</div></div>
+    <button class="btn red" data-quiz="FINAL">Start Final Assessment</button>
+  </div>`;
+  if($('#savenm')) $('#savenm').onclick=()=>{const v=$('#nm').value.trim(); if(v){S.name=v;save();renderHome();toast('Name saved');}};
+  document.querySelectorAll('[data-learn]').forEach(b=>b.onclick=()=>go('learn',{open:b.dataset.learn}));
+  document.querySelectorAll('[data-quiz]').forEach(b=>b.onclick=()=>go('quiz',{start:b.dataset.quiz}));
+}
+
+/* ================= LEARN ================= */
+function tableHTML(tb){
+  return `<div class="tblwrap"><table class="t"><tr>${tb.head.map(h=>`<th>${h}</th>`).join('')}</tr>${tb.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>${tb.cap?`<div class="cap">${tb.cap}</div>`:''}`;
+}
+function topicHTML(t){
+  const done=!!S.topics[t.id];
+  let body='';
+  if(t.pts) body+=`<ul>${t.pts.map(p=>`<li>${p}</li>`).join('')}</ul>`;
+  if(t.tables) body+=t.tables.map(tableHTML).join('');
+  if(t.groups) body+=t.groups.map(g=>`<h5>${g.h}</h5><ul>${g.pts.map(p=>`<li>${p}</li>`).join('')}</ul>`).join('');
+  return `<div class="topic ${done?'done':''}" id="tp-${t.id}">
+    <button class="chk" data-t="${t.id}" aria-label="Mark ${esc(t.title)} complete" aria-pressed="${done}" title="Mark complete">${done?'✓':''}</button>
+    <div style="flex:1;min-width:0"><h4><small>${t.id}</small>${t.title}</h4>
+    ${body}
+    ${t.tip?`<div class="tip"><b>Tip:</b> ${t.tip}</div>`:''}${t.warn?`<div class="warnbox"><b>Remember:</b> ${t.warn}</div>`:''}</div></div>`;
+}
+function bindChecks(){
+  document.querySelectorAll('.chk').forEach(b=>{
+    b.onclick=()=>{
+      const id=b.dataset.t; if(S.topics[id]) delete S.topics[id]; else S.topics[id]=Date.now(); save();
+      const sec=SECTIONS.find(s=>s.topics.some(t=>t.id===id)); const t=sec.topics.find(t=>t.id===id);
+      document.getElementById('tp-'+id).outerHTML=topicHTML(t); bindChecks();
+      document.getElementById('cnt-'+sec.id).textContent=`${secTopicsDone(sec)}/${sec.topics.length} done`;
+      if(S.topics[id]) toast(`${id} marked complete`);
+    };
+  });
+}
+function renderLearn(opt){
+  const open=opt&&opt.open;
+  $('#app').innerHTML=`<h2>Learn</h2><p class="lead">Read each topic, then tick the box on the left when you understand it.</p>`+
+  `<div class="card"><h3>Learning outcomes</h3><p style="margin:0 0 6px">By the end of this module (18 hours), trainees will be able to:</p><ul style="margin:0;padding-left:20px">${OUTCOMES.map(o=>`<li>${o}</li>`).join('')}</ul></div>`+
+  SECTIONS.map((s,i)=>`<details class="sec" id="sec-${s.id}" ${(open?open===s.id:i===0)?'open':''}>
+    <summary><span class="code">${s.id}</span>${s.title}<span class="right" id="cnt-${s.id}">${secTopicsDone(s)}/${s.topics.length} done</span></summary>
+    <div class="lo"><b>Learning objective:</b> ${s.lo}</div>
+    ${s.topics.map(topicHTML).join('')}
+    <div style="padding:14px 20px;border-top:1px solid var(--line)"><button class="btn" data-quiz="${s.id}">Take the ${s.id} quiz →</button></div>
+  </details>`).join('')+
+  `<h2 style="margin-top:26px">Summary</h2><div class="card"><ul style="margin:0;padding-left:20px">${SUMMARY.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+   <h2 style="margin-top:26px">Knowledge Check (self-check)</h2><p class="lead">Think of your answer first, then tap to reveal a model answer.</p>`+
+   KNOWLEDGE_CHECK.map((k,i)=>`<div class="card"><b>${k.q}</b><div style="margin-top:8px"><button class="btn sm ghost" data-rev="${i}">Show model answer</button></div><div id="rev-${i}" style="display:none;margin-top:10px" class="tip">${k.a}</div></div>`).join('');
+  bindChecks();
+  document.querySelectorAll('[data-quiz]').forEach(b=>b.onclick=()=>go('quiz',{start:b.dataset.quiz}));
+  document.querySelectorAll('[data-rev]').forEach(b=>b.onclick=()=>{const e=$('#rev-'+b.dataset.rev);const show=e.style.display==='none';e.style.display=show?'block':'none';b.textContent=show?'Hide model answer':'Show model answer';});
+  if(open){const el=document.getElementById('sec-'+open); if(el) el.scrollIntoView();}
+}
+
+/* ================= QUIZ ================= */
+let quizState=null;
+function renderQuizMenu(opt){
+  if(opt&&opt.start){return startQuiz(opt.start);}
+  $('#app').innerHTML=`<h2>Quiz</h2><p class="lead">Pass mark is ${PASS_MARK}%. You can retry as many times as you like – your best score is kept.</p>
+  <div class="grid g2">${SECTIONS.map(s=>`<div class="card"><h3>${s.id} · ${s.title}</h3>
+    <div class="small" style="margin-bottom:8px">${QUESTIONS[s.id].length} questions</div>${statusPill(S.quiz[s.id])}
+    ${S.quiz[s.id]?`<div class="small" style="margin-top:6px">Attempts: ${S.quiz[s.id].attempts} · Last: ${S.quiz[s.id].last}%</div>`:''}
+    <div style="margin-top:12px"><button class="btn" data-q="${s.id}">${S.quiz[s.id]?'Retry':'Start'} quiz</button></div></div>`).join('')}
+  <div class="card" style="border-color:var(--red)"><h3>Final Assessment</h3>
+    <div class="small" style="margin-bottom:8px">${FINAL_COUNT} random questions from AV.02.01 – AV.02.07</div>${statusPill(S.quiz.FINAL)}
+    ${S.quiz.FINAL?`<div class="small" style="margin-top:6px">Attempts: ${S.quiz.FINAL.attempts} · Last: ${S.quiz.FINAL.last}%</div>`:''}
+    <div style="margin-top:12px"><button class="btn red" data-q="FINAL">${S.quiz.FINAL?'Retry':'Start'} final</button></div></div></div>`;
+  document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>startQuiz(b.dataset.q));
+}
+function startQuiz(id){
+  let pool = id==='FINAL' ? shuffle([].concat(...Object.values(QUESTIONS))).slice(0,FINAL_COUNT) : shuffle(QUESTIONS[id]);
+  const items=pool.map(q=>{
+    const opts=shuffle(q.o.map((t,i)=>({t,ok:i===q.a})));
+    return {q:q.q,e:q.e,opts,pick:null};
+  });
+  quizState={id,items,i:0};
+  view='quiz'; renderNav(); renderQuestion(); window.scrollTo({top:0});
+}
+function quizTitle(id){return id==='FINAL'?'Final Assessment':id+' · '+SECTIONS.find(s=>s.id===id).title;}
+function renderQuestion(){
+  const Q=quizState, it=Q.items[Q.i], answered=it.pick!==null;
+  $('#app').innerHTML=`<div class="card">
+    <div class="qhead"><b style="color:var(--navy)">${quizTitle(Q.id)}</b><span class="small">Question ${Q.i+1} of ${Q.items.length}</span></div>
+    <div class="bar"><span style="width:${(Q.i+(answered?1:0))/Q.items.length*100}%"></span></div>
+    <div class="qtext">${esc(it.q)}</div>
+    ${it.opts.map((o,k)=>{
+      let cls=''; if(answered){ if(o.ok) cls='right'; else if(k===it.pick) cls='wrong'; }
+      return `<button class="opt ${cls}" data-k="${k}" ${answered?'disabled':''}>${String.fromCharCode(65+k)}.&nbsp; ${esc(o.t)}</button>`;}).join('')}
+    ${answered?`<div class="fb ${it.opts[it.pick].ok?'ok':'no'}"><b>${it.opts[it.pick].ok?'Correct!':'Not quite.'}</b> ${esc(it.e)}</div>
+      <button class="btn red" id="nx">${Q.i<Q.items.length-1?'Next question →':'See my result'}</button>`:''}
+    <div style="margin-top:14px"><button class="btn sm ghost" id="quit">Quit quiz</button></div></div>`;
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{it.pick=+b.dataset.k;renderQuestion();});
+  if($('#nx')) $('#nx').onclick=()=>{ if(Q.i<Q.items.length-1){Q.i++;renderQuestion();window.scrollTo({top:0});} else finishQuiz(); };
+  $('#quit').onclick=()=>{ if(confirm('Quit this quiz? Your answers will not be saved.')) go('quiz'); };
+}
+function finishQuiz(){
+  const Q=quizState; const right=Q.items.filter(i=>i.opts[i.pick].ok).length;
+  const pct=Math.round(right/Q.items.length*100); const pass=pct>=PASS_MARK;
+  const prev=S.quiz[Q.id]||{attempts:0,best:0,passed:false};
+  S.quiz[Q.id]={attempts:prev.attempts+1,best:Math.max(prev.best,pct),last:pct,passed:prev.passed||pass,date:Date.now(),lastRight:right,lastTotal:Q.items.length};
+  save();
+  const wrong=Q.items.filter(i=>!i.opts[i.pick].ok);
+  $('#app').innerHTML=`<div class="card" style="text-align:center"><div class="small">${quizTitle(Q.id)}</div>
+    <div class="score" style="color:${pass?'var(--ok)':'var(--bad)'}">${pct}%</div>
+    <div style="font-size:18px;margin:6px 0">${right} of ${Q.items.length} correct · ${pass?'<b style="color:var(--ok)">PASS</b>':'<b style="color:var(--bad)">Not yet – pass mark '+PASS_MARK+'%</b>'}</div>
+    <p class="small">${pass?'Well done! This has been recorded in your progress.':'Review the questions below, revisit the topic in the Learn tab, then try again.'}</p>
+    <button class="btn red" id="again">Try again</button> <button class="btn ghost" id="hm">Dashboard</button></div>
+    ${wrong.length?`<div class="card"><h3>Review: questions to revisit (${wrong.length})</h3>${wrong.map(i=>`<div class="review"><div><b>${esc(i.q)}</b></div><div><span class="n">Your answer:</span> ${esc(i.opts[i.pick].t)}</div><div><span class="y">Correct answer:</span> ${esc(i.opts.find(o=>o.ok).t)}</div><div class="small">${esc(i.e)}</div></div>`).join('')}</div>`:'<div class="card"><b>Perfect score – no questions to review!</b></div>'}`;
+  $('#again').onclick=()=>startQuiz(Q.id); $('#hm').onclick=()=>go('home');
+  window.scrollTo({top:0});
+}
+
+/* ================= TOOLS ================= */
+function renderTools(){
+  $('#app').innerHTML=`<h2>Tools</h2><p class="lead">Quick practice aids based on the course notes. For real maintenance always use the values in the approved manual (AMM, SWPM/ESPM) for your aircraft.</p>
+  <div class="grid g2">
+   <div class="card tool"><h3>Minimum bend radius</h3><div class="small">Bundle: 5 × outside diameter. Coaxial cable: 12 × outside diameter.</div>
+     <label for="od">Outside diameter (any unit, e.g. mm)</label><input type="number" id="od" step="any" min="0" placeholder="e.g. 10">
+     <label for="cab">Cable type</label><select id="cab"><option value="5">Cable bundle (5 ×)</option><option value="12">Coaxial cable (12 ×)</option></select>
+     <div class="result" id="r1">Enter the outside diameter.</div></div>
+   <div class="card tool"><h3>Fuse spares</h3><div class="small">Typical requirement: carry 50% of each fuse rating as spares (example in notes: 4 fuses → 2 spares, 5 fuses → 3 spares).</div>
+     <label for="nf">Number of fuses of one rating fitted</label><input type="number" id="nf" step="1" min="0" placeholder="e.g. 5">
+     <div class="result" id="r2">Enter the number of fuses.</div>
+     <div class="small" style="margin-top:8px">Rounded up, as in the course example. Always follow the aircraft's own requirements.</div></div>
+   <div class="card tool"><h3>Sealant curing temperature check</h3><div class="small">Ideal: 77°F (25°C) at 50% relative humidity. Below 60°F: extremely slow. Above 70°F: faster. Heat-accelerated curing must not exceed 120°F (manufacturer dependent).</div>
+     <label for="tmp">Temperature</label><input type="number" id="tmp" step="any" placeholder="e.g. 25">
+     <label for="unit">Unit</label><select id="unit"><option value="C">°C</option><option value="F">°F</option></select>
+     <div class="result" id="r3">Enter a temperature.</div></div>
+   <div class="card tool"><h3>Separation and spacing look-up</h3>
+     <label for="sep">Choose an item</label><select id="sep">${SEPS.map((s,i)=>`<option value="${i}">${s[0]}</option>`).join('')}</select>
+     <div class="result" id="r4"></div></div>
+  </div>`;
+  const r=(v,d)=>Math.round(v*Math.pow(10,d))/Math.pow(10,d);
+  const bend=()=>{const v=parseFloat($('#od').value);if(isNaN(v)||v<=0){$('#r1').textContent='Enter the outside diameter.';return;}const m=+$('#cab').value;$('#r1').textContent=`Minimum bend radius = ${r(v*m,2)} (${m} × ${v})`;};
+  $('#od').oninput=bend; $('#cab').onchange=bend;
+  $('#nf').oninput=()=>{const v=parseFloat($('#nf').value);if(isNaN(v)||v<0){$('#r2').textContent='Enter the number of fuses.';return;}const n=Math.floor(v);$('#r2').textContent=`${n} fuses fitted → carry ${Math.ceil(n/2)} spare${Math.ceil(n/2)===1?'':'s'}`;};
+  const temp=()=>{const v=parseFloat($('#tmp').value);if(isNaN(v)){$('#r3').textContent='Enter a temperature.';return;}
+    const f=$('#unit').value==='C'?v*9/5+32:v, c=$('#unit').value==='C'?v:(v-32)*5/9; let s;
+    if(f<60) s='Below 60°F – curing is extremely slow';
+    else if(f<=70) s='60–70°F – slower than the faster range above 70°F';
+    else if(f<=120) s=(Math.abs(f-77)<=2?'Close to the ideal 77°F (25°C) – ':'Above 70°F – ')+'curing is typically faster';
+    else s='Above 120°F – over the limit for heat-accelerated curing';
+    $('#r3').innerHTML=`${r(f,1)}°F / ${r(c,1)}°C<br><span style="font-weight:600;font-size:15px">${s}</span>`;};
+  $('#tmp').oninput=temp; $('#unit').onchange=temp;
+  const sp=()=>{const x=SEPS[+$('#sep').value];$('#r4').textContent=x[1];}; $('#sep').onchange=sp; sp();
+}
+
+/* ================= PDF REPORT (built in-app, no print dialog needed) ================= */
+function pdfSafe(s){
+  s=String(s).replace(/[\u2013\u2014]/g,'-').replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"').replace(/\u00B7/g,'|').replace(/\u2026/g,'...');
+  let o='';
+  for(const ch of s){const c=ch.charCodeAt(0); if(c<32) continue; o+= (c<=255)?ch:'?';}
+  return o.replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');
+}
+function pdfDate(t){const d=new Date(t);const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return String(d.getDate()).padStart(2,'0')+' '+m[d.getMonth()]+' '+d.getFullYear();}
+function buildReportPDF(){
+  const t=totals(), done=allDone(), pages=[]; let c=null;
+  const NAVY='#0b2545', RED='#d6001c', INK='#1b2430', GREY='#5b6778', GREEN='#1b8a4b';
+  const rgb=h=>{h=h.replace('#','');return [0,2,4].map(i=>(parseInt(h.substr(i,2),16)/255).toFixed(3)).join(' ');};
+  const rect=(x,y,w,h,col)=>c.push(`${rgb(col)} rg ${x} ${y} ${w} ${h} re f`);
+  const box=(x,y,w,h,col)=>c.push(`${rgb(col)} RG 0.8 w ${x} ${y} ${w} ${h} re S`);
+  const line=(x1,y1,x2,y2,col,w)=>c.push(`${rgb(col)} RG ${w||0.5} w ${x1} ${y1} m ${x2} ${y2} l S`);
+  const text=(x,y,s,size,bold,col)=>c.push(`BT /${bold?'F2':'F1'} ${size} Tf ${rgb(col||INK)} rg ${x} ${y} Td (${pdfSafe(s)}) Tj ET`);
+  const newPage=()=>{c=[];pages.push(c);};
+  const contHeader=()=>{rect(0,800,595,42,NAVY);rect(0,797,595,3,RED);text(40,815,MODULE_NAME+' - Trainee Progress Report (continued)',10,true,'#ffffff');};
+  const lastDate=Math.max(0,...Object.values(S.quiz).map(q=>q.date||0));
+  newPage();
+  rect(0,742,595,100,NAVY); rect(0,738,595,4,RED);
+  text(40,818,'ST ENGINEERING  |  MTC  |  MAMT AVIONICS',8,false,'#cfe0f5');
+  text(40,788,MODULE_NAME,20,true,'#ffffff');
+  text(40,764,'Trainee Progress Report',12,false,'#cfe0f5');
+  text(40,712,'Trainee:',10,true,GREY); text(100,712,S.name||'-',11,true,INK);
+  text(340,712,'Report date:',10,true,GREY); text(410,712,pdfDate(Date.now()),10,false,INK);
+  text(40,694,'Overall progress:',10,true,GREY); text(135,694,`${t.pct}%  (${t.done} of ${t.total} items complete)`,10,false,INK);
+  text(340,694,'Last quiz activity:',10,true,GREY); text(435,694,lastDate?pdfDate(lastDate):'-',10,false,INK);
+  rect(40,670,515,10,'#e6ecf4'); if(t.pct>0) rect(40,670,515*t.pct/100,10,t.pct===100?GREEN:NAVY);
+  if(done){ rect(40,632,515,26,'#e5f6ec'); text(50,641,`MODULE COMPLETE - all topics done, all quizzes passed, Final Assessment ${S.quiz.FINAL.best}%`,10,true,'#14633a'); }
+  else { rect(40,632,515,26,'#fff4de'); text(50,641,'MODULE IN PROGRESS - not all topics and quizzes are complete yet',10,true,'#8a5200'); }
+  const cols=[46,300,352,424,490];
+  rect(40,598,515,22,NAVY);
+  ['Section','Topics','Quiz (best)','Attempts','Status'].forEach((h,i)=>text(cols[i],605,h,9,true,'#ffffff'));
+  let y=598;
+  const rows=SECTIONS.map(s=>{const q=S.quiz[s.id];return [s.id+'  '+s.title,`${secTopicsDone(s)}/${s.topics.length}`,q?q.best+'%':'-',String(q?q.attempts:0),secDone(s)?'Complete':'Open',secDone(s)];});
+  const f=S.quiz.FINAL; rows.push(['Final Assessment','-',f?f.best+'%':'-',String(f?f.attempts:0),quizPassed('FINAL')?'Passed':'Open',quizPassed('FINAL')]);
+  rows.forEach(r=>{
+    y-=24; line(40,y,555,y,'#d9e1ec',0.6);
+    r.slice(0,4).forEach((v,i)=>text(cols[i],y+8,v,i===0?9:10,false,INK));
+    text(cols[4],y+8,r[4],10,true,r[5]?GREEN:GREY);
+  });
+  y-=34; text(40,y,'Topic checklist',13,true,NAVY); line(40,y-6,555,y-6,RED,1.2); y-=10;
+  SECTIONS.forEach(s=>{
+    if(y<110){newPage();contHeader();y=770;}
+    y-=22; text(40,y,s.id+'  '+s.title,10,true,NAVY);
+    s.topics.forEach(tp=>{
+      if(y<80){newPage();contHeader();y=770;}
+      y-=16; const d=!!S.topics[tp.id];
+      if(d){ rect(48,y-1,9,9,GREEN); line(50,y+3,52.5,y,'#ffffff',1.3); line(52.5,y,56,y+7,'#ffffff',1.3); } else box(48,y-1,9,9,'#9aa9bf');
+      text(66,y,tp.id,9,true,GREY); text(104,y,tp.title,10,false,d?INK:GREY);
+      text(440,y,d?'Completed':'Not yet completed',9,false,d?GREEN:'#9aa9bf');
+    });
+  });
+  const N=pages.length;
+  pages.forEach((pg,i)=>{
+    c=pg;
+    line(40,56,555,56,'#d9e1ec',0.8);
+    text(40,42,`Pass mark ${PASS_MARK}%. Self-recorded progress from the ${MODULE_NAME} Trainee Tracker (on the trainee's own device).`,8,false,GREY);
+    text(40,31,'Training aid only - always follow the approved maintenance manual and your instructor\'s directions.',8,false,GREY);
+    text(500,31,`Page ${i+1} of ${N}`,8,true,GREY);
+  });
+  const objs=[null,
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    `<< /Type /Pages /Kids [${pages.map((_,i)=>`${5+2*i} 0 R`).join(' ')}] /Count ${N} >>`,
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'];
+  pages.forEach((cs,i)=>{
+    const content=cs.join('\n');
+    objs[5+2*i]=`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${6+2*i} 0 R >>`;
+    objs[6+2*i]=`<< /Length ${content.length} >>\nstream\n${content}\nendstream`;
+  });
+  const total=4+2*N;
+  let pdf='%PDF-1.4\n'; const off=[];
+  for(let i=1;i<=total;i++){off[i]=pdf.length; pdf+=`${i} 0 obj\n${objs[i]}\nendobj\n`;}
+  const xr=pdf.length;
+  pdf+=`xref\n0 ${total+1}\n0000000000 65535 f \n`+off.slice(1).map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')+`trailer\n<< /Size ${total+1} /Root 1 0 R >>\nstartxref\n${xr}\n%%EOF`;
+  const bytes=new Uint8Array(pdf.length); for(let i=0;i<pdf.length;i++) bytes[i]=pdf.charCodeAt(i)&255;
+  return new Blob([bytes],{type:'application/pdf'});
+}
+function downloadPDF(){
+  try{
+    const blob=buildReportPDF();
+    const fn='AV02_Progress_Report_'+(S.name||'Trainee').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'')+'.pdf';
+    if(navigator.msSaveOrOpenBlob){navigator.msSaveOrOpenBlob(blob,fn);return;}
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=fn; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),10000);
+    toast('PDF created: '+fn+' (check your Downloads folder)',4000);
+  }catch(e){ toast('Sorry, the PDF could not be created. Please use Print report instead.',4500); }
+}
+
+/* ================= REPORT ================= */
+function fmtDate(t){return t?new Date(t).toLocaleDateString('en-SG',{day:'2-digit',month:'short',year:'numeric'}):'–';}
+function renderReport(){
+  const t=totals(); const done=allDone();
+  const lastDate=Math.max(0,...Object.values(S.quiz).map(q=>q.date||0));
+  $('#app').innerHTML=`<h2>Progress Report</h2><p class="lead">Download your report as a PDF to give to your instructor, or export a backup file.</p>
+  <div class="card noprint"><label class="nm" for="nm2">Trainee name</label><input id="nm2" type="text" value="${esc(S.name)}" placeholder="Your full name"> <button class="btn sm" id="sv">Save</button></div>
+  ${done?`<div class="cert"><div class="small">ST Engineering · MTC · MAMT Avionics</div><div class="big">${MODULE_NAME}</div><p>Module completed by</p><div class="big" style="color:var(--red)">${esc(S.name||'(enter your name)')}</div><p class="small">All topics completed · all quizzes passed · Final Assessment ${S.quiz.FINAL.best}% · ${fmtDate(S.quiz.FINAL.date)}</p></div><br>`:''}
+  <div class="card"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><div><b>Trainee:</b> ${esc(S.name||'–')}</div><div><b>Overall:</b> ${t.pct}% (${t.done}/${t.total})</div><div><b>Report date:</b> ${fmtDate(Date.now())}</div></div>
+   <div class="bar" style="margin:12px 0"><span style="width:${t.pct}%"></span></div>
+   <div class="repwrap"><table class="rep"><tr><th>Section</th><th>Topics</th><th>Quiz (best)</th><th>Attempts</th><th>Status</th></tr>
+   ${SECTIONS.map(s=>{const q=S.quiz[s.id];return `<tr><td><b>${s.id}</b> ${s.title}</td><td>${secTopicsDone(s)}/${s.topics.length}</td><td>${q?q.best+'%':'–'}</td><td>${q?q.attempts:0}</td><td>${secDone(s)?'<span class="pill ok">Complete</span>':'<span class="pill todo">Open</span>'}</td></tr>`;}).join('')}
+   <tr><td><b>Final Assessment</b></td><td>–</td><td>${S.quiz.FINAL?S.quiz.FINAL.best+'%':'–'}</td><td>${S.quiz.FINAL?S.quiz.FINAL.attempts:0}</td><td>${quizPassed('FINAL')?'<span class="pill ok">Passed</span>':'<span class="pill todo">Open</span>'}</td></tr></table></div>
+   <p class="small" style="margin-bottom:0">Pass mark ${PASS_MARK}%. Last activity: ${fmtDate(lastDate)}. Self-recorded progress on this device.</p></div>
+  <div class="card noprint"><h3>Manage progress</h3>
+    <div class="actions">
+      <button class="btn red" id="pdf">Download PDF report</button>
+      <button class="btn ghost" id="pr">Print report</button>
+    </div>
+    <p class="small" style="margin:6px 0 14px">The PDF saves straight to your Downloads folder – no print window needed. If you add or change your name, press <b>Save</b> first.</p>
+    <div class="actions">
+      <button class="btn ghost" id="ex">Export backup (.json)</button>
+      <label class="btn ghost" style="margin:0">Import backup<input type="file" id="im" accept=".json,application/json" style="display:none"></label>
+      <button class="btn ghost" id="rs" style="color:var(--bad);border-color:var(--bad)">Reset all progress</button>
+    </div>
+    <p class="small" style="margin-bottom:0">Progress is stored in this browser only. Export a backup before clearing browser data or switching device.</p></div>`;
+  $('#sv').onclick=()=>{S.name=$('#nm2').value.trim();save();renderReport();toast('Name saved');};
+  $('#pdf').onclick=()=>{ const v=$('#nm2').value.trim(); if(v!==S.name){S.name=v;save();} downloadPDF(); };
+  $('#pr').onclick=()=>{ try{window.print();}catch(e){} toast('If no print window opened, please use "Download PDF report" instead.',4000); };
+  $('#ex').onclick=()=>{const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AV02_progress_'+(S.name||'trainee').replace(/\s+/g,'_')+'.json';document.body.appendChild(a);a.click();a.remove();toast('Backup downloaded');};
+  $('#im').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(!d||typeof d!=='object'||!d.topics||!d.quiz)throw 0;S=Object.assign(blank(),d);save();renderReport();toast('Progress imported');}catch(x){alert('That file is not a valid AV.02 progress backup.');}};rd.readAsText(f);};
+  $('#rs').onclick=()=>{if(confirm('Reset ALL progress and scores? This cannot be undone.')){S=blank();save();go('home');toast('Progress reset');}};
+}
+
+/* ================= INIT ================= */
+renderNav(); render();
+</script>
+</body>
+</html>
